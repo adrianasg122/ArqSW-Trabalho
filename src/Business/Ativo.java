@@ -2,12 +2,14 @@ package Business;
 
 public class Ativo {
 
+    private String dono;
     private int id;
     private float preco;
     private String tipo;
     private boolean venda;
 
-    public Ativo(int id, float preco, String tipo, boolean Venda) {
+    public Ativo(String dono, int id, float preco, String tipo, boolean Venda) {
+        this.dono = dono;
         this.id = id;
         this.preco = preco;
         this.tipo = tipo;
@@ -16,10 +18,19 @@ public class Ativo {
     }
 
     public Ativo(Ativo a) {
+        this.dono = a.getDono();
         this.id = a.getId();
         this.preco = a.getPreco();
         this.tipo = a.getTipo();
         this.venda = a.getVenda();
+    }
+
+    public String getDono() {
+        return this.dono;
+    }
+
+    public void setDono(String dono) {
+        this.dono = dono;
     }
 
     public int getId() {
@@ -63,6 +74,7 @@ public class Ativo {
         if (this.getId() != ativo.getId()) return false;
         if (Float.compare(ativo.getPreco(), this.getPreco()) != 0) return false;
         if (this.getVenda() != ativo.getVenda()) return false;
+        if (!this.getDono().equals(ativo.getDono()));
         return getTipo().equals(ativo.getTipo());
     }
 

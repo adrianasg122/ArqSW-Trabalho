@@ -5,6 +5,7 @@ import DAOS.AtivosDAO;
 import DAOS.UtilizadorDAO;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class ESSLda {
@@ -27,17 +28,6 @@ public class ESSLda {
 
     public void setUtilizador(Utilizador utilizador) {
         this.utilizador = utilizador;
-    }
-
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ESSLda essLda = (ESSLda) o;
-
-        if (!getUtilizadores().equals(essLda.getUtilizadores())) return false;
-        if (!getAtivos().equals(essLda.getAtivos())) return false;
-        return getutilizador().equals(essLda.getutilizador());
     }
 
     public String toString() {
@@ -90,30 +80,44 @@ public class ESSLda {
      * Regitar novo utilizador na plataforma.
      * @param username Username do novo registo.
      * @param password Password do novo registo.
-     * @param nome Nome do novo registo.
      * @param email Contacto do novo registo.
      */
-    public void registar (String username, String password, String nome, float saldo, String email) throws UsernameInvalidoException{
-        Utilizador u = new Utilizador(username,password,nome,0,email);
+    public void registar (String username, String password, float saldo, String email) throws UsernameInvalidoException{
+        Utilizador u = new Utilizador(username,password,saldo,email);
 
-        if(utilizadores.get(username) == null){
-            utilizadores.add(username, u);
+        if (utilizadores.get(username) == null){
+            utilizadores.put(username, u);
         }
-        else new UsernameInvalidoException(e.getMessage());
+        else throw new UsernameInvalidoException("Username inválido");
     }
 
-    public List<Ativo> consultaPort {
-       return utilizador.getAtivos().values();
+
+    /**
+     * Consultar a lista de acções adquiridas por um utilizador
+     */
+    public List<Ativo> consultaPort() {
+        List<Ativo> aux = new ArrayList<Ativo>(utilizador.getAtivos().values());
+        return aux;
     }
 
+    /**
+     * Consultar o saldo de um utilizador
+     */
     public float consultarSaldo() {
        return utilizador.getSaldo();
     }
 
+
+    /**
+     * Comprar ações
+     */
     public void comprar () {
-    
+
     }
 
+    /**
+     * Colocar ações à venda
+     */
     public void vender() {
 
     }

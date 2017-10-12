@@ -24,7 +24,7 @@ public class Connect {
             if(c != null && !c.isClosed()){
                 c.close();
             }
-        }catch (Exception e){
+        } catch (Exception e){
             e.printStackTrace();
         }
     }
