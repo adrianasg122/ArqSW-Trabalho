@@ -2,9 +2,14 @@ package Business;
 
 public class ESSLda {
 
-    public void login(){
+    public Map<String,Utilizador> utilizadores;
+    public Map<Integer,Ativo> ativos;
+    public Utilizador ulogado;
 
-    }
+
+
+
+
 
     public void registar() {
 

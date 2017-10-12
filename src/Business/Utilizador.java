@@ -8,6 +8,13 @@ public class Utilizador {
     private String email;
 
 
+    public Utilizador () {
+        this.username = null;
+        this.password = null;
+        this.saldo = 0.0;
+        this.email = null;
+    }
+
     public Utilizador(String username, String password, float saldo, String email) {
         this.username = username;
         this.password = password;
