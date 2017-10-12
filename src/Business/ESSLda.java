@@ -3,9 +3,7 @@ package Business;
 
 import DAOS.AtivosDAO;
 import DAOS.UtilizadorDAO;
-
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 public class ESSLda {
