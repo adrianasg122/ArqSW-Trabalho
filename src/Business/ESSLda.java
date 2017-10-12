@@ -4,6 +4,8 @@ package Business;
 import DAOS.AtivosDAO;
 import DAOS.UtilizadorDAO;
 import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 
 public class ESSLda {
@@ -109,14 +111,38 @@ public class ESSLda {
     /**
      * Comprar ações
      */
-    public void comprar () {
+    public void comprar (int id) throws SaldoInsuficienteException, IdInvalidoException{
+        if (ativos.get(id) == null) throw new IdInvalidoException();
+        if (utilizador.getSaldo() >= ativos.get(id).getPreco()) {
+            ativos.get(id).setVenda(false);
+            utilizador.getAtivos().put(id,ativos.get(id));
+            String exdono = ativos.get(id).getDono();
+            float s = utilizadores.get(exdono).getSaldo() + ativos.get(id).getPreco();
+            utilizadores.get(exdono).setSaldo(s);
+            ativos.get(id).setDono(utilizador.getUsername());
+        }
 
+        else
+            throw new SaldoInsuficienteException();
+        
+    }
+
+
+    public List<Ativo> listarAtivosVenda() {
+
+        List<Ativo> res = new ArrayList<Ativo>();
+
+        for(Ativo a : ativos.values())
+            if (a.getVenda()) res.add(a);
+
+        return res;
     }
 
     /**
      * Colocar ações à venda
      */
-    public void vender() {
+    public void vender(Ativo a) {
+        a.setVenda(true);
 
     }
 
