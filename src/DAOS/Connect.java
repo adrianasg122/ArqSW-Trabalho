@@ -10,7 +10,7 @@ public class Connect {
         Connection connect = null;
         try{
             // TODO ALTERAR PARA O TEU SITIO
-            String url = "jdbc:sqlite:/ho";
+            String url = "jdbc:sqlite:/home/Desktop/ArqSw/acoes";
             connect = DriverManager.getConnection(url);
         } catch(SQLException e){
             System.out.println(e.getMessage());
