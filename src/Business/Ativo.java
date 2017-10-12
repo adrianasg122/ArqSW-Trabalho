@@ -8,7 +8,7 @@ public class Ativo {
     private String tipo;
     private boolean venda;
 
-    public Ativo() {
+    public Ativo() {//
     }
 
     public Ativo(String dono, int id, float preco, String tipo, boolean Venda) {
