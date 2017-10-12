@@ -107,7 +107,23 @@ public class AtivosDAO implements Map<Integer, Ativo> {
         return a;
     }
 
+    // TODO FINISH
     @Override
-    public Ativo put(Integer key, )
+    public Ativo put(Integer key, Ativo value){
+        Ativo a;
+        if(this.containsKey(key)){
+            a = this.get(key);
+        }else a = value;
+
+        try{
+            connection = Connect.connect();
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM Ativo WHERE id = ?");
+            ps.setString(1,Integer.toString(key));
+            ps.executeUpdate();
+
+            ps = connection.prepareStatement("INSERT INTO Ativo()");
+        }
+        return a;
+    }
 
 }
