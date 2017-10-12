@@ -125,7 +125,7 @@ public class UtilizadorDAO implements Map<String, Utilizador>{
             ps.setString(1,key);
             ps.executeUpdate();
 
-            ps = connection.prepareStatement("INSERT INTO Utilizador (username,password,email,saldo) VALUES ?,?,?,?");
+            ps = connection.prepareStatement("INSERT INTO Utilizador (username,password,email,saldo) VALUES (?,?,?,?)");
             ps.setString(1,key);
             ps.setString(2,value.getPassword());
             ps.setString(3,value.getEmail());

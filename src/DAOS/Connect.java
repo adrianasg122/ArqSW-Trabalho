@@ -11,6 +11,7 @@ public class Connect {
         try{
             // TODO ALTERAR PARA O TEU SITIO
             String url = "jdbc:sqlite:/home/Desktop/ArqSw/acoes";
+            //String url = "jdbc:sqlite:/home/bruno/Random/ArqSw/acoes";
             connect = DriverManager.getConnection(url);
         } catch(SQLException e){
             System.out.println(e.getMessage());

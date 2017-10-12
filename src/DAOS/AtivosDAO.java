@@ -1,14 +1,8 @@
 package DAOS;
 
 import Business.Ativo;
-import com.sun.org.apache.regexp.internal.RE;
-
-import javax.net.ssl.SSLContext;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Map;
+import java.sql.*;
+import java.util.*;
 
 public class AtivosDAO implements Map<Integer, Ativo> {
 
@@ -94,6 +88,7 @@ public class AtivosDAO implements Map<Integer, Ativo> {
                 a.setId(rs.getInt("id"));
                 a.setPreco(rs.getFloat("preco"));
                 a.setTipo(rs.getString("tipo"));
+                a.setDono(rs.getString("nome_dono"));
             }
         }catch (SQLException e){
             System.out.println(e.getMessage());
@@ -121,9 +116,130 @@ public class AtivosDAO implements Map<Integer, Ativo> {
             ps.setString(1,Integer.toString(key));
             ps.executeUpdate();
 
-            ps = connection.prepareStatement("INSERT INTO Ativo()");
+            ps = connection.prepareStatement("INSERT INTO Ativo(id,preco,tipo,venda,nome_dono) VALUES (?,?,?,?,?)");
+            ps.setString(1,Integer.toString(value.getId()));
+            ps.setString(2,Float.toString(value.getPreco()));
+            ps.setString(3,value.getTipo());
+            int bool = 0;
+            if(value.getVenda() == false)
+                bool = 1;
+            ps.setString(4,Integer.toString(bool));
+            ps.setString(5,value.getDono());
+            ps.executeQuery();
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        finally {
+            try {
+                Connect.close(connection);
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+            }
         }
         return a;
     }
+
+
+    @Override
+    public Ativo remove (Object key){
+        Ativo u = this.get((Integer) key);
+        try {
+            connection = Connect.connect();
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM Ativo WHERE id = ?");
+            ps.setString(1,Integer.toString((Integer) key));
+            ps.executeUpdate();
+        }catch (Exception e){
+            throw new NullPointerException(e.getMessage());
+        }finally {
+            try {
+                Connect.close(connection);
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+            }
+        }
+        return u;
+    }
+
+    @Override
+    public void putAll (Map<? extends Integer,? extends Ativo> m){
+        m.entrySet().stream().forEach(e->this.put(e.getKey(),e.getValue()));
+    }
+
+    @Override
+    public void clear(){
+        try{
+            connection = Connect.connect();
+            Statement st = connection.createStatement();
+            st.executeUpdate("DELETE from Ativo");
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        finally {
+            Connect.close(connection);
+        }
+    }
+
+    @Override
+    public Set<Integer> keySet(){
+        Set<Integer> set = null;
+        try {
+            connection = Connect.connect();
+            set = new TreeSet<>();
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Ativo");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                set.add(rs.getInt("id"));
+            }
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        finally {
+            try {
+                Connect.close(connection);
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+            }
+        }
+        return set;
+    }
+
+    @Override
+    public Collection<Ativo> values(){
+        Collection<Ativo> col = new TreeSet<>();
+        try {
+            connection = Connect.connect();
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Ativo");
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                Ativo a = new Ativo();
+                a.setTipo(rs.getString("tipo"));
+                a.setPreco(rs.getFloat("preco"));
+                a.setId(rs.getInt("id"));
+                boolean bool = false;
+                if(rs.getInt("venda") == 0)
+                    bool = true;
+                a.setVenda(bool);
+                col.add(a);
+            }
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+        }finally {
+            try {
+                Connect.close(connection);
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+            }
+        }
+        return col;
+    }
+
+    @Override
+    public Set<Entry<Integer,Ativo>> entrySet(){
+        Set<Integer> keys = new TreeSet<>(this.keySet());
+        TreeMap<Integer,Ativo> map = new TreeMap<>();
+        keys.stream().forEach(e-> map.put(e,this.get(e)));
+    }
+
 
 }
