@@ -15,6 +15,13 @@ public class Utilizador {
         this.email = email;
     }
 
+    public Utilizador (Utilizador u) {
+        this.username = u.getUtilizador();
+        this.password = u.getPassword();
+        this.saldo = u.getSaldo();
+        this.email = u.getEmail();
+    }
+
     public String getUsername() {
         return username;
     }
@@ -46,6 +53,12 @@ public class Utilizador {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public Utilizador clone () {
+        return new Utilizador(this);
+    }
+
+
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -58,12 +71,4 @@ public class Utilizador {
         return email.equals(that.email);
     }
 
-
-    public int hashCode() {
-        int result = username.hashCode();
-        result = 31 * result + password.hashCode();
-        result = 31 * result + (saldo != +0.0f ? Float.floatToIntBits(saldo) : 0);
-        result = 31 * result + email.hashCode();
-        return result;
-    }
 }
