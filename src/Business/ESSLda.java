@@ -4,8 +4,7 @@ package Business;
 import DAOS.AtivosDAO;
 import DAOS.UtilizadorDAO;
 import java.util.*;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
+
 
 
 public class ESSLda {
@@ -13,22 +12,6 @@ public class ESSLda {
     private UtilizadorDAO utilizadores;
     private AtivosDAO ativos;
     private Utilizador utilizador;
-
-
-    public ESSLda(Utilizador utilizador) {
-        this.utilizadores = new UtilizadorDAO();
-        this.ativos = new AtivosDAO();
-        this.utilizador = utilizador;
-    }
-
-
-    public Utilizador getUtilizador() {
-        return utilizador;
-    }
-
-    public void setUtilizador(Utilizador utilizador) {
-        this.utilizador = utilizador;
-    }
 
     public String toString() {
         return "ESSLda{" +
@@ -85,10 +68,10 @@ public class ESSLda {
     public void registar (String username, String password, float saldo, String email) throws UsernameInvalidoException{
         Utilizador u = new Utilizador(username,password,saldo,email);
 
-        if (utilizadores.get(username) == null){
+        if (utilizadores.get(username).getUsername() == null){
             utilizadores.put(username, u);
         }
-        else throw new UsernameInvalidoException("Username inválido");
+        else throw new UsernameInvalidoException("Username já existe");
     }
 
 
@@ -96,8 +79,8 @@ public class ESSLda {
      * Consultar a lista de acções adquiridas por um utilizador
      */
     public List<Ativo> consultaPort() {
-        List<Ativo> aux = new ArrayList<Ativo>(utilizador.getAtivos().values());
-        return aux;
+        List<Ativo> res = new ArrayList<Ativo>(utilizador.getAtivos().values());
+        return res;
     }
 
     /**
@@ -107,12 +90,12 @@ public class ESSLda {
        return utilizador.getSaldo();
     }
 
-
     /**
      * Comprar ações
      */
+    // TODO não está bem
     public void comprar (int id) throws SaldoInsuficienteException, IdInvalidoException{
-        if (ativos.get(id) == null) throw new IdInvalidoException();
+        if (ativos.get(id) == null) throw new IdInvalidoException("Ativo não existe");
         if (utilizador.getSaldo() >= ativos.get(id).getPreco()) {
             ativos.get(id).setVenda(false);
             utilizador.getAtivos().put(id,ativos.get(id));
@@ -123,7 +106,7 @@ public class ESSLda {
         }
 
         else
-            throw new SaldoInsuficienteException();
+            throw new SaldoInsuficienteException("Saldo insuficiente");
         
     }
 
@@ -141,9 +124,17 @@ public class ESSLda {
     /**
      * Colocar ações à venda
      */
+    // TODO não está bem
     public void vender(Ativo a) {
         a.setVenda(true);
 
+    }
+
+    public void criarAtivo (float preco, String tipo) {
+        int idNumero = ativos.size();
+        Ativo novo = new Ativo(utilizador.getUsername(), idNumero, preco, tipo, false);
+        ativos.put(idNumero, novo);
+        utilizador.getAtivos().put(idNumero,novo);
     }
 
 }
