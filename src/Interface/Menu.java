@@ -14,27 +14,29 @@ public class Menu {
 
     public int showMenu() {
         int option = 0;
-        String menu = String.join("\n", options);
-        System.out.println(menu + "\n");
+        System.out.println("\n ***  Menu  *** ");
+        for(int i = 0 ; i < options.length ; i++){
+            System.out.print(i+1);
+            System.out.print(" - ");
+            System.out.println(options[i]);
+        }
+        System.out.println("0 - Sair");
 
         while(option <= 0 || option > options.length) {
             option = readInt("Escolha uma das opções: ");
-            if (option <= 0 || option > options.length)
+            if (option == 0)
+                break;
+            if (option < 0 || option > options.length)
                 System.out.println("\n> Opção inválida\n");
+
         }
 
         return option;
     }
 
-    public void printResponse(String response) {
-        if (response.length() > 0)
-            response += "\n";
 
-        System.out.print("\n" + response);
-    }
-
-    public String readString(String msg) {
-        System.out.print(msg);
+    public String readString (String msg){
+        System.out.println(msg);
         return in.next();
     }
 

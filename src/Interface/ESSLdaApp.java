@@ -2,11 +2,7 @@ package Interface;
 
 import Business.ESSLda;
 import Business.UsernameInvalidoException;
-import Business.Utilizador;
-import jdk.internal.util.xml.impl.Input;
 
-import java.io.*;
-import java.util.*;
 
 
 public class ESSLdaApp {
@@ -33,26 +29,28 @@ public class ESSLdaApp {
                 "Vender ativo",
                 "Terminar Sessão"
         };
-//TODO ALTERAR O RESTO
         menuinicial = new Menu(inicial);
         menuprincipal = new Menu(principal);
     }
 
     private static void imprimeMenuInical() {
+        int op;
         do{
-            menuinicial.executa();
-            switch(menuinicial.getOpcao()){
+            op = menuinicial.showMenu();
+            switch (op){
                 case 1: sessao();
-                    break;
+                break;
                 case 2: regiUti();
+                break;
             }
-        } while (menuinicial.getOpcao()!= 0);
+        } while (op != 0);
     }
 
     private static void imprimeMenuPrincipal(){
+        int op;
         do{
-            menuprincipal.executa();
-            switch (menuprincipal.getOpcao()){
+            op = menuprincipal.showMenu();
+            switch (op){
                 case 1: port();
                 break;
                 case 2: saldo();
@@ -64,20 +62,17 @@ public class ESSLdaApp {
                 case 5: venderA();
                 break;
                 case 6: ess.terminarSessao();
+                break;
             }
-        }while (menuprincipal.getOpcao()!=0);
+        }while (op != 0);
     }
 
     private static void sessao(){
-        Scanner input = new Scanner(System.in);
         String email,password;
 
+        email = menuinicial.readString("Nome: ");
 
-        System.out.println("Nome: ");
-        email = input.nextLine();
-
-        System.out.println("Password: ");
-        password = input.nextLine();
+        password = menuinicial.readString("Password: ");
 
         try{
             ess.iniciarSessao(email,password);
@@ -85,34 +80,26 @@ public class ESSLdaApp {
         catch (UsernameInvalidoException e){
             System.out.println(e.getMessage());
         }
-        finally{
-            input.close();
-        }
+
         imprimeMenuPrincipal();
     }
 
     private static void regiUti(){
         String nome, password, email;
-        Scanner input = new Scanner(System.in);
         float saldo;
 
-        System.out.println("Insira o nome: ");
-        nome = input.nextLine();
+        nome = menuinicial.readString("Insira o nome: ");
 
-        System.out.println("Insira a password: ");
-        password = input.nextLine();
+        password = menuinicial.readString("Insira a password: ");
 
-        System.out.println("Insira o email: ");
-        email = input.nextLine();
+        email = menuinicial.readString("Insira o email: ");
 
-        saldo = lerFloat("Insira o saldo inicial: ");
+        saldo = menuinicial.readFloat("Insira o saldo:");
 
         try{
             ess.registar(nome,password,saldo,email);
         }catch (UsernameInvalidoException e){
             System.out.println(e.getMessage());
-        }finally {
-            input.close();
         }
     }
 
@@ -136,68 +123,4 @@ public class ESSLdaApp {
         System.out.println("Função ainda não implementada!");
     }
 
-
-    private static float lerFloat(String msg){
-        Scanner input = new Scanner(System.in);
-        float r = 0;
-        System.out.println(msg);
-        try{
-            r = input.nextFloat();
-        }catch (InputMismatchException e){
-            System.out.println("Formato errado!");
-            r = lerFloat(msg);
-        }
-        finally {
-            input.close();
-        }
-        return r;
-    }
-
-    private static double lerDouble(String msg){
-        Scanner input = new Scanner(System.in);
-        double r = 0;
-        System.out.println(msg);
-        try{
-            r= input.nextDouble();
-        }
-        catch(InputMismatchException e){
-            System.out.println("Formato errado!");
-            r = lerDouble(msg);
-        }
-        finally {
-            input.close();
-        }
-        return r;
-    }
-
-    private static int lerInt(String msg){
-        Scanner input = new Scanner(System.in);
-        int r = 0;
-
-        System.out.println(msg);
-        try{
-            r = input.nextInt();
-        }
-        catch (InputMismatchException e){
-            System.out.println("Formato errado!");
-            r = lerInt(msg);
-        }
-        finally{
-            input.close();
-        }
-        return r;
-    }
-
-    private static boolean lerBoolean(String msg){
-        Scanner input = new Scanner(System.in);
-        String s;
-        boolean r = true;
-
-        System.out.println(msg);
-        s = input.nextLine();
-        if(s.charAt(0) == 'n')
-            r = false;
-        input.close();
-        return r;
-    }
 }

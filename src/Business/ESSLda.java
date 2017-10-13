@@ -85,7 +85,7 @@ public class ESSLda {
     public void registar (String username, String password, float saldo, String email) throws UsernameInvalidoException{
         Utilizador u = new Utilizador(username,password,saldo,email);
 
-        if (utilizadores.get(username) == null){
+        if (utilizadores.get(username).getUsername()==null){
             utilizadores.put(username, u);
             this.utilizador = u;
         }
@@ -108,10 +108,11 @@ public class ESSLda {
        return utilizador.getSaldo();
     }
 
-
+/*
     /**
      * Comprar ações
-     */
+     *
+        // TODO fazer o utilizadores.update(utilizador) para poder atualizar na bd sempre que se alterar algo.
     public void comprar (int id) throws SaldoInsuficienteException, IdInvalidoException{
         if (ativos.get(id) == null) throw new IdInvalidoException();
         if (utilizador.getSaldo() >= ativos.get(id).getPreco()) {
@@ -128,6 +129,7 @@ public class ESSLda {
         
     }
 
+*/
 
     public List<Ativo> listarAtivosVenda() {
 
@@ -147,4 +149,8 @@ public class ESSLda {
 
     }
 
+    // TODO Fazer
+    public void adicionarAtivo(Ativo a/*?*/){
+
+    }
 }
