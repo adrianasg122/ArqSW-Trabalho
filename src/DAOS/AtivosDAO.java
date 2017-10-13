@@ -4,6 +4,7 @@ import Business.Ativo;
 import java.sql.*;
 import java.util.*;
 
+
 public class AtivosDAO implements Map<Integer, Ativo> {
 
     private Connection connection;
@@ -102,7 +103,6 @@ public class AtivosDAO implements Map<Integer, Ativo> {
         return a;
     }
 
-    // TODO FINISH
     @Override
     public Ativo put(Integer key, Ativo value){
         Ativo a;
@@ -239,6 +239,7 @@ public class AtivosDAO implements Map<Integer, Ativo> {
         Set<Integer> keys = new TreeSet<>(this.keySet());
         TreeMap<Integer,Ativo> map = new TreeMap<>();
         keys.stream().forEach(e-> map.put(e,this.get(e)));
+        return map.entrySet();
     }
 
 

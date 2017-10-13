@@ -10,10 +10,11 @@ public class Connect {
         Connection connect = null;
         try{
             // TODO ALTERAR PARA O TEU SITIO
-            String url = "jdbc:sqlite:/home/Desktop/ArqSw/acoes";
-            //String url = "jdbc:sqlite:/home/bruno/Random/ArqSw/acoes";
+            //String url = "jdbc:sqlite:/home/Desktop/ArqSw/acoes.db";
+            Class.forName("org.sqlite.JDBC");
+            String url = "jdbc:sqlite:/home/bruno/Random/ArqSW/acoes.db";
             connect = DriverManager.getConnection(url);
-        } catch(SQLException e){
+        } catch(SQLException | ClassNotFoundException e){
             System.out.println(e.getMessage());
         }
 

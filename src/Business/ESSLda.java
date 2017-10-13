@@ -85,6 +85,7 @@ public class ESSLda {
 
         if (utilizadores.get(username) == null){
             utilizadores.put(username, u);
+            this.utilizador = u;
         }
         else throw new UsernameInvalidoException("Username inválido");
     }
