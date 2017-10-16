@@ -97,6 +97,24 @@ public class UtilizadorDAO implements Map<String, Utilizador>{
                 u.setPassword(rs.getString("password"));
                 u.setEmail(rs.getString("email"));
                 u.setSaldo(rs.getFloat("saldo"));
+
+                Map<Integer,Ativo> a = new HashMap<>();
+                PreparedStatement ps = connection.prepareStatement("SELECT * FROM Ativo WHERE Ativo.nome_dono = ?");
+                ps.setString(1,(String) key);
+                ResultSet rs = ps.executeQuery();
+                while(rs.next())
+                    a.put(rs.getInt("id"), rs);
+                u.setAtivos(a);
+
+                Map<Integer,Registo> r = new HashMap<>();
+                PreparedStatement ps = connection.prepareStatement("SELECT * FROM Registo WHERE Registo.idUtil = ?");
+                ps.setString(1,(String) key);
+                ResultSet rs = ps.executeQuery();
+                while(rs.next())
+                    r.put(rs.getInt("id"), rs);
+                u.setRegistos(r);
+
+
             }
         }catch (SQLException e){
             System.out.println(e.getMessage());

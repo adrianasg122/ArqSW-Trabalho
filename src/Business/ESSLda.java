@@ -120,12 +120,15 @@ public class ESSLda {
     }
 
     /**
-     * Colocar ações à venda
+     * Colocar ativos à venda
      * @param a Ativo
      */
     // TODO não está bem
-    public void vender(Ativo a) {
-        a.setVenda(true);
+    public void vender(Ativo a , float sl, float tp) {
+        if (a.getPreco() >= tp){
+            a.setVenda(true);
+
+        }
 
     }
 

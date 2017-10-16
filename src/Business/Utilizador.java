@@ -1,5 +1,6 @@
 package Business;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Utilizador {
@@ -8,7 +9,9 @@ public class Utilizador {
     private String password;
     private float saldo;
     private String email;
-    private Map<Integer,Ativo> ativos;
+    private Map<Integer,Ativo> ativos;;
+    private Map<Integer,Registo> registos;
+
 
 
     public Utilizador () {
@@ -16,14 +19,18 @@ public class Utilizador {
         this.password = null;
         this.saldo = 0;
         this.email = null;
+        this.ativos = new HashMap<>();
+        this.registos = new HashMap<>();
     }
 
 
-    public Utilizador(String username, String password, float saldo, String email) {
+    public Utilizador(String username, String password, float saldo, String email, Map<Integer,Ativo> ativos, Map<Integer,Registo> registos) {
         this.username = username;
         this.password = password;
         this.saldo = saldo;
         this.email = email;
+        this.ativos = ativos;
+        this.registos = registos;
     }
 
     public Utilizador (Utilizador u) {
@@ -31,23 +38,23 @@ public class Utilizador {
         this.password = u.getPassword();
         this.saldo = u.getSaldo();
         this.email = u.getEmail();
+        this.ativos = u.getAtivos();
+        this.registos = u.getRegistos();
     }
 
-    public Map<Integer, Ativo> getAtivos() {
-        return ativos;
-    }
+    public Map<Integer, Ativo> getAtivos() { return ativos; }
 
-    public void setAtivos(Map<Integer, Ativo> ativos) {
-        this.ativos = ativos;
-    }
+    public void setAtivos(Map<Integer, Ativo> ativos) { this.ativos = ativos; }
+
+    public Map<Integer, Registo> getRegistos() { return registos; }
+
+    public void setRegistos(Map<Integer, Registo> registos) { this.registos = registos; }
 
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    public void setUsername(String username) { this.username = username; }
 
     public String getPassword() {
         return password;
@@ -77,7 +84,6 @@ public class Utilizador {
         return new Utilizador(this);
     }
 
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -88,8 +94,19 @@ public class Utilizador {
         if (!getUsername().equals(that.getUsername())) return false;
         if (!getPassword().equals(that.getPassword())) return false;
         if (!getEmail().equals(that.getEmail())) return false;
-        return getAtivos().equals(that.getAtivos());
+        if (!getAtivos().equals(that.getAtivos())) return false;
+        return getRegistos().equals(that.getRegistos());
     }
 
-
+    @Override
+    public String toString() {
+        return "Utilizador{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", saldo=" + saldo +
+                ", email='" + email + '\'' +
+                ", ativos=" + ativos +
+                ", registos=" + registos +
+                '}';
+    }
 }
