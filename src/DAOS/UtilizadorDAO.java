@@ -92,31 +92,42 @@ public class UtilizadorDAO implements Map<String, Utilizador>{
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM Utilizador WHERE username = ?");
             ps.setString(1,(String) key);
             ResultSet rs = ps.executeQuery();
-            if(rs.next()){
+            if(rs.next()) {
                 u.setUsername(rs.getString("username"));
                 u.setPassword(rs.getString("password"));
                 u.setEmail(rs.getString("email"));
                 u.setSaldo(rs.getFloat("saldo"));
 
-                Map<Integer,Ativo> a = new HashMap<>();
+                Map<Integer, Ativo> ativos = new HashMap<>();
                 PreparedStatement ps = connection.prepareStatement("SELECT * FROM Ativo WHERE Ativo.nome_dono = ?");
-                ps.setString(1,(String) key);
+                ps.setString(1, (String) key);
                 ResultSet rs = ps.executeQuery();
-                while(rs.next())
-                    a.put(rs.getInt("id"), rs);
-                u.setAtivos(a);
+                while (rs.next()) {
+                    Ativo a = new Ativo();
+                    a.setDono(rs.getString("nome_dono"));
+                    a.setId(rs.getInt("id"));
+                    a.setPreco(rs.getFloat("preco"));
+                    a.setTipo(rs.getString("tipo"));
+                    a.setVenda(rs.getBoolean("venda"));
+                    ativos.put(rs.getInt("id"), a);
+                }
+                u.setAtivos(ativos);
 
-                Map<Integer,Registo> r = new HashMap<>();
+                Map<Integer,Registo> registos = new HashMap<>();
                 PreparedStatement ps = connection.prepareStatement("SELECT * FROM Registo WHERE Registo.idUtil = ?");
                 ps.setString(1,(String) key);
                 ResultSet rs = ps.executeQuery();
-                while(rs.next())
-                    r.put(rs.getInt("id"), rs);
-                u.setRegistos(r);
-
-
+                while(rs.next()) {
+                    Registo a = new Registo();
+                    a.setIdRegisto(rs.getString("id"));
+                    a.setIdAtivo(rs.getInt("idAtivo"));
+                    a.setPrecoCompra(rs.getFloat("precoCompra"));
+                    a.setQuantidade(rs.getString("quantidade"));
+                    registos.put(rs.getInt("id"), a);
+                }
+                u.setAtivos(registos);}
             }
-        }catch (SQLException e){
+        catch (SQLException e){
             System.out.println(e.getMessage());
         }
         finally {
