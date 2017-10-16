@@ -21,8 +21,6 @@ public class ESSLda {
                 '}';
     }
 
-
-
     /**
      * Login do utilizador na plataforma.
      * @param username Username do novo registo.
@@ -123,6 +121,7 @@ public class ESSLda {
 
     /**
      * Colocar ações à venda
+     * @param a Ativo
      */
     // TODO não está bem
     public void vender(Ativo a) {
@@ -130,6 +129,11 @@ public class ESSLda {
 
     }
 
+    /**
+     * Adicionar um novo ativo à plataforma
+     * @param preco Preço do ativo
+     * @param tipo Tipo do ativo
+     */
     public void criarAtivo (float preco, String tipo) {
         int idNumero = ativos.size();
         Ativo novo = new Ativo(utilizador.getUsername(), idNumero, preco, tipo, false);
