@@ -87,9 +87,11 @@ public class AtivosDAO implements Map<Integer, Ativo> {
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
                 a.setId(rs.getInt("id"));
-                a.setPreco(rs.getFloat("preco"));
+                a.setPrecoCompra(rs.getFloat("precoCompra"));
+                a.setPrecoVenda(rs.getFloat("precoVenda"));
                 a.setTipo(rs.getString("tipo"));
-                a.setDono(rs.getString("nome_dono"));
+                a.setQuantDisp(rs.getInt("quantidade"));
+                a.setDescricao(rs.getString("descricao"));
             }
         }catch (SQLException e){
             System.out.println(e.getMessage());
@@ -116,15 +118,13 @@ public class AtivosDAO implements Map<Integer, Ativo> {
             ps.setString(1,Integer.toString(key));
             ps.executeUpdate();
 
-            ps = connection.prepareStatement("INSERT INTO Ativo(id,preco,tipo,venda,nome_dono) VALUES (?,?,?,?,?)");
+            ps = connection.prepareStatement("INSERT INTO Ativo(id,preco,tipo,nome_dono) VALUES (?,?,?,?,?)");
             ps.setString(1,Integer.toString(value.getId()));
-            ps.setString(2,Float.toString(value.getPreco()));
-            ps.setString(3,value.getTipo());
-            int bool = 0;
-            if(value.getVenda() == false)
-                bool = 1;
-            ps.setString(4,Integer.toString(bool));
-            ps.setString(5,value.getDono());
+            ps.setString(2,value.getTipo());
+            ps.setString(3,Float.toString(value.getPrecoCompra()));
+            ps.setString(4,Float.toString(value.getPrecoVenda()));
+            ps.setString(5,Integer.toString(value.getQuantDisp()));
+            ps.setString(6,value.getDescricao());
             ps.executeQuery();
         }catch (SQLException e){
             System.out.println(e.getMessage());
@@ -213,13 +213,12 @@ public class AtivosDAO implements Map<Integer, Ativo> {
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
                 Ativo a = new Ativo();
-                a.setTipo(rs.getString("tipo"));
-                a.setPreco(rs.getFloat("preco"));
                 a.setId(rs.getInt("id"));
-                boolean bool = false;
-                if(rs.getInt("venda") == 0)
-                    bool = true;
-                a.setVenda(bool);
+                a.setPrecoCompra(rs.getFloat("precoCompra"));
+                a.setPrecoVenda(rs.getFloat("precoVenda"));
+                a.setTipo(rs.getString("tipo"));
+                a.setQuantDisp(rs.getInt("quantidade"));
+                a.setDescricao(rs.getString("descricao"));
                 col.add(a);
             }
         }catch (SQLException e){

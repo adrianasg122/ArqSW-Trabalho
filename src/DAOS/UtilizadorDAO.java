@@ -100,34 +100,21 @@ public class UtilizadorDAO implements Map<String, Utilizador>{
                 u.setEmail(rs.getString("email"));
                 u.setSaldo(rs.getFloat("saldo"));
 
-                Map<Integer, Ativo> ativos = new HashMap<>();
-                PreparedStatement pr = connection.prepareStatement("SELECT * FROM Ativo WHERE Ativo.nome_dono = ?");
-                ps.setString(1, (String) key);
-                ResultSet rr = pr.executeQuery();
-                while (rr.next()) {
-                    Ativo a = new Ativo();
-                    a.setDono(rr.getString("nome_dono"));
-                    a.setId(rr.getInt("id"));
-                    a.setPreco(rr.getFloat("preco"));
-                    a.setTipo(rr.getString("tipo"));
-                    a.setVenda(rr.getBoolean("venda"));
-                    ativos.put(rr.getInt("id"), a);
-                }
-                u.setAtivos(ativos);
-
-                Map<Integer, Registo> registos = new HashMap<>();
-                PreparedStatement pp = connection.prepareStatement("SELECT * FROM Registo WHERE Registo.idUtil = ?");
-                ps.setString(1,(String) key);
+                RegistoDAO r = new RegistoDAO();
+                PreparedStatement pp = connection.prepareStatement("SELECT * FROM Registo WHERE Registo.util = ?");
+                ps.setString(1,Integer.toString((Integer) key));
                 ResultSet rp = pp.executeQuery();
                 while(rs.next()) {
-                    Registo a = new Registo();
-                    a.setIdRegisto(rp.getInt("id"));
-                    a.setIdAtivo(rp.getInt("idAtivo"));
-                    a.setPrecoCompra(rp.getFloat("precoCompra"));
-                    a.setQuantidade(rp.getInt("quantidade"));
-                    registos.put(rp.getInt("id"), a);
+                    Registo rr = new Registo(null);
+                    rr.setId(rp.getInt("id"));
+                    rr.setIdAtivo(rp.getInt("idAtivo"));
+                    rr.setPreco(rp.getFloat("preco"));
+                    rr.setQuantidade(rp.getInt("quantidade"));
+                    rr.setVenda(rp.getInt("venda"));
+                    r.put(rr.getId(), rr);
                 }
-                u.setRegistos(registos);}
+                u.setRegistos(r);
+                }
             }
         catch (SQLException e){
             System.out.println(e.getMessage());
@@ -143,6 +130,7 @@ public class UtilizadorDAO implements Map<String, Utilizador>{
     }
 
     @Override
+    //TODO falta meter o RegistoDAO no put
     public Utilizador put(String key, Utilizador value){
         Utilizador u;
 
@@ -246,9 +234,24 @@ public class UtilizadorDAO implements Map<String, Utilizador>{
             while(rs.next()){
                 Utilizador u = new Utilizador();
                 u.setUsername(rs.getString("username"));
+                u.setPassword(rs.getString("password"));
                 u.setEmail(rs.getString("email"));
                 u.setSaldo(rs.getFloat("saldo"));
-                u.setPassword(rs.getString("password"));
+
+                RegistoDAO r = new RegistoDAO();
+                PreparedStatement pp = connection.prepareStatement("SELECT * FROM Registo WHERE Registo.util = ?");
+                ps.setString(1,Integer.toString((Integer) key));
+                ResultSet rp = pp.executeQuery();
+                while(rs.next()) {
+                    Registo rr = new Registo(null);
+                    rr.setId(rp.getInt("id"));
+                    rr.setIdAtivo(rp.getInt("idAtivo"));
+                    rr.setPreco(rp.getFloat("preco"));
+                    rr.setQuantidade(rp.getInt("quantidade"));
+                    rr.setVenda(rp.getInt("venda"));
+                    r.put(rr.getId(), rr);
+                }
+                u.setRegistos(r);
                 col.add(u);
             }
         }catch (SQLException e){

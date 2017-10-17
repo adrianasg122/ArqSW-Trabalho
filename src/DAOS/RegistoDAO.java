@@ -1,7 +1,7 @@
 package DAOS;
 
 import Business.Ativo;
-import Business.Registo;
+
 import Business.Registo;
 import com.sun.tools.corba.se.idl.InterfaceGen;
 
@@ -77,7 +77,7 @@ public class RegistoDAO implements Map<Integer, Registo>{
 
         if(value.getClass().getName().equals("arqsw.Bussiness.Registo")){
             Registo r = (Registo) value;
-            int id = r.getIdRegisto();
+            int id = r.getId();
             Registo re = this.get(id);
             if(re.equals(r)){
                 res = true;
@@ -88,7 +88,7 @@ public class RegistoDAO implements Map<Integer, Registo>{
 
     @Override
     public Registo get(Object key){
-        Registo r = new Registo();
+        Registo r = new Registo(null);
 
         try {
             connection = Connect.connect();
@@ -96,11 +96,11 @@ public class RegistoDAO implements Map<Integer, Registo>{
             ps.setString(1,Integer.toString((Integer) key));
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                r.setIdRegisto(rs.getInt("id"));
+                r.setId(rs.getInt("id"));
                 r.setIdAtivo(rs.getInt("idAtivo"));
-                r.setPrecoCompra(rs.getFloat("precoCompra"));
+                r.setPreco(rs.getFloat("precoCompra"));
                 r.setQuantidade(rs.getInt("quantidade"));
-
+                r.setVenda(rs.getBoolean("venda"));
             }
         }
         catch (SQLException e){
@@ -134,7 +134,7 @@ public class RegistoDAO implements Map<Integer, Registo>{
             ps = connection.prepareStatement("INSERT INTO Registo (idRegisto,idAtivo,precoCompra,quantidade) VALUES (?,?,?,?)");
             ps.setString(1,Integer.toString(key));
             ps.setString(2,Integer.toString(value.getIdAtivo()));
-            ps.setString(3,Float.toString(value.getPrecoCompra()));
+            ps.setString(3,Float.toString(value.getPreco()));
             ps.setString(4,Float.toString(value.getQuantidade()));
             ps.executeUpdate();
         }catch (SQLException e){
@@ -218,11 +218,12 @@ public class RegistoDAO implements Map<Integer, Registo>{
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM Registo");
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
-                Registo u = new Registo();
-                u.setIdRegisto(rs.getInt("id"));
+                Registo u = new Registo(null);
+                u.setId(rs.getInt("id"));
                 u.setIdAtivo(rs.getInt("idAtivo"));
-                u.setPrecoCompra(rs.getFloat("precoCompra"));
+                u.setPreco(rs.getFloat("precoCompra"));
                 u.setQuantidade(rs.getInt("quantidade"));
+                u.setVenda(rs.getBoolean("venda"));
                 col.add(u);
             }
         }catch (SQLException e){
@@ -245,6 +246,8 @@ public class RegistoDAO implements Map<Integer, Registo>{
         keys.stream().forEach(e->map.put(e,this.get(e)));
         return map.entrySet();
     }
+
+
 
 
 

@@ -2,39 +2,36 @@ package Business;
 
 public class Ativo {
 
-    private String dono;
     private int id;
-    private float preco;
     private String tipo;
-    private boolean venda;
+    private float precoCompra;
+    private float precoVenda;
+    private int quantDisp;
+    private String descricao;
+
 
     public Ativo() {//
     }
 
-    public Ativo(String dono, int id, float preco, String tipo, boolean Venda) {
-        this.dono = dono;
+    public Ativo(int id, float precoCompra, float precoVenda, String tipo, int quantDisp, String descricao) {
         this.id = id;
-        this.preco = preco;
+        this.precoCompra = precoCompra;
+        this.precoVenda = precoVenda;
         this.tipo = tipo;
-        this.venda = false;
+        this.quantDisp = quantDisp;
+        this.descricao = descricao;
 
     }
 
     public Ativo(Ativo a) {
-        this.dono = a.getDono();
         this.id = a.getId();
-        this.preco = a.getPreco();
+        this.precoCompra = a.getPrecoCompra();
+        this.precoVenda = a.getPrecoVenda();
         this.tipo = a.getTipo();
-        this.venda = a.getVenda();
+        this.quantDisp = a.getQuantDisp();
+        this.descricao = a.getDescricao();
     }
 
-    public String getDono() {
-        return this.dono;
-    }
-
-    public void setDono(String dono) {
-        this.dono = dono;
-    }
 
     public int getId() {
         return id;
@@ -44,13 +41,17 @@ public class Ativo {
         this.id = id;
     }
 
-    public float getPreco() {
-        return preco;
+    public float getPrecoCompra() {
+        return precoCompra;
     }
 
-    public void setPreco(float preco) {
-        this.preco = preco;
+    public void setPrecoCompra(float preco) {
+        this.precoCompra = preco;
     }
+
+    public float getPrecoVenda() { return precoVenda; }
+
+    public void setPrecoVenda(float precoVenda) { this.precoVenda = precoVenda; }
 
     public String getTipo() {
         return tipo;
@@ -60,28 +61,20 @@ public class Ativo {
         this.tipo = tipo;
     }
 
-    public boolean getVenda(){
-        return venda;
-    }
+    public int getQuantDisp() { return quantDisp; }
 
-    public void setVenda(boolean venda){
-        this.venda = venda;
-    }
+    public void setQuantDisp(int quantDisp) { this.quantDisp = quantDisp; }
 
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public String getDescricao() { return descricao; }
 
-        Ativo ativo = (Ativo) o;
-
-        if (this.getId() != ativo.getId()) return false;
-        if (Float.compare(ativo.getPreco(), this.getPreco()) != 0) return false;
-        if (this.getVenda() != ativo.getVenda()) return false;
-        if (!this.getDono().equals(ativo.getDono()));
-        return getTipo().equals(ativo.getTipo());
-    }
+    public void setDescricao(String descricao) { this.descricao = descricao; }
 
     public Ativo clone () {
         return new Ativo(this);
     }
+
+
 }
+
+
+
