@@ -1,5 +1,7 @@
 package DAOS;
 
+import Business.Ativo;
+import Business.Registo;
 import Business.Utilizador;
 
 import java.sql.*;
@@ -99,33 +101,33 @@ public class UtilizadorDAO implements Map<String, Utilizador>{
                 u.setSaldo(rs.getFloat("saldo"));
 
                 Map<Integer, Ativo> ativos = new HashMap<>();
-                PreparedStatement ps = connection.prepareStatement("SELECT * FROM Ativo WHERE Ativo.nome_dono = ?");
+                PreparedStatement pr = connection.prepareStatement("SELECT * FROM Ativo WHERE Ativo.nome_dono = ?");
                 ps.setString(1, (String) key);
-                ResultSet rs = ps.executeQuery();
-                while (rs.next()) {
+                ResultSet rr = pr.executeQuery();
+                while (rr.next()) {
                     Ativo a = new Ativo();
-                    a.setDono(rs.getString("nome_dono"));
-                    a.setId(rs.getInt("id"));
-                    a.setPreco(rs.getFloat("preco"));
-                    a.setTipo(rs.getString("tipo"));
-                    a.setVenda(rs.getBoolean("venda"));
-                    ativos.put(rs.getInt("id"), a);
+                    a.setDono(rr.getString("nome_dono"));
+                    a.setId(rr.getInt("id"));
+                    a.setPreco(rr.getFloat("preco"));
+                    a.setTipo(rr.getString("tipo"));
+                    a.setVenda(rr.getBoolean("venda"));
+                    ativos.put(rr.getInt("id"), a);
                 }
                 u.setAtivos(ativos);
 
-                Map<Integer,Registo> registos = new HashMap<>();
-                PreparedStatement ps = connection.prepareStatement("SELECT * FROM Registo WHERE Registo.idUtil = ?");
+                Map<Integer, Registo> registos = new HashMap<>();
+                PreparedStatement pp = connection.prepareStatement("SELECT * FROM Registo WHERE Registo.idUtil = ?");
                 ps.setString(1,(String) key);
-                ResultSet rs = ps.executeQuery();
+                ResultSet rp = pp.executeQuery();
                 while(rs.next()) {
                     Registo a = new Registo();
-                    a.setIdRegisto(rs.getString("id"));
-                    a.setIdAtivo(rs.getInt("idAtivo"));
-                    a.setPrecoCompra(rs.getFloat("precoCompra"));
-                    a.setQuantidade(rs.getString("quantidade"));
-                    registos.put(rs.getInt("id"), a);
+                    a.setIdRegisto(rp.getInt("id"));
+                    a.setIdAtivo(rp.getInt("idAtivo"));
+                    a.setPrecoCompra(rp.getFloat("precoCompra"));
+                    a.setQuantidade(rp.getInt("quantidade"));
+                    registos.put(rp.getInt("id"), a);
                 }
-                u.setAtivos(registos);}
+                u.setRegistos(registos);}
             }
         catch (SQLException e){
             System.out.println(e.getMessage());

@@ -1,5 +1,6 @@
 package Business;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,7 +11,7 @@ public class Utilizador {
     private float saldo;
     private String email;
     private Map<Integer,Ativo> ativos;;
-    private Map<Integer,Registo> registos;
+    private Map <Integer,Registo> registos;
 
 
 

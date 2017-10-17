@@ -64,7 +64,7 @@ public class ESSLda {
      * @param email Contacto do novo registo.
      */
     public void registar (String username, String password, float saldo, String email) throws UsernameInvalidoException{
-        Utilizador u = new Utilizador(username,password,saldo,email);
+        Utilizador u = new Utilizador(username,password,saldo,email, new HashMap<Integer,Ativo>(), new HashMap<Integer,Registo>());
 
         if (utilizadores.get(username).getUsername() == null){
             utilizadores.put(username, u);

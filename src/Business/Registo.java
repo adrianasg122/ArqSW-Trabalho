@@ -7,8 +7,14 @@ public class Registo {
     private float precoCompra;
     private int quantidade;
 
+    public Registo() {
+        this.idRegisto = 0;
+        this.idAtivo = 0;
+        this.precoCompra = 0;
+        this.quantidade = 0;
+    }
 
-    public Registo (int id, int idAtivo,float precoCompra, int quantidade) {
+    public Registo (int id, int idAtivo, float precoCompra, int quantidade) {
         this.idRegisto = id;
         this.idAtivo = idAtivo;
         this.precoCompra = precoCompra;
