@@ -3,6 +3,7 @@ package DAOS;
 import Business.Ativo;
 import Business.Registo;
 import Business.Registo;
+import com.sun.tools.corba.se.idl.InterfaceGen;
 
 import java.sql.*;
 import java.util.*;
@@ -187,14 +188,14 @@ public class RegistoDAO implements Map<Integer, Registo>{
 
     @Override
     public Set<Integer> keySet(){
-        Set<String> set = null;
+        Set<Integer> set = null;
         try{
             connection = Connect.connect();
             set = new TreeSet<>();
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM Registo");
             ResultSet rs = ps.executeQuery();
             while (rs.next()){
-                set.add(rs.getString("username"));
+                set.add(rs.getInt("id"));
             }
         }catch (SQLException e){
             System.out.println(e.getMessage());
@@ -238,9 +239,9 @@ public class RegistoDAO implements Map<Integer, Registo>{
     }
 
     @Override
-    public Set<Entry<String,Registo>> entrySet(){
-        Set<String> keys = new TreeSet<>(this.keySet());
-        TreeMap<String,Registo> map = new TreeMap<>();
+    public Set<Entry<Integer,Registo>> entrySet(){
+        Set<Integer> keys = new TreeSet<>(this.keySet());
+        TreeMap<Integer,Registo> map = new TreeMap<>();
         keys.stream().forEach(e->map.put(e,this.get(e)));
         return map.entrySet();
     }
