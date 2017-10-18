@@ -1,7 +1,5 @@
 package DAOS;
 
-import Business.Ativo;
-import Business.Registo;
 import Business.Utilizador;
 
 import java.sql.*;
@@ -9,7 +7,7 @@ import java.util.*;
 
 
 // TODO adicionar ao utilizador a lista dos seus ativos sempre que se for buscar algum
-public class UtilizadorDAO implements Map<String, Utilizador>{
+public class UtilizadorDAO implements Map<Integer, Utilizador>{
 
     private Connection connection;
 
@@ -52,7 +50,7 @@ public class UtilizadorDAO implements Map<String, Utilizador>{
         try{
             connection = Connect.connect();
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM Utilizador WHERE username = ?");
-            ps.setString(1, (String) key);
+            ps.setString(1, Integer.toString((Integer) key));
             ResultSet rs = ps.executeQuery();
             res = rs.next();
         }catch (SQLException e){
@@ -76,8 +74,8 @@ public class UtilizadorDAO implements Map<String, Utilizador>{
 
         if(value.getClass().getName().equals("arqsw.Bussiness.Utilizador")){
             Utilizador u = (Utilizador) value;
-            String username = u.getUsername();
-            Utilizador ue = this.get(username);
+            int id = u.getId();
+            Utilizador ue = this.get(id);
             if(ue.equals(u)){
                 res = true;
             }
@@ -95,25 +93,10 @@ public class UtilizadorDAO implements Map<String, Utilizador>{
             ps.setString(1,(String) key);
             ResultSet rs = ps.executeQuery();
             if(rs.next()) {
+                u.setId(rs.getInt("id"));
                 u.setUsername(rs.getString("username"));
                 u.setPassword(rs.getString("password"));
-                u.setEmail(rs.getString("email"));
                 u.setSaldo(rs.getFloat("saldo"));
-
-                RegistoDAO r = new RegistoDAO();
-                PreparedStatement pp = connection.prepareStatement("SELECT * FROM Registo WHERE Registo.util = ?");
-                ps.setString(1,Integer.toString((Integer) key));
-                ResultSet rp = pp.executeQuery();
-                while(rs.next()) {
-                    Registo rr = new Registo(null);
-                    rr.setId(rp.getInt("id"));
-                    rr.setIdAtivo(rp.getInt("idAtivo"));
-                    rr.setPreco(rp.getFloat("preco"));
-                    rr.setQuantidade(rp.getInt("quantidade"));
-                    rr.setVenda(rp.getInt("venda"));
-                    r.put(rr.getId(), rr);
-                }
-                u.setRegistos(r);
                 }
             }
         catch (SQLException e){
@@ -129,9 +112,7 @@ public class UtilizadorDAO implements Map<String, Utilizador>{
         return u;
     }
 
-    @Override
-    //TODO falta meter o RegistoDAO no put
-    public Utilizador put(String key, Utilizador value){
+    public Utilizador put(Integer key, Utilizador value){
         Utilizador u;
 
         if(this.containsKey(key)){
@@ -142,13 +123,13 @@ public class UtilizadorDAO implements Map<String, Utilizador>{
         try {
             connection = Connect.connect();
             PreparedStatement ps = connection.prepareStatement("DELETE FROM Utilizador WHERE username = ?");
-            ps.setString(1,key);
+            ps.setString(1,Integer.toString((Integer) key));
             ps.executeUpdate();
 
-            ps = connection.prepareStatement("INSERT INTO Utilizador (username,password,email,saldo) VALUES (?,?,?,?)");
-            ps.setString(1,key);
-            ps.setString(2,value.getPassword());
-            ps.setString(3,value.getEmail());
+            ps = connection.prepareStatement("INSERT INTO Utilizador (id,username,password,saldo) VALUES (?,?,?,?)");
+            ps.setString(1,Integer.toString((Integer) key));
+            ps.setString(2,value.getUsername());
+            ps.setString(3,value.getPassword());
             ps.setString(4,Float.toString(value.getSaldo()));
             ps.executeUpdate();
         }catch (SQLException e){
@@ -181,7 +162,7 @@ public class UtilizadorDAO implements Map<String, Utilizador>{
     }
 
     @Override
-    public void putAll (Map<? extends String, ? extends Utilizador> m){
+    public void putAll (Map<? extends Integer, ? extends Utilizador> m){
         m.entrySet().stream().forEach(e->this.put(e.getKey(),e.getValue()));
     }
 
@@ -201,15 +182,15 @@ public class UtilizadorDAO implements Map<String, Utilizador>{
     }
 
     @Override
-    public Set<String> keySet(){
-        Set<String> set = null;
+    public Set<Integer> keySet(){
+        Set<Integer> set = null;
         try{
             connection = Connect.connect();
             set = new TreeSet<>();
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM Utilizador");
             ResultSet rs = ps.executeQuery();
             while (rs.next()){
-                set.add(rs.getString("username"));
+                set.add(rs.getInt("id"));
             }
         }catch (SQLException e){
             System.out.println(e.getMessage());
@@ -233,25 +214,10 @@ public class UtilizadorDAO implements Map<String, Utilizador>{
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
                 Utilizador u = new Utilizador();
+                u.setId(rs.getInt("id"));
                 u.setUsername(rs.getString("username"));
                 u.setPassword(rs.getString("password"));
-                u.setEmail(rs.getString("email"));
                 u.setSaldo(rs.getFloat("saldo"));
-
-                RegistoDAO r = new RegistoDAO();
-                PreparedStatement pp = connection.prepareStatement("SELECT * FROM Registo WHERE Registo.util = ?");
-                ps.setString(1,Integer.toString((Integer) key));
-                ResultSet rp = pp.executeQuery();
-                while(rs.next()) {
-                    Registo rr = new Registo(null);
-                    rr.setId(rp.getInt("id"));
-                    rr.setIdAtivo(rp.getInt("idAtivo"));
-                    rr.setPreco(rp.getFloat("preco"));
-                    rr.setQuantidade(rp.getInt("quantidade"));
-                    rr.setVenda(rp.getInt("venda"));
-                    r.put(rr.getId(), rr);
-                }
-                u.setRegistos(r);
                 col.add(u);
             }
         }catch (SQLException e){
@@ -268,9 +234,9 @@ public class UtilizadorDAO implements Map<String, Utilizador>{
     }
 
     @Override
-    public Set<Entry<String,Utilizador>> entrySet(){
-        Set<String> keys = new TreeSet<>(this.keySet());
-        TreeMap<String,Utilizador> map = new TreeMap<>();
+    public Set<Entry<Integer,Utilizador>> entrySet(){
+        Set<Integer> keys = new TreeSet<>(this.keySet());
+        TreeMap<Integer,Utilizador> map = new TreeMap<>();
         keys.stream().forEach(e->map.put(e,this.get(e)));
         return map.entrySet();
     }

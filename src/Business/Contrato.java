@@ -1,19 +1,22 @@
 package Business;
 
-public class Pedido {
+public class Contrato {
 
-    private int idPedido;
+    private int idContrato;
     private int idAtivo;
+    private int idUtil;
     private int quantidade;
-    private String idUtil;
-    private boolean venda;
+    // 1 se for uma venda , 0 se for compra
+    private float preco;
+    private int venda;
     private float stoploss;
     private float takeprofit;
-    private boolean concluido;
+    // 1 se tiver concluido, 0 caso contrário
+    private int concluido;
 
 
-    public Pedido(Pedido p) {
-        this.idPedido = p.getIdPedido();
+    public Contrato(Contrato p) {
+        this.idContrato = p.getIdContrato();
         this.idAtivo = p.getIdAtivo();
         this.quantidade = p.getQuantidade();
         this.idUtil = p.getIdUtil();
@@ -21,10 +24,11 @@ public class Pedido {
         this.stoploss = p.getStoploss();
         this.takeprofit = p.getTakeprofit();
         this.concluido = p.getConcluido();
+        this.preco = p.getPreco();
     }
 
-    public Pedido(int idPedido, int idAtivo, int quantidade, String idUtil, boolean venda, float stoploss, float takeprofit, boolean concluido) {
-        this.idPedido = idPedido;
+    public Contrato(int idContrato, int idAtivo, int quantidade,float preco, int idUtil, int venda, float stoploss, float takeprofit, int concluido) {
+        this.idContrato = idContrato;
         this.idAtivo = idAtivo;
         this.quantidade = quantidade;
         this.idUtil = idUtil;
@@ -34,12 +38,12 @@ public class Pedido {
         this.concluido = concluido;
     }
 
-    public int getIdPedido() {
-        return idPedido;
+    public int getIdContrato() {
+        return idContrato;
     }
 
-    public void setIdPedido(int idPedido) {
-        this.idPedido = idPedido;
+    public void setIdContrato(int idContrato) {
+        this.idContrato = idContrato;
     }
 
     public int getIdAtivo() {
@@ -58,19 +62,19 @@ public class Pedido {
         this.quantidade = quantidade;
     }
 
-    public String getIdUtil() {
+    public int getIdUtil() {
         return idUtil;
     }
 
-    public void setIdUtil(String idUtil) {
+    public void setIdUtil(int idUtil) {
         this.idUtil = idUtil;
     }
 
-    public boolean getVenda() {
+    public int getVenda() {
         return venda;
     }
 
-    public void setVenda(boolean venda) {
+    public void setVenda(int venda) {
         this.venda = venda;
     }
 
@@ -90,40 +94,28 @@ public class Pedido {
         this.takeprofit = takeprofit;
     }
 
-    public boolean getConcluido() {
+    public int getConcluido() {
         return concluido;
     }
 
-    public void setConcluido(boolean concluido) {
+    public void setConcluido(int concluido) {
         this.concluido = concluido;
     }
 
+    public float getPreco() { return preco; }
 
-    public Pedido clone () {
-        return new Pedido(this);
+    public void setPreco(float preco) { this.preco = preco; }
+
+    public Contrato clone () {
+        return new Contrato(this);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
 
-        Pedido pedido = (Pedido) o;
-
-        if (getIdPedido() != pedido.getIdPedido()) return false;
-        if (getIdAtivo() != pedido.getIdAtivo()) return false;
-        if (getQuantidade() != pedido.getQuantidade()) return false;
-        if (getVenda() != pedido.getVenda()) return false;
-        if (Float.compare(pedido.getStoploss(), getStoploss()) != 0) return false;
-        if (Float.compare(pedido.getTakeprofit(), getTakeprofit()) != 0) return false;
-        if (getConcluido() != pedido.getConcluido()) return false;
-        return getIdUtil().equals(pedido.getIdUtil());
-    }
 
 
     public String toString() {
         return "Pedido{" +
-                "idPedido=" + idPedido +
+                "idContrato=" + idContrato +
                 ", idAtivo=" + idAtivo +
                 ", quantidade=" + quantidade +
                 ", idUtil='" + idUtil + '\'' +

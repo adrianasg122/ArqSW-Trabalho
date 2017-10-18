@@ -6,19 +6,18 @@ public class Ativo {
     private String tipo;
     private float precoCompra;
     private float precoVenda;
-    private int quantDisp;
+    //qual a entidade responsável
     private String descricao;
 
 
     public Ativo() {//
     }
 
-    public Ativo(int id, float precoCompra, float precoVenda, String tipo, int quantDisp, String descricao) {
+    public Ativo(int id, float precoCompra, float precoVenda, String tipo, String descricao) {
         this.id = id;
         this.precoCompra = precoCompra;
         this.precoVenda = precoVenda;
         this.tipo = tipo;
-        this.quantDisp = quantDisp;
         this.descricao = descricao;
 
     }
@@ -28,7 +27,6 @@ public class Ativo {
         this.precoCompra = a.getPrecoCompra();
         this.precoVenda = a.getPrecoVenda();
         this.tipo = a.getTipo();
-        this.quantDisp = a.getQuantDisp();
         this.descricao = a.getDescricao();
     }
 
@@ -60,10 +58,6 @@ public class Ativo {
     public void setTipo(String tipo) {
         this.tipo = tipo;
     }
-
-    public int getQuantDisp() { return quantDisp; }
-
-    public void setQuantDisp(int quantDisp) { this.quantDisp = quantDisp; }
 
     public String getDescricao() { return descricao; }
 

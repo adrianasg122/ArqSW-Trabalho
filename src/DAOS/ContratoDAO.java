@@ -1,15 +1,14 @@
 package DAOS;
 
 
-import Business.Registo;
-import com.sun.tools.corba.se.idl.InterfaceGen;
+import Business.Contrato;
 
 import java.sql.*;
 import java.util.*;
 
 
-// TODO adicionar ao Registo a lista dos seus ativos sempre que se for buscar algum
-public class RegistoDAO implements Map<Integer, Registo>{
+// TODO adicionar ao Contrato a lista dos seus ativos sempre que se for buscar algum
+public class ContratoDAO implements Map<Integer, Contrato>{
 
     private Connection connection;
 
@@ -19,7 +18,7 @@ public class RegistoDAO implements Map<Integer, Registo>{
 
         try{
             connection = Connect.connect();
-            PreparedStatement ps = connection.prepareStatement("SELECT COUNT(*) from Registo");
+            PreparedStatement ps = connection.prepareStatement("SELECT COUNT(*) from Contrato");
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
                 size = rs.getInt(1);
@@ -51,7 +50,7 @@ public class RegistoDAO implements Map<Integer, Registo>{
 
         try{
             connection = Connect.connect();
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Registo WHERE idUtil = ?");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Contrato WHERE idUtil = ?");
             ps.setString(1,Integer.toString((Integer) key));
             ResultSet rs = ps.executeQuery();
             res = rs.next();
@@ -74,10 +73,10 @@ public class RegistoDAO implements Map<Integer, Registo>{
     public boolean containsValue(Object value){
         boolean res = false;
 
-        if(value.getClass().getName().equals("arqsw.Bussiness.Registo")){
-            Registo r = (Registo) value;
-            int id = r.getId();
-            Registo re = this.get(id);
+        if(value.getClass().getName().equals("arqsw.Bussiness.Contrato")){
+            Contrato r = (Contrato) value;
+            int id = r.getIdContrato();
+            Contrato re = this.get(id);
             if(re.equals(r)){
                 res = true;
             }
@@ -86,21 +85,24 @@ public class RegistoDAO implements Map<Integer, Registo>{
     }
 
     @Override
-    public Registo get(Object key){
-        Registo r = new Registo(null);
+    public Contrato get(Object key){
+        Contrato r = new Contrato(null);
 
         try {
             connection = Connect.connect();
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Registo WHERE idUtil = ?");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Contrato WHERE idUtil = ?");
             ps.setString(1,Integer.toString((Integer) key));
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                r.setId(rs.getInt("id"));
+                r.setIdContrato(rs.getInt("id"));
                 r.setIdUtil(rs.getInt("idUtil"));
                 r.setIdAtivo(rs.getInt("idAtivo"));
                 r.setPreco(rs.getFloat("preco"));
                 r.setQuantidade(rs.getInt("quantidade"));
                 r.setVenda(rs.getInt("venda"));
+                r.setStoploss(rs.getFloat("stoploss"));
+                r.setTakeprofit(rs.getInt("takeprofit"));
+                r.setConcluido(rs.getInt("concluido"));
             }
         }
         catch (SQLException e){
@@ -117,8 +119,8 @@ public class RegistoDAO implements Map<Integer, Registo>{
     }
 
     @Override
-    public Registo put(Integer key, Registo value){
-        Registo r;
+    public Contrato put(Integer key, Contrato value){
+        Contrato r;
 
         if(this.containsKey(key)){
             r = this.get(key);
@@ -127,17 +129,20 @@ public class RegistoDAO implements Map<Integer, Registo>{
 
         try {
             connection = Connect.connect();
-            PreparedStatement ps = connection.prepareStatement("DELETE FROM Registo WHERE idUtil = ?");
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM Contrato WHERE idUtil = ?");
             ps.setString(1,Integer.toString((Integer) key));
             ps.executeUpdate();
 
-            ps = connection.prepareStatement("INSERT INTO Registo (id,idAtivo,idUtil,preco,quantidade,venda) VALUES (?,?,?,?)");
+            ps = connection.prepareStatement("INSERT INTO Contrato (id,idUtil,idAtivo,preco,quantidade,venda,stoploss,takeprofit,concluido) VALUES (?,?,?,?)");
             ps.setString(1,Integer.toString(key));
-            ps.setString(2,Integer.toString(value.getIdAtivo()));
-            ps.setString(3,Integer.toString(value.getIdUtil()));
+            ps.setString(2,Integer.toString(value.getIdUtil()));
+            ps.setString(3,Integer.toString(value.getIdAtivo()));
             ps.setString(4,Float.toString(value.getPreco()));
             ps.setString(5,Integer.toString(value.getQuantidade()));
             ps.setString(6,Integer.toString(value.getVenda()));
+            ps.setString(7,Float.toString(value.getStoploss()));
+            ps.setString(8,Float.toString(value.getTakeprofit()));
+            ps.setString(9,Integer.toString(value.getConcluido()));
             ps.executeUpdate();
         }catch (SQLException e){
             System.out.println(e.getMessage());
@@ -153,11 +158,11 @@ public class RegistoDAO implements Map<Integer, Registo>{
     }
 
     @Override
-    public Registo remove(Object key){
-        Registo r = this.get((Integer) key);
+    public Contrato remove(Object key){
+        Contrato r = this.get((Integer) key);
         try{
             connection = Connect.connect();
-            PreparedStatement ps = connection.prepareStatement("DELETE FROM Registo WHERE idUtil = ?");
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM Contrato WHERE idUtil = ?");
             ps.setString(1,Integer.toString((Integer) key));
             ps.executeUpdate();
         }catch (Exception e){
@@ -169,7 +174,7 @@ public class RegistoDAO implements Map<Integer, Registo>{
     }
 
     @Override
-    public void putAll (Map<? extends Integer, ? extends Registo> m){
+    public void putAll (Map<? extends Integer, ? extends Contrato> m){
         m.entrySet().stream().forEach(e->this.put(e.getKey(),e.getValue()));
     }
 
@@ -178,7 +183,7 @@ public class RegistoDAO implements Map<Integer, Registo>{
         try{
             connection = Connect.connect();
             Statement stm = connection.createStatement();
-            stm.executeUpdate("DELETE from Registo");
+            stm.executeUpdate("DELETE from Contrato");
         }
         catch(Exception e){
             throw new NullPointerException(e.getMessage());
@@ -194,7 +199,7 @@ public class RegistoDAO implements Map<Integer, Registo>{
         try{
             connection = Connect.connect();
             set = new TreeSet<>();
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Registo");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Contrato");
             ResultSet rs = ps.executeQuery();
             while (rs.next()){
                 set.add(rs.getInt("id"));
@@ -213,20 +218,24 @@ public class RegistoDAO implements Map<Integer, Registo>{
     }
 
     @Override
-    public Collection<Registo> values(){
-        Collection<Registo> col = new TreeSet<>();
+    public Collection<Contrato> values(){
+        Collection<Contrato> col = new TreeSet<>();
         try{
             connection = Connect.connect();
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Registo");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Contrato");
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
-                Registo u = new Registo(null);
-                u.setId(rs.getInt("id"));
-                u.setIdAtivo(rs.getInt("idAtivo"));
-                u.setPreco(rs.getFloat("precoCompra"));
-                u.setQuantidade(rs.getInt("quantidade"));
-                u.setVenda(rs.getInt("venda"));
-                col.add(u);
+                Contrato r = new Contrato(null);
+                r.setIdContrato(rs.getInt("id"));
+                r.setIdUtil(rs.getInt("idUtil"));
+                r.setIdAtivo(rs.getInt("idAtivo"));
+                r.setPreco(rs.getFloat("preco"));
+                r.setQuantidade(rs.getInt("quantidade"));
+                r.setVenda(rs.getInt("venda"));
+                r.setStoploss(rs.getFloat("stoploss"));
+                r.setTakeprofit(rs.getInt("takeprofit"));
+                r.setConcluido(rs.getInt("concluido"));
+                col.add(r);
             }
         }catch (SQLException e){
             System.out.println(e.getMessage());
@@ -242,9 +251,9 @@ public class RegistoDAO implements Map<Integer, Registo>{
     }
 
     @Override
-    public Set<Entry<Integer,Registo>> entrySet(){
+    public Set<Entry<Integer,Contrato>> entrySet(){
         Set<Integer> keys = new TreeSet<>(this.keySet());
-        TreeMap<Integer,Registo> map = new TreeMap<>();
+        TreeMap<Integer,Contrato> map = new TreeMap<>();
         keys.stream().forEach(e->map.put(e,this.get(e)));
         return map.entrySet();
     }
