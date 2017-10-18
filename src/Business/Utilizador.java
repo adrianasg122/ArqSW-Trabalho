@@ -21,7 +21,7 @@ public class Utilizador {
     }
 
 
-    public Utilizador(int id, String username, String password, float saldo, String email) {
+    public Utilizador(int id, String username, String password, float saldo) {
         this.id = id;
         this.username = username;
         this.password = password;
