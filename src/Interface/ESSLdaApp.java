@@ -11,7 +11,7 @@ public class ESSLdaApp {
     private static Menu menuinicial, menuprincipal;
 
     public static void main(String [] args){
-        ess = new ESSLda(null);
+        ess = new ESSLda();
         carregarMenus();
         imprimeMenuInical();
     }
@@ -97,7 +97,7 @@ public class ESSLdaApp {
         saldo = menuinicial.readFloat("Insira o saldo:");
 
         try{
-            ess.registar(nome,password,saldo,email);
+            ess.registar(nome,password,saldo);
         }catch (UsernameInvalidoException e){
             System.out.println(e.getMessage());
         }

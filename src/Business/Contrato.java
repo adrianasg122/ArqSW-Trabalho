@@ -6,8 +6,8 @@ public class Contrato {
     private int idAtivo;
     private int idUtil;
     private int quantidade;
-    // 1 se for uma venda , 0 se for compra
     private float preco;
+    // 1 se for uma venda , 0 se for compra
     private int venda;
     private float stoploss;
     private float takeprofit;
