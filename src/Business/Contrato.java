@@ -112,17 +112,14 @@ public class Contrato {
 
 
 
+    public synchronized String toString(Utilizador usr) {
+        StringBuilder sb = new StringBuilder();
 
-    public String toString() {
-        return "Pedido{" +
-                "idContrato=" + idContrato +
-                ", idAtivo=" + idAtivo +
-                ", quantidade=" + quantidade +
-                ", idUtil='" + idUtil + '\'' +
-                ", venda=" + venda +
-                ", stoploss=" + stoploss +
-                ", takeprofit=" + takeprofit +
-                ", concluido=" + concluido +
-                '}';
+        sb.append("ID: ").append(idContrato).append("\n");
+        sb.append("IDAtivo: ").append(idAtivo).append("\n");
+        sb.append("Preço Ativo: ").append(preco).append("\n");
+        sb.append("Stop Loss: ").append(stoploss).append("\n");
+        sb.append("Take Profit: ").append(takeprofit);
+        return sb.toString();
     }
 }

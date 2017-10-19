@@ -67,6 +67,18 @@ public class Ativo {
         return new Ativo(this);
     }
 
+    public synchronized String toString(Utilizador usr) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("ID: ").append(id).append("\n");
+        sb.append("Tipo: ").append(tipo).append("\n");
+        sb.append("Preço Compra: ").append(precoCompra).append("\n");
+        sb.append("Preço Venda: ").append(precoVenda).append("\n");
+        sb.append("Entidade: ").append(descricao);
+
+        return sb.toString();
+    }
+
 
 }
 

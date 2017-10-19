@@ -71,20 +71,19 @@ public class ESSLda {
                 u = this.utilizadores.get(username);
             else throw new UsernameInvalidoException("Este username não existe!");
 
+        } finally {
+            userLock.unlock();
         }
-        finally {
-            userLock.unlock();}
 
         userLock.lock();
 
-            try {
-                if (u.getPassword().equals(password)) return u;
-                else throw new PasswordInvalidaException("A password está incorreta!");
-            }
-            finally {
-                userLock.unlock();
-            }
+        try {
+            if (u.getPassword().equals(password)) return u;
+            else throw new PasswordInvalidaException("A password está incorreta!");
+        } finally {
+            userLock.unlock();
         }
+    }
 
     /**
      * Terminar sessão do utilizador na plataforma.
@@ -103,12 +102,12 @@ public class ESSLda {
     public synchronized void registar(String username, String password, float saldo) throws UsernameInvalidoException {
         int id;
         Utilizador u;
-            id = utilizadores.size() + 1;
-            u = new Utilizador(id, username, password, saldo);
-            userLock.unlock();
-            if (utilizadores.get(id).getUsername() == null) {
+        id = utilizadores.size() + 1;
+        u = new Utilizador(id, username, password, saldo);
+        userLock.unlock();
+        if (utilizadores.get(id).getUsername() == null) {
             utilizadores.put(id, u);
-            } else throw new UsernameInvalidoException("Username já existe");
+        } else throw new UsernameInvalidoException("Username já existe");
     }
 
 
@@ -118,10 +117,10 @@ public class ESSLda {
     public List<Contrato> consultaPortCFD() {
         List<Contrato> res = new ArrayList<>();
         synchronized (contratos) {
-                for (Contrato c : contratos.values()) {
-                    if (c.getIdUtil() == utilizador.getId() && c.getConcluido() == 0)
-                        res.add(c);
-                }
+            for (Contrato c : contratos.values()) {
+                if (c.getIdUtil() == utilizador.getId() && c.getConcluido() == 0)
+                    res.add(c);
+            }
         }
         return res;
     }
@@ -163,15 +162,30 @@ public class ESSLda {
         c.setQuantidade(quant);
         c.setVenda(0);
         c.setConcluido(0);
-        contratos.put(id,c);
+        contratos.put(id, c);
+    }
+
+    public synchronized void criarContratoVenda(int idAtivo, float sl, float tp, int quant) {
+        Contrato c = new Contrato(null);
+        int id = contratos.size() + 1;
+        c.setIdContrato(id);
+        c.setIdAtivo(idAtivo);
+        c.setIdUtil(utilizador.getId());
+        c.setStoploss(sl);
+        c.setTakeprofit(tp);
+        c.setQuantidade(quant);
+        c.setVenda(1);
+        c.setConcluido(0);
+        contratos.put(id, c);
     }
 
     /**
      * Comprar ações
+     *
      * @param c Contrato
      */
     // // TODO verificar se o utilizador tem saldo suficiente
-    public void comprar(Contrato c) throws SaldoInsuficienteException{
+    public void comprar(Contrato c) throws SaldoInsuficienteException {
         float preco = c.getPreco() * c.getQuantidade();
         if (utilizador.getSaldo() < preco) throw new SaldoInsuficienteException("Não possui saldo suficiente");
         float sl = c.getStoploss();
@@ -197,9 +211,10 @@ public class ESSLda {
 
     /**
      * Colocar ativos à venda
+     *
      * @param c Contrato
      */
-    public void vender (Contrato c){
+    public void vender(Contrato c) {
         float preco = c.getPreco() * c.getQuantidade();
         float sl = c.getStoploss();
         float tp = c.getTakeprofit();
@@ -221,6 +236,19 @@ public class ESSLda {
             }
         }
     }
+
+
+    public Set<Ativo> listarAtivos() {
+        Set<Ativo> res = new HashSet<Ativo>();
+        ativoLock.lock();
+        for (Ativo a : ativos.values())
+            res.add(a.clone());
+        ativoLock.unlock();
+        return res;
+    }
+
+
 }
+
 
 

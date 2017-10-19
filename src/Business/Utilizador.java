@@ -1,9 +1,9 @@
 package Business;
 
-import DAOS.RegistoDAO;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
+import java.net.Socket;
+
 
 public class Utilizador {
 
@@ -11,6 +11,8 @@ public class Utilizador {
     private String username;
     private String password;
     private float saldo;
+    private Socket socket;
+    private NotificationBuffer buffer;
 
 
     public Utilizador () {
@@ -64,5 +66,47 @@ public class Utilizador {
     public Utilizador clone () {
         return new Utilizador(this);
     }
+
+
+    public void setSession(Socket sock) throws IOException {
+        if (socket != null && !socket.isClosed())
+            socket.close();
+
+        socket = sock;
+    }
+
+    public void notificar(String mensagem) {
+        buffer.write(mensagem);
+    }
+
+    public String lerNotificacao() throws InterruptedException {
+        return buffer.read();
+    }
+
+    public void acknowledge(int a) {
+        buffer.acknowledge(a);
+    }
+
+    public void resend() {
+        buffer.reset();
+    }
+
+    public String toString() {
+        return username;
+    }
+
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+
+        if (o == null || (this.getClass() != o.getClass()))
+            return false;
+
+        Utilizador usr = (Utilizador) o;
+        return username.equals(usr.username);
+    }
+
+
 }
+
 
