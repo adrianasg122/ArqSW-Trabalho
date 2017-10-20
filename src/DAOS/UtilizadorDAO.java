@@ -6,7 +6,6 @@ import java.sql.*;
 import java.util.*;
 
 
-// TODO adicionar ao utilizador a lista dos seus ativos sempre que se for buscar algum
 public class UtilizadorDAO implements Map<Integer, Utilizador>{
 
     private Connection connection;

@@ -7,7 +7,6 @@ import java.sql.*;
 import java.util.*;
 
 
-// TODO adicionar ao Registo a lista dos seus ativos sempre que se for buscar algum
 public class RegistoDAO implements Map<Integer, Registo>{
 
     private Connection connection;
