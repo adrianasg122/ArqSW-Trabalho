@@ -2,7 +2,6 @@ package DAOS;
 
 
 import Business.Registo;
-import com.sun.tools.corba.se.idl.InterfaceGen;
 
 import java.sql.*;
 import java.util.*;

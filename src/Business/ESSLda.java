@@ -8,6 +8,7 @@ import DAOS.UtilizadorDAO;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 
 public class ESSLda {
@@ -47,7 +48,7 @@ public class ESSLda {
      * @param username Username do novo registo.
      * @param password Password do novo registo.
      */
-    public void iniciarSessao(String username, String password) throws UsernameInvalidoException {
+    public Utilizador iniciarSessao(String username, String password) throws UsernameInvalidoException {
         synchronized (utilizador) {
             try {
                 this.utilizador = this.validaUtilizador(username, password);
@@ -55,6 +56,7 @@ public class ESSLda {
                 throw new UsernameInvalidoException(e.getMessage());
             }
         }
+        return utilizador;
     }
 
     /**
@@ -114,8 +116,8 @@ public class ESSLda {
     /**
      * Consultar a lista de acções adquiridas por um utilizador
      */
-    public List<Contrato> consultaPortCFD() {
-        List<Contrato> res = new ArrayList<>();
+    public Set<Contrato> consultaPortCFD() {
+        Set<Contrato> res = new HashSet<>();
         synchronized (contratos) {
             for (Contrato c : contratos.values()) {
                 if (c.getIdUtil() == utilizador.getId() && c.getConcluido() == 0)
@@ -128,17 +130,20 @@ public class ESSLda {
     /**
      * Consultar o valor dos ativos adquiridos
      */
-    public Map<Integer, Float> consultaValorVendaAtivos() {
-        Map<Integer, Float> res = new TreeMap<>();
-        synchronized (contratos) {
-            synchronized (ativos) {
-                for (Contrato c : contratos.values()) {
-                    if (c.getIdUtil() == utilizador.getId() && c.getConcluido() == 0 && c.getVenda() == 1) {
-                        float preco = ativos.get(c.getIdAtivo()).getPrecoVenda();
-                        res.put(c.getIdAtivo(), preco);
-                    }
-                }
-            }
+    public Set<Ativo> getAtivosVenda() {
+        Set<Ativo> res = new HashSet<Ativo>() ;
+
+        contratoLock.lock();
+        Set<Contrato> contratos = this.contratos.values().stream().filter(c -> c.getIdUtil() == utilizador.getId() && c.getVenda() == 1).collect(Collectors.toSet());
+        contratoLock.unlock ();
+
+        ativoLock.lock();
+        try{
+            for (Contrato c : contratos)
+                res.add(ativos.get(c.getIdAtivo()));
+
+        }finally {
+            ativoLock.unlock();
         }
         return res;
     }
@@ -151,7 +156,7 @@ public class ESSLda {
     }
 
 
-    public synchronized void criarContratoCompra(int idAtivo, float sl, float tp, int quant) {
+    public synchronized int criarContratoCompra(int idAtivo, float sl, float tp, int quant) {
         Contrato c = new Contrato(null);
         int id = contratos.size() + 1;
         c.setIdContrato(id);
@@ -163,9 +168,10 @@ public class ESSLda {
         c.setVenda(0);
         c.setConcluido(0);
         contratos.put(id, c);
+        return id;
     }
 
-    public synchronized void criarContratoVenda(int idAtivo, float sl, float tp, int quant) {
+    public synchronized int criarContratoVenda(int idAtivo, float sl, float tp, int quant) {
         Contrato c = new Contrato(null);
         int id = contratos.size() + 1;
         c.setIdContrato(id);
@@ -177,6 +183,31 @@ public class ESSLda {
         c.setVenda(1);
         c.setConcluido(0);
         contratos.put(id, c);
+        return id;
+    }
+
+    public synchronized void fecharContrato(int id) throws SaldoInsuficienteException {
+        Contrato aux = contratos.get(id);
+        aux.setConcluido(1);
+        if (aux.getVenda() == 1) vender(aux);
+        else comprar(aux);
+    }
+
+    public void criarRegisto(Contrato c) {
+        Registo r = new Registo(null);
+        int regid;
+        registoLock.lock();
+        regid = registos.size() + 1;
+        registoLock.unlock();
+        r.setId(regid);
+        r.setIdAtivo(c.getIdAtivo());
+        r.setIdUtil(c.getIdUtil());
+        ativoLock.lock();
+        r.setPreco(ativos.get(c.getIdAtivo()).getPrecoVenda());
+        ativoLock.unlock();
+        r.setQuantidade(c.getQuantidade());
+        r.setVenda(c.getVenda());
+        registos.put(regid, r);
     }
 
     /**
@@ -184,7 +215,6 @@ public class ESSLda {
      *
      * @param c Contrato
      */
-    // // TODO verificar se o utilizador tem saldo suficiente
     public void comprar(Contrato c) throws SaldoInsuficienteException {
         float preco = c.getPreco() * c.getQuantidade();
         if (utilizador.getSaldo() < preco) throw new SaldoInsuficienteException("Não possui saldo suficiente");
@@ -192,19 +222,10 @@ public class ESSLda {
         float tp = c.getTakeprofit();
         int idAtivo = c.getIdAtivo();
         synchronized (ativos) {
-            synchronized (registos) {
-                if (ativos.get(idAtivo).getPrecoCompra() >= tp || ativos.get(idAtivo).getPrecoCompra() <= sl) {
-                    Registo r = new Registo(null);
-                    r.setId(registos.size() + 1);
-                    r.setIdAtivo(idAtivo);
-                    r.setIdUtil(utilizador.getId());
-                    r.setPreco(ativos.get(idAtivo).getPrecoCompra());
-                    r.setQuantidade(c.getQuantidade());
-                    r.setVenda(0);
-                    registos.put(registos.size() + 1, r);
-                    c.setConcluido(1);
-                    utilizador.setSaldo(utilizador.getSaldo() - preco);
-                }
+            if (ativos.get(idAtivo).getPrecoCompra() >= tp || ativos.get(idAtivo).getPrecoCompra() <= sl) {
+                criarRegisto(c);
+                c.setConcluido(1);
+                utilizador.setSaldo(utilizador.getSaldo() - preco);
             }
         }
     }
@@ -220,19 +241,10 @@ public class ESSLda {
         float tp = c.getTakeprofit();
         int idAtivo = c.getIdAtivo();
         synchronized (ativos) {
-            synchronized (registos) {
-                if (ativos.get(idAtivo).getPrecoVenda() >= tp || ativos.get(idAtivo).getPrecoVenda() <= sl) {
-                    Registo r = new Registo(null);
-                    r.setId(registos.size() + 1);
-                    r.setIdAtivo(idAtivo);
-                    r.setIdUtil(utilizador.getId());
-                    r.setPreco(ativos.get(idAtivo).getPrecoVenda());
-                    r.setQuantidade(c.getQuantidade());
-                    r.setVenda(1);
-                    registos.put(registos.size() + 1, r);
-                    c.setConcluido(1);
-                    utilizador.setSaldo(utilizador.getSaldo() + preco);
-                }
+            if (ativos.get(idAtivo).getPrecoVenda() >= tp || ativos.get(idAtivo).getPrecoVenda() <= sl) {
+                criarRegisto(c);
+                c.setConcluido(1);
+                utilizador.setSaldo(utilizador.getSaldo() + preco);
             }
         }
     }

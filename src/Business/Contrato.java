@@ -112,7 +112,7 @@ public class Contrato {
 
 
 
-    public synchronized String toString(Utilizador usr) {
+    public synchronized String toString() {
         StringBuilder sb = new StringBuilder();
 
         sb.append("ID: ").append(idContrato).append("\n");

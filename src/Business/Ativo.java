@@ -67,7 +67,7 @@ public class Ativo {
         return new Ativo(this);
     }
 
-    public synchronized String toString(Utilizador usr) {
+    public synchronized String toString() {
         StringBuilder sb = new StringBuilder();
 
         sb.append("ID: ").append(id).append("\n");
@@ -78,6 +78,7 @@ public class Ativo {
 
         return sb.toString();
     }
+
 
 
 }
