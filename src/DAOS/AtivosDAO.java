@@ -90,7 +90,6 @@ public class AtivosDAO implements Map<Integer, Ativo> {
                 a.setPrecoCompra(rs.getFloat("precoCompra"));
                 a.setPrecoVenda(rs.getFloat("precoVenda"));
                 a.setTipo(rs.getString("tipo"));
-                a.setQuantDisp(rs.getInt("quantidade"));
                 a.setDescricao(rs.getString("descricao"));
             }
         }catch (SQLException e){
@@ -123,8 +122,7 @@ public class AtivosDAO implements Map<Integer, Ativo> {
             ps.setString(2,value.getTipo());
             ps.setString(3,Float.toString(value.getPrecoCompra()));
             ps.setString(4,Float.toString(value.getPrecoVenda()));
-            ps.setString(5,Integer.toString(value.getQuantDisp()));
-            ps.setString(6,value.getDescricao());
+            ps.setString(5,value.getDescricao());
             ps.executeQuery();
         }catch (SQLException e){
             System.out.println(e.getMessage());
@@ -217,7 +215,6 @@ public class AtivosDAO implements Map<Integer, Ativo> {
                 a.setPrecoCompra(rs.getFloat("precoCompra"));
                 a.setPrecoVenda(rs.getFloat("precoVenda"));
                 a.setTipo(rs.getString("tipo"));
-                a.setQuantDisp(rs.getInt("quantidade"));
                 a.setDescricao(rs.getString("descricao"));
                 col.add(a);
             }

@@ -33,32 +33,24 @@ public class Skeleton extends Thread {
 
         while((request = readLine()) != null) {
             String response = null;
-            try {
-                response = interpreteRequest(request);
-            } catch (SaldoInsuficienteException e) {
-                e.getMessage();
-            } catch (UsernameInvalidoException e) {
-                e.getMessage();
-            }
-
+            response = interpreteRequest(request);
             if (!response.isEmpty())
                 out.println(response + "\n");
         }
-
         terminarConexao();
     }
 
-    private String interpreteRequest(String request) throws SaldoInsuficienteException, UsernameInvalidoException {
+    private String interpreteRequest(String request){
         try {
-            return runCommand(request);
+               return runCommand(request);
         } catch (PedidoFalhadoException e) {
             return "EXCEPTION\n" + e.getMessage();
         } catch (ArrayIndexOutOfBoundsException e) {
             return "EXCEPTION\n" + "Os argumentos não foram especificados";
         }
     }
-
-    private String runCommand(String request) throws ArrayIndexOutOfBoundsException, PedidoFalhadoException, SaldoInsuficienteException, UsernameInvalidoException {
+// TODO consultar saldo e Terminar sessão
+    private String runCommand(String request) throws PedidoFalhadoException {
         String[] keywords = request.split(" ", 2);
 
         switch(keywords[0].toUpperCase()) {
@@ -104,14 +96,13 @@ public class Skeleton extends Thread {
             ess.registar(parametros[0], parametros[1], Integer.parseInt(parametros[2]));
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new PedidoFalhadoException("Os argumentos dados não são válidos");
-        } catch (UsernameInvalidoException e) {
-            throw new PedidoFalhadoException(e.getMessage());
         }
+
 
         return "OK";
     }
 
-    private String login(String arguments) throws PedidoFalhadoException, UsernameInvalidoException {
+    private String login(String arguments) throws PedidoFalhadoException {
         String[] parameters = arguments.split(" ");
 
         try {
@@ -119,10 +110,8 @@ public class Skeleton extends Thread {
             utilizador.setSession(cliSocket);
             notificacao = new Notificacao(utilizador, out);
             notificacao.start();
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } catch (ArrayIndexOutOfBoundsException | IOException | UtilizadorInvalidoException e) {
             throw new PedidoFalhadoException("Os argumentos dados não são válidos");
-        } catch (IOException e) {
-            throw new PedidoFalhadoException("Não foi possível iniciar sessão");
         }
         return "OK";
     }
@@ -153,16 +142,13 @@ public class Skeleton extends Thread {
         return "OK\n" + contratoID;
     }
 
-    private String fecharContrato(String desc) throws PedidoFalhadoException, SaldoInsuficienteException {
+    private String fecharContrato(String desc) throws PedidoFalhadoException {
         try {
             int ativoID = Integer.parseInt(desc);
             ess.fecharContrato(ativoID);
-        } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
+        } catch (ArrayIndexOutOfBoundsException | NumberFormatException | SaldoInsuficienteException e) {
             throw new PedidoFalhadoException("Os argumentos dados não são válidos");
-        } catch (IdInvalidoException e) {
-            throw new PedidoFalhadoException(e.getMessage());
         }
-
         String message = "O contrato foi fechado!";
 
         return "OK\n" + message;
@@ -204,8 +190,8 @@ public class Skeleton extends Thread {
 
     private String notificar(String argument) throws PedidoFalhadoException {
         try {
-            int amount = Integer.parseInt(argument);
-            utilizador.acknowledge(amount);
+            int nr = Integer.parseInt(argument);
+            utilizador.acknowledge(nr);
         } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
             throw new PedidoFalhadoException("Os argumentos dados não são válidos");
         }

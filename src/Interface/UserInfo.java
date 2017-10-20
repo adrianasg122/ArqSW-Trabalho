@@ -19,23 +19,23 @@ public class UserInfo {
             notificacoes = new ArrayDeque<>();
         }
 
-        synchronized public int getcomando() {
+        synchronized public int getComando() {
             return comando;
         }
 
-        synchronized public void setcomando(int comando) {
+        synchronized public void setComando(int comando) {
             this.comando = comando;
         }
 
-        synchronized public boolean islog() {
+        synchronized public boolean getLog() {
             return log;
         }
 
-        synchronized public void setlog(boolean estado) {
+        synchronized public void setLog(boolean estado) {
             log = estado;
         }
 
-        synchronized public void setresposta(boolean sucesso, String conteudo) {
+        synchronized public void setResposta(boolean sucesso, String conteudo) {
             this.sucesso = sucesso;
             this.conteudo = conteudo;
 
@@ -43,7 +43,7 @@ public class UserInfo {
             notifyAll();
         }
 
-        synchronized public boolean getrespostaStatus() {
+        synchronized public boolean getRespostaStatus() {
             return sucesso;
         }
 
@@ -61,7 +61,11 @@ public class UserInfo {
             return conteudo;
         }
 
-        synchronized public String getnotificacoes() {
+        synchronized public void addNotificacao(String message) {
+             notificacoes.addLast(message);
+        }
+
+        synchronized public String getNotificacoes() {
             String msg;
             StringBuilder sb = new StringBuilder();
 
@@ -74,7 +78,7 @@ public class UserInfo {
             return sb.toString();
         }
 
-        synchronized public int getNumberOfnotificacoes() {
+        synchronized public int getNrNotificacoes() {
             return notificacoes.size();
         }
     }

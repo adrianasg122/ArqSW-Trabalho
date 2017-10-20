@@ -35,8 +35,8 @@ public class NotificationBuffer {
         index = 0;
     }
 
-    synchronized public void acknowledge(int amount) {
-        for (int i = 0; i < amount; i++)
+    synchronized public void acknowledge(int nr) {
+        for (int i = 0; i < nr; i++)
             notifications.remove(0);
 
         index = 0;

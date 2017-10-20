@@ -1,6 +1,7 @@
 package Interface;
 
 import Business.ESSLda;
+import Business.SaldoInsuficienteException;
 import Business.UsernameInvalidoException;
 
 
@@ -22,11 +23,14 @@ public class ESSLdaApp {
                 "Registar Utilizador"
         };
         String [] principal = {
+                "Listar ativos",
                 "Consultar portfólio",
                 "Consultar saldo",
-                "Listar ativos para venda",
+                "Listar ativos a vender",
                 "Comprar ativo",
                 "Vender ativo",
+                "Listar contratos",
+                "Fechar contrato",
                 "Terminar Sessão"
         };
         menuinicial = new Menu(inicial);
@@ -51,7 +55,7 @@ public class ESSLdaApp {
         do{
             op = menuprincipal.showMenu();
             switch (op){
-                case 1: port();
+                case 1: listA();
                 break;
                 case 2: saldo();
                 break;
@@ -61,16 +65,21 @@ public class ESSLdaApp {
                 break;
                 case 5: venderA();
                 break;
-                case 6: ess.terminarSessao();
+                case 6: port();
+                break;
+                case 7: fecharC();
+                break;
+                case 8: ess.terminarSessao();
                 break;
             }
         }while (op != 0);
     }
 
+
     private static void sessao(){
         String email,password;
 
-        email = menuinicial.readString("Nome: ");
+        email = menuinicial.readString("Username: ");
 
         password = menuinicial.readString("Password: ");
 
@@ -85,14 +94,12 @@ public class ESSLdaApp {
     }
 
     private static void regiUti(){
-        String nome, password, email;
+        String nome, password;
         float saldo;
 
         nome = menuinicial.readString("Insira o nome: ");
 
         password = menuinicial.readString("Insira a password: ");
-
-        email = menuinicial.readString("Insira o email: ");
 
         saldo = menuinicial.readFloat("Insira o saldo:");
 
@@ -103,24 +110,54 @@ public class ESSLdaApp {
         }
     }
 
-    private static void port(){
-        System.out.println("Função ainda não implementada!");
+    private static void fecharC() {
+        int id;
+
+        id = menuprincipal.readInt("Insira o id do Contrato: ");
+
+        try {
+            ess.fecharContrato(id);
+        } catch (SaldoInsuficienteException e) {
+            e.printStackTrace();
+        }
     }
 
-    private static void saldo(){
-        System.out.println("Função ainda não implementada!");
-    }
+    private static void listA() { ess.listarAtivos(); }
 
-    private static void listVendas(){
-        System.out.println("Função ainda não implementada!");
-    }
+    private static void port(){ ess.consultaPortCFD(); }
 
-    private static void comprarA(){
-        System.out.println("Função ainda não implementada!");
+    private static void saldo(){ ess.getSaldoUtilizador(); }
+
+    private static void listVendas(){ ess.getAtivosVenda(); }
+
+    private static void comprarA() {
+        int idA, quant;
+        float sl, tp;
+
+        idA = menuprincipal.readInt("Insira o id do Ativo: ");
+
+        sl = menuprincipal.readFloat("Indique o Stop Loss: ");
+
+        tp = menuprincipal.readFloat("Indique o Take Profit: ");
+
+        quant = menuinicial.readInt("Insira a quantidade:");
+
+        ess.criarContratoCompra(idA, sl, tp, quant);
     }
 
     private static void venderA(){
-        System.out.println("Função ainda não implementada!");
+        int idA, quant;
+        float sl, tp;
+
+        idA = menuprincipal.readInt("Insira o id do Ativo: ");
+
+        sl = menuprincipal.readFloat("Indique o Stop Loss: ");
+
+        tp = menuprincipal.readFloat("Indique o Take Profit: ");
+
+        quant = menuinicial.readInt("Insira a quantidade:");
+
+        ess.criarContratoVenda(idA, sl, tp, quant);
     }
 
 }
