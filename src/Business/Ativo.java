@@ -1,16 +1,13 @@
 package Business;
 
-import yahoofinance.Stock;
-import yahoofinance.YahooFinance;
-
-import java.io.IOException;
-import java.math.BigDecimal;
 
 public class Ativo {
 
     private int id;
     private String tipo;
+    // ask
     private float precoCompra;
+    // bid
     private float precoVenda;
     //qual a entidade responsável
     private String descricao;
@@ -85,31 +82,7 @@ public class Ativo {
         return sb.toString();
     }
 
-    public static String getNomeEmpresa (String entidade) {
-        String res = null;
-        Stock a;
-        try {
-            a = YahooFinance.get(entidade);
-            res = a.getName();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return res;
-    }
-
-    public static BigDecimal getValorAtivo(String entidade){
-        BigDecimal res = BigDecimal.valueOf(-1);
-        Stock s = null;
-        try {
-            s = YahooFinance.get(entidade);
-            res = s.getQuote().getPrice();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return res;
-    }
 
 
 

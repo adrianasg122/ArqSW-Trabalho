@@ -186,6 +186,11 @@ public class Skeleton extends Thread {
         return "OK" + sb.toString();
     }
 
+    private String terminarSessao() {
+        terminarSessao();
+        return "Sessão terminada!";
+    }
+
     private void utilizadorLogado(boolean estado) throws PedidoFalhadoException {
         if (estado && utilizador == null)
             throw new PedidoFalhadoException("É necessário iniciar sessão para aceder aos leilões");

@@ -1,115 +1,78 @@
-package Interface;
+/*package Interface;
 
 
-import Business.ESSLda;
-import Business.Utilizador;
-
-import java.lang.Thread;
-import java.io.*;
+        import java.lang.Thread;
+        import java.io.*;
+        import java.net.*;
 
 public class Reader extends Thread{
     private BufferedReader read_socket;
-    private ESSLda ess;
-    private Utilizador user;
-    private MensagemServidor ms;
+    private UserInfo client;
+    private Socket socket;
 
-
+    public Reader(Socket socket,UserInfo client) throws IOException{
+        this.socket = socket;
+        this.client = client;
+        read_socket = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+    }
 
     public void run(){
-        try{
-            String input;
-            while((input = read_socket.readLine()) != null){
-                if(input.equals("Iniciar Sessão")){
-                    String user,pass;
-                    user = read_socket.readLine();
-                    pass = read_socket.readLine();
 
-                    try{
-                        this.user = ess.iniciarSessao(user,pass);
-                    }
-                    catch(Exception e){
-                        ms.setMensagem(e.getMessage(),null);
-                    }
-                }
-                else if(input.equals("Registar Utilizador")){
-                    String user,pass;
-                    user = read_socket.readLine();
-                    pass = read_socket.readLine();
+        String line, header, conteudo = null;
 
-                    try{
-                        ess.registar(user,pass,0,ms);
-                        ms.setMensagem("Registado",null);
-                    }
-                    catch(Exception e){
-                        ms.setMensagem(e.getMessage(),null);
-                    }
-                }
-                else if(input.equals("registar_vendedor")){
-                    String user,pass;
-                    user = read_socket.readLine();
-                    pass = read_socket.readLine();
+        while((line = readLine()) != null){
+            header = line;
 
-                    try{
-                        g.registarUtilizador(user,pass,1,ms);
-                        ms.setMensagem("Registado",null);
-                    }
-                    catch(Exception e){
-                        ms.setMensagem(e.getMessage(),null);
-                    }
-                }
-                else if(input.equals("licitar")){
-                    String idLeilao,valor;
-                    idLeilao = read_socket.readLine();
-                    valor = read_socket.readLine();
-                    Double val = Double.parseDouble(valor);
-                    try{
-                        g.licitarLeilao(idLeilao,u,val);
-                        ms.setMensagem("Licitou",null);
-                    }
-                    catch(Exception e){
-                        ms.setMensagem(e.getMessage(),null);
-                    }
-                }
-                else if(input.equals("iniciar_leilao")){
-                    String descricao;
-                    descricao = read_socket.readLine();
-                    Leilao leilao = new Leilao(descricao,u);
-                    try{
-                        g.adicionarLeilao(leilao,user);
-                        ms.setMensagem("Leilao Iniciado",null);
-                    }
-                    catch(Exception e){
-                        ms.setMensagem(e.getMessage(),null);
-                    }
-                }
-                else if(input.equals("consultar_leilao")){
-                    try{
-                        ms.setMensagem(null,ess.consultarLeiloes(user));
-                    }
-                    catch(Exception e){
-                        ms.setMensagem(e.getMessage(),null);
-                    }
-                }
-                else if(input.equals("encerrar_leilao")){
-                    String idLeilao;
-                    idLeilao = read_socket.readLine();
-                    try{
-                        ms.setMensagem(ess.encerrarLeilao(idLeilao,user),null);
-                    }
-                    catch(Exception e){
-                        ms.setMensagem(e.getMessage(),null);
-                    }
-                }
-                else if(input.equals("terminar_sessao")){
-                    this.u = null;
-                    ms.setMensagem("Terminou sessão",null);
-                }
+
+            switch (client.getComando()){
+                case 3 : conteudo = lerListarAcoes();
+                break;
+                case 5 : conteudo = lerListarVendas();
+                break;
+                case 8 : conteudo = lerConsultarPortfolio();
+                break;
+                case 9 : conteudo = lerFecharContrato();
+                break;
+                default:break;
             }
-            read_socket.close();
-            ms.setMensagem("Sair",null);
+
+            giveMessege(header,conteudo);
         }
-        catch(Exception e){
-            System.out.println(e.getMessage());
-        }
+
+        System.out.println("\nLigação ao servidor terminada!");
+        System.exit(1);
     }
-}
+
+
+    private void giveMessege(String header, String content){
+        if(header.equals("EXECEPTION"))
+            client.setResposta(false,">" + content);
+        else if(header.equals("OK"))
+            client.setResposta(false,content);
+    }
+
+    private String readContent() {
+        StringBuilder sb = new StringBuilder();
+        String line;
+
+        while ((line = readLine()) != null){
+            if(line.isEmpty())
+                break;
+            sb.append(line).append("\n");
+        }
+        return sb.toString();
+    }
+
+    private String readLine() {
+        String line = null;
+
+        try{
+            line = read_socket.readLine();
+        }catch (IOException e){
+            System.out.println("Não foi possivel ler novas mensagens!");
+        }
+        return line;
+    }
+
+
+}*/

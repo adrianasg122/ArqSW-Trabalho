@@ -10,6 +10,8 @@ public class Server {
     public static void main(String[] args) throws IOException {
         ServerSocket srv = new ServerSocket(port);
         ESSLda ess = new ESSLda();
+        Updater u = new Updater(ess);
+        u.start();
 
         while(true) {
             Socket cliSocket = srv.accept();

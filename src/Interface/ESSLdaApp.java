@@ -7,22 +7,20 @@ import Business.UtilizadorInvalidoException;
 
 
 public class ESSLdaApp {
-    private ESSLdaApp () {}
     private static ESSLda ess;
-    private static Menu menuinicial, menuprincipal;
+    private static Menu menuprincipal;
 
     public static void main(String [] args){
         ess = new ESSLda();
         carregarMenus();
-        imprimeMenuInical();
+        imprimeMenuInicial();
     }
 
     private static void carregarMenus(){
-        String [] inicial= {
-                "Iniciar Sessão",
-                "Registar Utilizador"
-        };
+
         String [] principal = {
+                "Iniciar Sessão",
+                "Registar Utilizador",
                 "Listar ativos",
                 "Consultar portfólio",
                 "Consultar saldo",
@@ -33,43 +31,34 @@ public class ESSLdaApp {
                 "Fechar contrato",
                 "Terminar Sessão"
         };
-        menuinicial = new Menu(inicial);
         menuprincipal = new Menu(principal);
     }
 
-    private static void imprimeMenuInical() {
+
+    private static void imprimeMenuInicial(){
         int op;
         do{
-            op = menuinicial.showMenu();
+            op = menuprincipal.showMenu();
             switch (op){
                 case 1: sessao();
                 break;
                 case 2: regiUti();
                 break;
-            }
-        } while (op != 0);
-    }
-
-    private static void imprimeMenuPrincipal(){
-        int op;
-        do{
-            op = menuprincipal.showMenu();
-            switch (op){
-                case 1: listA();
+                case 3: listA();
                 break;
-                case 2: saldo();
+                case 4: saldo();
                 break;
-                case 3: listVendas();
+                case 5: listVendas();
                 break;
-                case 4: comprarA();
+                case 6: comprarA();
                 break;
-                case 5: venderA();
+                case 7: venderA();
                 break;
-                case 6: port();
+                case 8: port();
                 break;
-                case 7: fecharC();
+                case 9: fecharC();
                 break;
-                case 8: ess.terminarSessao();
+                case 10: ess.terminarSessao();
                 break;
             }
         }while (op != 0);
@@ -79,9 +68,9 @@ public class ESSLdaApp {
     private static void sessao(){
         String email,password;
 
-        email = menuinicial.readString("Username: ");
+        email = menuprincipal.readString("Username: ");
 
-        password = menuinicial.readString("Password: ");
+        password = menuprincipal.readString("Password: ");
 
         try{
             ess.iniciarSessao(email,password);
@@ -90,18 +79,18 @@ public class ESSLdaApp {
             System.out.println(e.getMessage());
         }
 
-        imprimeMenuPrincipal();
+        imprimeMenuInicial();
     }
 
     private static void regiUti(){
         String nome, password;
         float saldo;
 
-        nome = menuinicial.readString("Insira o nome: ");
+        nome = menuprincipal.readString("Insira o nome: ");
 
-        password = menuinicial.readString("Insira a password: ");
+        password = menuprincipal.readString("Insira a password: ");
 
-        saldo = menuinicial.readFloat("Insira o saldo:");
+        saldo = menuprincipal.readFloat("Insira o saldo:");
 
         try{
             ess.registar(nome,password,saldo);
@@ -140,7 +129,7 @@ public class ESSLdaApp {
 
         tp = menuprincipal.readFloat("Indique o Take Profit: ");
 
-        quant = menuinicial.readInt("Insira a quantidade:");
+        quant = menuprincipal.readInt("Insira a quantidade:");
 
         ess.criarContratoCompra(idA, sl, tp, quant);
     }
@@ -155,7 +144,7 @@ public class ESSLdaApp {
 
         tp = menuprincipal.readFloat("Indique o Take Profit: ");
 
-        quant = menuinicial.readInt("Insira a quantidade:");
+        quant = menuprincipal.readInt("Insira a quantidade:");
 
         ess.criarContratoVenda(idA, sl, tp, quant);
     }

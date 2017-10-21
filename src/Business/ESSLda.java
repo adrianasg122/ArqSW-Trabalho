@@ -34,6 +34,14 @@ public class ESSLda {
         this.registos = new RegistoDAO();
     }
 
+    public AtivosDAO getAtivos() {
+        return ativos;
+    }
+
+    public void setAtivos(AtivosDAO ativos) {
+        this.ativos = ativos;
+    }
+
     public String toString() {
         return "ESSLda{" +
                 "utilizadores=" + utilizadores +
@@ -163,8 +171,6 @@ public class ESSLda {
         c.setVenda(0);
         c.setConcluido(0);
         contratos.put(id, c);
-        c.run();
-
         return id;
     }
 
@@ -255,13 +261,33 @@ public class ESSLda {
 
 
     public Set<Ativo> listarAtivos() {
-        Set<Ativo> res = new HashSet<Ativo>();
+        Set<Ativo> res = new HashSet<>();
         ativoLock.lock();
         for (Ativo a : ativos.values())
             res.add(a.clone());
         ativoLock.unlock();
         return res;
     }
+
+    public Set<Contrato> listarContratosVendaAtivo(int id) {
+        Set<Contrato> res = new HashSet<>();
+
+        for(Contrato c : contratos.values())
+            if (c.getIdAtivo() == id && c.getVenda() == 1) res.add(c);
+
+        return res;
+    }
+
+    public Set<Contrato> listarContratosCompraAtivo(int id) {
+        Set<Contrato> res = new HashSet<>();
+
+        for(Contrato c : contratos.values())
+            if (c.getIdAtivo() == id && c.getVenda() == 0) res.add(c);
+
+        return res;
+    }
+
+
 
 
 
