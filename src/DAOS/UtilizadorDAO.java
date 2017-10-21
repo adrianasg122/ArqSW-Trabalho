@@ -50,7 +50,7 @@ public class UtilizadorDAO implements Map<Integer, Utilizador>{
         try{
             connection = Connect.connect();
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM Utilizador WHERE username = ?");
-            ps.setString(1, Integer.toString((Integer) key));
+            ps.setString(1, Integer.toString((Integer)key));
             ResultSet rs = ps.executeQuery();
             res = rs.next();
         }catch (SQLException e){
@@ -90,7 +90,7 @@ public class UtilizadorDAO implements Map<Integer, Utilizador>{
         try{
             connection = Connect.connect();
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM Utilizador WHERE username = ?");
-            ps.setString(1,(String) key);
+            ps.setString(1, Integer.toString((Integer)key));
             ResultSet rs = ps.executeQuery();
             if(rs.next()) {
                 u.setId(rs.getInt("id"));
@@ -123,11 +123,11 @@ public class UtilizadorDAO implements Map<Integer, Utilizador>{
         try {
             connection = Connect.connect();
             PreparedStatement ps = connection.prepareStatement("DELETE FROM Utilizador WHERE username = ?");
-            ps.setString(1,Integer.toString((Integer) key));
+            ps.setString(1, Integer.toString(key));
             ps.executeUpdate();
 
             ps = connection.prepareStatement("INSERT INTO Utilizador (id,username,password,saldo) VALUES (?,?,?,?)");
-            ps.setString(1,Integer.toString((Integer) key));
+            ps.setString(1,Integer.toString(key));
             ps.setString(2,value.getUsername());
             ps.setString(3,value.getPassword());
             ps.setString(4,Float.toString(value.getSaldo()));
@@ -147,11 +147,11 @@ public class UtilizadorDAO implements Map<Integer, Utilizador>{
 
     @Override
     public Utilizador remove(Object key){
-        Utilizador u = this.get((String) key);
+        Utilizador u = this.get((Integer) key);
         try{
             connection = Connect.connect();
             PreparedStatement ps = connection.prepareStatement("DELETE FROM Utilizador WHERE username = ?");
-            ps.setString(1,(String) key);
+            ps.setString(1, Integer.toString((Integer)key));
             ps.executeUpdate();
         }catch (Exception e){
             throw new NullPointerException(e.getMessage());

@@ -1,4 +1,4 @@
-/*package Interface;
+package Interface;
 
 
         import java.lang.Thread;
@@ -75,4 +75,4 @@ public class Reader extends Thread{
     }
 
 
-}*/
+}

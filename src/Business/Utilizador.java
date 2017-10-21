@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 
-public class Utilizador {
+public class Utilizador implements Comparable<Utilizador> {
 
     private int id;
     private String username;
@@ -90,6 +90,9 @@ public class Utilizador {
     }
 
 
+    public int compareTo(Utilizador c) {
+        return this.id - c.getId();
+    }
 }
 
 

@@ -56,13 +56,11 @@ public class ESSLda {
      * @param username Username do novo registo.
      * @param password Password do novo registo.
      */
-    public Utilizador iniciarSessao(String username, String password) throws UtilizadorInvalidoException {
-        synchronized (utilizador) {
-            try {
+    public synchronized Utilizador iniciarSessao(String username, String password) throws UtilizadorInvalidoException {
+        try {
                 this.utilizador = this.validaUtilizador(username, password);
-            } catch (Exception e) {
-                throw new UtilizadorInvalidoException(e.getMessage());
-            }
+        } catch (Exception e) {
+            throw new UtilizadorInvalidoException(e.getMessage());
         }
         return utilizador;
     }
@@ -73,21 +71,19 @@ public class ESSLda {
      * @param username Username do utilizador
      * @param password password do utilizador
      */
-    public Utilizador validaUtilizador(String username, String password) throws UsernameInvalidoException, PasswordInvalidaException {
-        Utilizador u;
+    public Utilizador validaUtilizador(String username, String password) throws UtilizadorInvalidoException {
+        Utilizador u = null;
+
         userLock.lock();
         try {
-            if (this.utilizadores.containsKey(username))
-                u = this.utilizadores.get(username);
-            else throw new UsernameInvalidoException("Este username não existe!");
-
-        } finally {
+            for (Utilizador aux : utilizadores.values()) {
+                if (aux.getUsername() == username && aux.getPassword() == password)
+                    u = this.utilizadores.get(aux.getId());
+            }
+        }finally{
             userLock.unlock();
         }
-        synchronized (u) {
-            if (u.getPassword().equals(password)) return u;
-            else throw new PasswordInvalidaException("A password está incorreta!");
-        }
+           return u;
     }
 
     /**
@@ -109,7 +105,6 @@ public class ESSLda {
         Utilizador u;
         id = utilizadores.size() + 1;
         u = new Utilizador(id, username, password, saldo);
-        userLock.unlock();
         if (utilizadores.get(id).getUsername() == null) {
             utilizadores.put(id, u);
         } else throw new UtilizadorInvalidoException("Username já existe");

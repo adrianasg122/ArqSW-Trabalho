@@ -10,12 +10,6 @@ public class ESSLdaApp {
     private static ESSLda ess;
     private static Menu menuprincipal;
 
-    public static void main(String [] args){
-        ess = new ESSLda();
-        carregarMenus();
-        imprimeMenuInicial();
-    }
-
     private static void carregarMenus(){
 
         String [] principal = {
@@ -74,6 +68,7 @@ public class ESSLdaApp {
 
         try{
             ess.iniciarSessao(email,password);
+            System.out.println("\n!! BEM-VINDO !!");
         }
         catch (UtilizadorInvalidoException e){
             System.out.println(e.getMessage());
@@ -94,6 +89,7 @@ public class ESSLdaApp {
 
         try{
             ess.registar(nome,password,saldo);
+            System.out.println("\nUtilizador registado com sucesso!");
         }catch (UtilizadorInvalidoException e){
             System.out.println(e.getMessage());
         }
@@ -106,6 +102,7 @@ public class ESSLdaApp {
 
         try {
             ess.fecharContrato(id);
+            System.out.println("\nContrato fechado com sucesso!");
         } catch (SaldoInsuficienteException e) {
             e.printStackTrace();
         }
