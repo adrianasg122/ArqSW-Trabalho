@@ -120,4 +120,23 @@ public class Contrato{
         sb.append("Take Profit: ").append(takeprofit);
         return sb.toString();
     }
+
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Contrato contrato = (Contrato) o;
+
+        if (getIdContrato() != contrato.getIdContrato()) return false;
+        if (getIdAtivo() != contrato.getIdAtivo()) return false;
+        if (getIdUtil() != contrato.getIdUtil()) return false;
+        if (getQuantidade() != contrato.getQuantidade()) return false;
+        if (Float.compare(contrato.getPreco(), getPreco()) != 0) return false;
+        if (getVenda() != contrato.getVenda()) return false;
+        if (Float.compare(contrato.getStoploss(), getStoploss()) != 0) return false;
+        if (Float.compare(contrato.getTakeprofit(), getTakeprofit()) != 0) return false;
+        return getConcluido() == contrato.getConcluido();
+    }
+
 }
