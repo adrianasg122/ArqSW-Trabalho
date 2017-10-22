@@ -43,7 +43,7 @@ public class AtivosDAO implements Map<Integer, Ativo> {
 
         try{
             connection = Connect.connect();
-            PreparedStatement ps = connection.prepareStatement("SELECT FROM Ativos WHERE id = ?");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Ativo WHERE id = ?");
             ps.setString(1,Integer.toString((Integer) key));
             ResultSet rs = ps.executeQuery();
             res = rs.next();
@@ -89,7 +89,6 @@ public class AtivosDAO implements Map<Integer, Ativo> {
                 a.setId(rs.getInt("id"));
                 a.setPrecoCompra(rs.getFloat("precoCompra"));
                 a.setPrecoVenda(rs.getFloat("precoVenda"));
-                a.setTipo(rs.getString("tipo"));
                 a.setDescricao(rs.getString("descricao"));
             }
         }catch (SQLException e){
@@ -117,13 +116,12 @@ public class AtivosDAO implements Map<Integer, Ativo> {
             ps.setString(1,Integer.toString(key));
             ps.executeUpdate();
 
-            ps = connection.prepareStatement("INSERT INTO Ativo(id,preco,tipo,nome_dono) VALUES (?,?,?,?,?)");
+            ps = connection.prepareStatement("INSERT INTO Ativo(id,precoCompra,precoVenda,descricao) VALUES (?,?,?,?)");
             ps.setString(1,Integer.toString(value.getId()));
-            ps.setString(2,value.getTipo());
-            ps.setString(3,Float.toString(value.getPrecoCompra()));
-            ps.setString(4,Float.toString(value.getPrecoVenda()));
-            ps.setString(5,value.getDescricao());
-            ps.executeQuery();
+            ps.setString(2,Float.toString(value.getPrecoCompra()));
+            ps.setString(3,Float.toString(value.getPrecoVenda()));
+            ps.setString(4,value.getDescricao());
+            ps.executeUpdate();
         }catch (SQLException e){
             System.out.println(e.getMessage());
         }
@@ -214,7 +212,6 @@ public class AtivosDAO implements Map<Integer, Ativo> {
                 a.setId(rs.getInt("id"));
                 a.setPrecoCompra(rs.getFloat("precoCompra"));
                 a.setPrecoVenda(rs.getFloat("precoVenda"));
-                a.setTipo(rs.getString("tipo"));
                 a.setDescricao(rs.getString("descricao"));
                 col.add(a);
             }

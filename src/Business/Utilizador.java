@@ -11,7 +11,7 @@ public class Utilizador implements Comparable<Utilizador> {
     private String username;
     private String password;
     private float saldo;
-    private Socket socket;
+
 
 
     public Utilizador () {
@@ -67,12 +67,6 @@ public class Utilizador implements Comparable<Utilizador> {
     }
 
 
-    public void setSession(Socket sock) throws IOException {
-        if (socket != null && !socket.isClosed())
-            socket.close();
-
-        socket = sock;
-    }
 
     public String toString() {
         return username;

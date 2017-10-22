@@ -34,8 +34,10 @@ public class Skeleton extends Thread {
         while((request = readLine()) != null) {
             String response = null;
             response = interpreteRequest(request);
-            if (!response.isEmpty())
+            if (!response.isEmpty()) {
+                System.out.println(response + "\n");
                 out.println(response + "\n");
+            }
         }
         terminarConexao();
     }
@@ -63,6 +65,9 @@ public class Skeleton extends Thread {
             case "LISTARATIVOS":
                 utilizadorLogado(true);
                 return listarAtivos();
+            case "SALDO":
+                utilizadorLogado(true);
+                return getSaldo();
             case "COMPRA":
                 utilizadorLogado(true);
                 return startContratoCompra(keywords[1]);
@@ -97,8 +102,6 @@ public class Skeleton extends Thread {
         } catch (ArrayIndexOutOfBoundsException | UtilizadorInvalidoException e) {
             throw new PedidoFalhadoException("Os argumentos dados não são válidos");
         }
-
-
         return "OK";
     }
 
@@ -107,8 +110,7 @@ public class Skeleton extends Thread {
 
         try {
             utilizador = ess.iniciarSessao(parameters[0], parameters[1]);
-            utilizador.setSession(cliSocket);
-        } catch (ArrayIndexOutOfBoundsException | IOException | UtilizadorInvalidoException e) {
+        } catch (ArrayIndexOutOfBoundsException | UtilizadorInvalidoException e) {
             throw new PedidoFalhadoException("Os argumentos dados não são válidos");
         }
         return "OK";
@@ -147,9 +149,13 @@ public class Skeleton extends Thread {
         } catch (ArrayIndexOutOfBoundsException | NumberFormatException | SaldoInsuficienteException e) {
             throw new PedidoFalhadoException("Os argumentos dados não são válidos");
         }
-        String message = "O contrato foi fechado!";
 
-        return "OK\n" + message;
+        return "OK";
+    }
+
+    private String getSaldo() {
+        String res = Float.toString(ess.getSaldoUtilizador());
+        return "OK\n" + res;
     }
 
 
@@ -188,14 +194,15 @@ public class Skeleton extends Thread {
 
     private String terminarSessao() {
         terminarSessao();
-        return "Sessão terminada!";
+        return "OK";
     }
 
+    //TODO diz leiloes
     private void utilizadorLogado(boolean estado) throws PedidoFalhadoException {
-        if (estado && utilizador == null)
-            throw new PedidoFalhadoException("É necessário iniciar sessão para aceder aos leilões");
+        if (!estado && utilizador == null)
+            throw new PedidoFalhadoException("É necessário iniciar sessão para aceder aos ativos");
 
-        if (!estado && utilizador != null)
+        if (estado && utilizador != null)
             throw new PedidoFalhadoException("Já existe uma sessão iniciada");
     }
 

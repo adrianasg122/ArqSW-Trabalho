@@ -30,7 +30,7 @@ public class Updater extends Thread{
         return res;
     }
 
-    public static float getValorCompra(String entidade){
+    public float getValorCompra(String entidade){
         float res = 0;
 
         try {
@@ -54,7 +54,13 @@ public class Updater extends Thread{
         return res;
     }
 
+    public void povoacao() {
+        ess.criarAtivo("NVDA");
+    }
+
     public void run() {
+
+        povoacao();
 
         while (true) {
             Set<Ativo> ativos = ess.listarAtivos();

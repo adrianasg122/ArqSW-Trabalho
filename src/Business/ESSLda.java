@@ -5,6 +5,10 @@ import DAOS.AtivosDAO;
 import DAOS.ContratoDAO;
 import DAOS.RegistoDAO;
 import DAOS.UtilizadorDAO;
+import yahoofinance.Stock;
+import yahoofinance.YahooFinance;
+
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -282,11 +286,34 @@ public class ESSLda {
         return res;
     }
 
+    public int existe (String nome)  {
+        int existe = 0;
+        for (Ativo a : ativos.values()){
+            if (a.getDescricao().equals(nome)) existe = 0;}
+        return existe;
+    }
+
+    public void criarAtivo(String entidade) {
+        int i = this.ativos.size() + 1;
+        Ativo aux = new Ativo();
+        Stock s = null;
+        try {
+            s = YahooFinance.get(entidade);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (this.existe(entidade) == 0 && s!= null) {
+            aux.setId(i);
+            aux.setDescricao(entidade);
+            aux.setPrecoVenda(s.getQuote().getBid().floatValue());
+            aux.setPrecoCompra(s.getQuote().getAsk().floatValue());
+            this.ativos.put(i, aux);
+            }
+    }
 
 
-
-
-}
+    }
 
 
 

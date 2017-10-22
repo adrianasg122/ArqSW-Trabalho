@@ -1,10 +1,9 @@
 package Business;
 
 
-public class Ativo {
+public class Ativo implements Comparable<Ativo>{
 
     private int id;
-    private String tipo;
     // ask
     private float precoCompra;
     // bid
@@ -16,11 +15,10 @@ public class Ativo {
     public Ativo() {//
     }
 
-    public Ativo(int id, float precoCompra, float precoVenda, String tipo, String descricao) {
+    public Ativo(int id, float precoCompra, float precoVenda, String descricao) {
         this.id = id;
         this.precoCompra = precoCompra;
         this.precoVenda = precoVenda;
-        this.tipo = tipo;
         this.descricao = descricao;
 
     }
@@ -29,7 +27,6 @@ public class Ativo {
         this.id = a.getId();
         this.precoCompra = a.getPrecoCompra();
         this.precoVenda = a.getPrecoVenda();
-        this.tipo = a.getTipo();
         this.descricao = a.getDescricao();
     }
 
@@ -54,13 +51,6 @@ public class Ativo {
 
     public void setPrecoVenda(float precoVenda) { this.precoVenda = precoVenda; }
 
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
 
     public String getDescricao() { return descricao; }
 
@@ -74,7 +64,6 @@ public class Ativo {
         StringBuilder sb = new StringBuilder();
 
         sb.append("ID: ").append(id).append("\n");
-        sb.append("Tipo: ").append(tipo).append("\n");
         sb.append("Preço Compra: ").append(precoCompra).append("\n");
         sb.append("Preço Venda: ").append(precoVenda).append("\n");
         sb.append("Entidade: ").append(descricao);
@@ -83,9 +72,10 @@ public class Ativo {
     }
 
 
-
-
-
+    @Override
+    public int compareTo(Ativo o) {
+        return this.id - o.id;
+    }
 }
 
 

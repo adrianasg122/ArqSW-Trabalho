@@ -1,20 +1,65 @@
 package Interface;
 
-import Business.ESSLda;
-import Business.SaldoInsuficienteException;
-import Business.UsernameInvalidoException;
-import Business.UtilizadorInvalidoException;
+import Business.*;
+
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.util.NoSuchElementException;
 
 
 public class ESSLdaApp {
-    private static ESSLda ess;
+    //1 logado, zero não
+    private boolean cliente;
+    private Leitor leitor;
+    private Escritor escritor;
+    private static Menu menuinicial;
     private static Menu menuprincipal;
 
+    public ESSLdaApp(Leitor leitor, Escritor escritor) {
+        this.cliente = false;
+        this.leitor = leitor;
+        this.escritor = escritor;
+        this.carregarMenus();
+    }
+
+    public void executa() {
+        String resposta;
+        int op;
+        while((op = showMenu()) != -1) {
+            resposta = correComando(op);
+            System.out.println(resposta);
+        }
+
+        System.out.println("\nLigação terminada!");
+        System.exit(0);
+    }
+
+    private int showMenu() {
+        int op = 0;
+
+        try {
+            if (!cliente)
+                op = menuinicial.showMenu();
+            else {
+                op = menuprincipal.showMenu()+2;
+            }
+        } catch (NoSuchElementException e) {
+            return -1;
+        }
+
+        return op;
+    }
+
+
+
     private static void carregarMenus(){
+        String [] inicial = {
+                "Iniciar Sessão",
+                "Registar Utilizador"
+        };
+        menuinicial = new Menu(inicial);
 
         String [] principal = {
-                "Iniciar Sessão",
-                "Registar Utilizador",
                 "Listar ativos",
                 "Consultar portfólio",
                 "Consultar saldo",
@@ -29,121 +74,141 @@ public class ESSLdaApp {
     }
 
 
-    private static void imprimeMenuInicial(){
-        int op;
-        do{
-            op = menuprincipal.showMenu();
-            switch (op){
-                case 1: sessao();
-                break;
-                case 2: regiUti();
-                break;
-                case 3: listA();
-                break;
-                case 4: saldo();
-                break;
-                case 5: listVendas();
-                break;
-                case 6: comprarA();
-                break;
-                case 7: venderA();
-                break;
-                case 8: port();
-                break;
-                case 9: fecharC();
-                break;
-                case 10: ess.terminarSessao();
-                break;
+    private String correComando(int op){
+        String query = null, resposta = null;
+            switch (op) {
+                case 1:
+                    query = sessao();
+                    break;
+                case 2:
+                    query = regiUti();
+                    break;
+                case 3:
+                    query = listA();
+                    break;
+                case 4:
+                    query = saldo();
+                    break;
+                case 5:
+                    query = listVendas();
+                    break;
+                case 6:
+                    query = comprarA();
+                    break;
+                case 7:
+                    query = venderA();
+                    break;
+                case 8:
+                    query = port();
+                    break;
+                case 9:
+                    query = fecharC();
+                    break;
+                case 10:
+                    query = terminarSessao();
+                    break;
             }
-        }while (op != 0);
+        escritor.escrever(query);
+        try {
+            resposta = leitor.ler(op);
+            if (op == 1) this.cliente = true;
+            else if (op == 10) this.cliente = false;
+        } catch (PedidoFalhadoException e) {
+            System.out.println("CHEGUEI AQUI");
+            e.getMessage();}
+
+        return resposta;
+
     }
 
 
-    private static void sessao(){
-        String email,password;
+    private String sessao() {
+        String email,password,query;
 
         email = menuprincipal.readString("Username: ");
 
         password = menuprincipal.readString("Password: ");
 
-        try{
-            ess.iniciarSessao(email,password);
-            System.out.println("\n!! BEM-VINDO !!");
-        }
-        catch (UtilizadorInvalidoException e){
-            System.out.println(e.getMessage());
-        }
+        query = String.join(" ","LOGIN",email,password);
 
-        imprimeMenuInicial();
+        return query;
     }
 
-    private static void regiUti(){
-        String nome, password;
-        float saldo;
+    private String regiUti(){
+        String nome, password, query, saldo;
+
 
         nome = menuprincipal.readString("Insira o nome: ");
 
         password = menuprincipal.readString("Insira a password: ");
 
-        saldo = menuprincipal.readFloat("Insira o saldo:");
+        saldo = menuprincipal.readString("Insira o saldo:");
 
-        try{
-            ess.registar(nome,password,saldo);
-            System.out.println("\nUtilizador registado com sucesso!");
-        }catch (UtilizadorInvalidoException e){
-            System.out.println(e.getMessage());
-        }
+        query = String.join(" ","REGISTAR",nome,password,saldo);
+
+        return query;
     }
 
-    private static void fecharC() {
-        int id;
+    private String fecharC() {
+        String id, query;
 
-        id = menuprincipal.readInt("Insira o id do Contrato: ");
+        id = menuprincipal.readString("Insira o id do Contrato: ");
 
-        try {
-            ess.fecharContrato(id);
-            System.out.println("\nContrato fechado com sucesso!");
-        } catch (SaldoInsuficienteException e) {
-            e.printStackTrace();
-        }
+        query = String.join(" ","ENCERRAR",id);
+
+        return query;
     }
 
-    private static void listA() { ess.listarAtivos(); }
-
-    private static void port(){ ess.consultaPortCFD(); }
-
-    private static void saldo(){ ess.getSaldoUtilizador(); }
-
-    private static void listVendas(){ ess.getAtivosVenda(); }
-
-    private static void comprarA() {
-        int idA, quant;
-        float sl, tp;
-
-        idA = menuprincipal.readInt("Insira o id do Ativo: ");
-
-        sl = menuprincipal.readFloat("Indique o Stop Loss: ");
-
-        tp = menuprincipal.readFloat("Indique o Take Profit: ");
-
-        quant = menuprincipal.readInt("Insira a quantidade:");
-
-        ess.criarContratoCompra(idA, sl, tp, quant);
+    private String listA() {
+        return"LISTARATIVOS";
     }
 
-    private static void venderA(){
-        int idA, quant;
-        float sl, tp;
 
-        idA = menuprincipal.readInt("Insira o id do Ativo: ");
-
-        sl = menuprincipal.readFloat("Indique o Stop Loss: ");
-
-        tp = menuprincipal.readFloat("Indique o Take Profit: ");
-
-        quant = menuprincipal.readInt("Insira a quantidade:");
-
-        ess.criarContratoVenda(idA, sl, tp, quant);
+    private String port(){
+        return "LISTARCONTRATOS";
     }
 
+    private String saldo(){
+        return "SALDO";
+    }
+
+    private String listVendas(){
+        return "LISTARVALORESVENDA";
+    }
+
+    private String comprarA() {
+        String idA, quant, sl, tp, query;
+
+        idA = menuprincipal.readString("Insira o id do Ativo: ");
+
+        sl = menuprincipal.readString("Indique o Stop Loss: ");
+
+        tp = menuprincipal.readString("Indique o Take Profit: ");
+
+        quant = menuprincipal.readString("Insira a quantidade:");
+
+        query = String.join(" ","COMPRAR",idA,sl,tp, quant);
+
+        return query;
+    }
+
+    private String venderA(){
+        String idA, quant, sl, tp, query;
+
+        idA = menuprincipal.readString("Insira o id do Ativo: ");
+
+        sl = menuprincipal.readString("Indique o Stop Loss: ");
+
+        tp = menuprincipal.readString("Indique o Take Profit: ");
+
+        quant = menuprincipal.readString("Insira a quantidade:");
+
+        query = String.join(" ","VENDER", idA, sl, tp, quant);
+
+        return query;
+    }
+
+    private String terminarSessao() {
+        return "TERMINAR";
+    }
 }
