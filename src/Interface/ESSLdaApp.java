@@ -35,16 +35,16 @@ public class ESSLdaApp {
     }
 
     private int showMenu() {
-        int op = 0;
+        int op = -1;
 
         try {
             if (!cliente)
                 op = menuinicial.showMenu();
             else {
-                op = menuprincipal.showMenu()+2;
+                op = menuprincipal.showMenu() + 2;
             }
         } catch (NoSuchElementException e) {
-            return -1;
+            return op;
         }
 
         return op;
@@ -111,10 +111,11 @@ public class ESSLdaApp {
         escritor.escrever(query);
         try {
             resposta = leitor.ler(op);
+            System.out.println("entrei!");
             if (op == 1) this.cliente = true;
             else if (op == 10) this.cliente = false;
         } catch (PedidoFalhadoException e) {
-            System.out.println("CHEGUEI AQUI");
+            System.out.println("Falhei!");
             e.getMessage();}
 
         return resposta;
@@ -136,7 +137,6 @@ public class ESSLdaApp {
 
     private String regiUti(){
         String nome, password, query, saldo;
-
 
         nome = menuprincipal.readString("Insira o nome: ");
 

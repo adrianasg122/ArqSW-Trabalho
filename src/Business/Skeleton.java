@@ -197,12 +197,11 @@ public class Skeleton extends Thread {
         return "OK";
     }
 
-    //TODO diz leiloes
     private void utilizadorLogado(boolean estado) throws PedidoFalhadoException {
-        if (!estado && utilizador == null)
+        if (estado && utilizador == null)
             throw new PedidoFalhadoException("É necessário iniciar sessão para aceder aos ativos");
 
-        if (estado && utilizador != null)
+        if (!estado && utilizador != null)
             throw new PedidoFalhadoException("Já existe uma sessão iniciada");
     }
 
