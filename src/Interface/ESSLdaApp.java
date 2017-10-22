@@ -61,12 +61,11 @@ public class ESSLdaApp {
 
         String [] principal = {
                 "Listar ativos",
-                "Consultar portfólio",
                 "Consultar saldo",
                 "Listar ativos a vender",
                 "Comprar ativo",
                 "Vender ativo",
-                "Listar contratos",
+                "Consultar portfólio",
                 "Fechar contrato",
                 "Terminar Sessão"
         };

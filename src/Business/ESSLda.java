@@ -105,13 +105,14 @@ public class ESSLda {
      * @param saldo    Saldo inicial da conta.
      */
     public synchronized void registar(String username, String password, float saldo) throws UtilizadorInvalidoException {
-        int id;
-        Utilizador u;
-        id = utilizadores.size() + 1;
+        Utilizador u, res = null;
+        int id = utilizadores.size() + 1;
         u = new Utilizador(id, username, password, saldo);
-        if (utilizadores.get(id).getUsername() == null) {
+        for (Utilizador aux : utilizadores.values())
+            if (aux.getUsername().equals(username)) res = aux;
+        if (res == null)
             utilizadores.put(id, u);
-        } else throw new UtilizadorInvalidoException("Username já existe");
+        else throw new UtilizadorInvalidoException("Username já existe");
     }
 
 
