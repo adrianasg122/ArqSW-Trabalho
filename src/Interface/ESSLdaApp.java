@@ -112,7 +112,7 @@ public class ESSLdaApp {
             resposta = leitor.ler(op);
             System.out.println("entrei!");
             if (op == 1) this.cliente = true;
-            else if (op == 10) this.cliente = false;
+            if (op == 10) this.cliente = false;
         } catch (PedidoFalhadoException e) {
             System.out.println("Falhei!");
             e.getMessage();}
@@ -125,9 +125,9 @@ public class ESSLdaApp {
     private String sessao() {
         String email,password,query;
 
-        email = menuprincipal.readString("Username: ");
+        email = menuprincipal.readString("Username:");
 
-        password = menuprincipal.readString("Password: ");
+        password = menuprincipal.readString("Password:");
 
         query = String.join(" ","LOGIN",email,password);
 
@@ -137,14 +137,16 @@ public class ESSLdaApp {
     private String regiUti(){
         String nome, password, query, saldo;
 
-        nome = menuprincipal.readString("Insira o nome: ");
+        nome = menuprincipal.readString("Insira o nome:");
 
-        password = menuprincipal.readString("Insira a password: ");
+        password = menuprincipal.readString("Insira a password:");
 
         saldo = menuprincipal.readString("Insira o saldo:");
 
         query = String.join(" ","REGISTAR",nome,password,saldo);
 
+        //TODO tirar isto
+        System.out.println(query);
         return query;
     }
 

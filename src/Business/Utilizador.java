@@ -67,7 +67,6 @@ public class Utilizador implements Comparable<Utilizador> {
     }
 
 
-
     public String toString() {
         return username;
     }

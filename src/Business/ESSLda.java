@@ -97,6 +97,13 @@ public class ESSLda {
         this.utilizador = null;
     }
 
+    public int getUserId(String username) {
+        int id = -1;
+        for (Utilizador u : utilizadores.values()) {
+            if (u.getUsername().equals(username)) id = u.getId();
+        }
+        return id;
+    }
     /**
      * Regitar novo utilizador na plataforma.
      *
@@ -105,13 +112,12 @@ public class ESSLda {
      * @param saldo    Saldo inicial da conta.
      */
     public synchronized void registar(String username, String password, float saldo) throws UtilizadorInvalidoException {
-        Utilizador u, res = null;
         int id = utilizadores.size() + 1;
-        u = new Utilizador(id, username, password, saldo);
-        for (Utilizador aux : utilizadores.values())
-            if (aux.getUsername().equals(username)) res = aux;
-        if (res == null)
-            utilizadores.put(id, u);
+        Utilizador u = u = new Utilizador(id, username, password, saldo);
+
+        if (utilizadores.get(getUserId(username)) == null ){
+            utilizadores.put(id,u);
+            System.out.println("Estou registadissimo ");}
         else throw new UtilizadorInvalidoException("Username já existe");
     }
 

@@ -147,7 +147,7 @@ public class UtilizadorDAO implements Map<Integer, Utilizador>{
 
     @Override
     public Utilizador remove(Object key){
-        Utilizador u = this.get((Integer) key);
+        Utilizador u = this.get(key);
         try{
             connection = Connect.connect();
             PreparedStatement ps = connection.prepareStatement("DELETE FROM Utilizador WHERE username = ?");

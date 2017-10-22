@@ -55,6 +55,7 @@ public class Leitor {
             System.out.println("Não fiz nada no leitor");
             e.getMessage();
         }
+        if (conteudo == null) return "Os dados não são válidos";
         return conteudo;
     }
 
@@ -69,8 +70,6 @@ public class Leitor {
             sb.append(linha).append("\n");
             sb.append(lerLinha()).append("\n\n");
         }
-
-        if(sb.length() == 0) return "Não existe nada para mostrar";
 
         return sb.toString();
     }

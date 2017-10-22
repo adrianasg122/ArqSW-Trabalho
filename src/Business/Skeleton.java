@@ -94,11 +94,12 @@ public class Skeleton extends Thread {
     private String registar(String argumentos) throws PedidoFalhadoException {
         String[] parametros = argumentos.split(" ");
 
+
         try {
-            System.out.println("T:" + parametros.length);
-            if (parametros.length > 4)
-                throw new PedidoFalhadoException("O username/password não podem ter espaços");
-            ess.registar(parametros[0], parametros[1], Integer.parseInt(parametros[2]));
+            //TODO tirar isto
+            System.out.println("Tam:" + parametros.length);
+            if (parametros.length > 3) throw new PedidoFalhadoException("O username/password não podem ter espaços");
+            ess.registar(parametros[0], parametros[1], Float.parseFloat(parametros[2]));
         } catch (ArrayIndexOutOfBoundsException | UtilizadorInvalidoException e) {
             throw new PedidoFalhadoException("Os argumentos dados não são válidos");
         }
