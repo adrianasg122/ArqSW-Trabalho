@@ -22,37 +22,26 @@ public class Leitor {
 
 
     public String ler(int comando) throws PedidoFalhadoException {
-        String cabecalho = null , conteudo = null;
+        String cabecalho, conteudo = null;
         try {
             cabecalho = in.readLine();
+            System.out.println(cabecalho);
             if (cabecalho.equals("EXCEPTION")) {
                 conteudo = in.readLine();
                 throw new PedidoFalhadoException(conteudo);
             }  else {
                    switch (comando){
-                       case 1 : conteudo = lerListar();
-                            break;
-                       case 2 : conteudo = lerListar();
-                            break;
-                       case 3 : conteudo = lerListar();
-                            break;
-                       case 4 : conteudo = lerListar();
-                            break;
-                       case 5 : conteudo = lerListar();
-                            break;
-                       case 6 : conteudo = lerListar();
-                            break;
-                       case 7 : conteudo = lerListar();
-                            break;
+                       case 3 :
+                       case 4 :
+                       case 5 :
+                       case 6 :
+                       case 7 :
                        case 8 : conteudo = lerListar();
-                            break;
                        default :
                            break;
-                        }
+                   }
             }
         } catch (IOException e) {
-            // TODO tirar isto
-            System.out.println("Não fiz nada no leitor");
             e.getMessage();
         }
         if (conteudo == null) return "Os dados não são válidos";
@@ -68,7 +57,6 @@ public class Leitor {
             if(linha.isEmpty())
                 break;
             sb.append(linha).append("\n");
-            sb.append(lerLinha()).append("\n\n");
         }
 
         return sb.toString();
