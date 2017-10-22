@@ -30,6 +30,10 @@ public class Leitor {
                 throw new PedidoFalhadoException(conteudo);
             }  else {
                    switch (comando){
+                       case 1 : conteudo = lerListar();
+                            break;
+                       case 2 : conteudo = lerListar();
+                            break;
                        case 3 : conteudo = lerListar();
                             break;
                        case 4 : conteudo = lerListar();

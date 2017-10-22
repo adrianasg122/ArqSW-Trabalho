@@ -81,7 +81,7 @@ public class ESSLda {
         userLock.lock();
         try {
             for (Utilizador aux : utilizadores.values()) {
-                if (aux.getUsername() == username && aux.getPassword() == password)
+                if (aux.getUsername().equals(username) && aux.getPassword().equals(password))
                     u = this.utilizadores.get(aux.getId());
             }
         }finally{
