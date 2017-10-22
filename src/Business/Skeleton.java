@@ -95,9 +95,9 @@ public class Skeleton extends Thread {
         String[] parametros = argumentos.split(" ");
 
         try {
-            if (parametros.length > 2)
+            System.out.println("T:" + parametros.length);
+            if (parametros.length > 4)
                 throw new PedidoFalhadoException("O username/password não podem ter espaços");
-
             ess.registar(parametros[0], parametros[1], Integer.parseInt(parametros[2]));
         } catch (ArrayIndexOutOfBoundsException | UtilizadorInvalidoException e) {
             throw new PedidoFalhadoException("Os argumentos dados não são válidos");
@@ -198,10 +198,10 @@ public class Skeleton extends Thread {
     }
 
     private void utilizadorLogado(boolean estado) throws PedidoFalhadoException {
-        if (estado && utilizador == null)
+        if (estado == true && utilizador == null)
             throw new PedidoFalhadoException("É necessário iniciar sessão para aceder aos ativos");
 
-        if (!estado && utilizador != null)
+        if (estado == false && utilizador != null)
             throw new PedidoFalhadoException("Já existe uma sessão iniciada");
     }
 
