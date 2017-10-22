@@ -263,38 +263,54 @@ public class ESSLda {
     public Set<Ativo> listarAtivos() {
         Set<Ativo> res = new HashSet<>();
         ativoLock.lock();
-        for (Ativo a : ativos.values())
-            res.add(a.clone());
-        ativoLock.unlock();
+        try {
+            ativos.forEach((i,a) -> res.add(a.clone()));
+        } finally {
+            ativoLock.unlock();
+        }
         return res;
     }
 
     public Set<Contrato> listarContratosVendaAtivo(int id) {
         Set<Contrato> res = new HashSet<>();
-
-        for(Contrato c : contratos.values())
-            if (c.getIdAtivo() == id && c.getVenda() == 1) res.add(c);
-
+        contratoLock.lock();
+        try {
+            for (Contrato c : contratos.values())
+                if (c.getIdAtivo() == id && c.getVenda() == 1) res.add(c);
+        }
+        finally {
+            contratoLock.unlock();
+        }
         return res;
     }
 
     public Set<Contrato> listarContratosCompraAtivo(int id) {
         Set<Contrato> res = new HashSet<>();
-
-        for(Contrato c : contratos.values())
-            if (c.getIdAtivo() == id && c.getVenda() == 0) res.add(c);
-
+        contratoLock.lock();
+        try {
+            for (Contrato c : contratos.values())
+                if (c.getIdAtivo() == id && c.getVenda() == 0) res.add(c);
+        }
+        finally {
+            contratoLock.unlock();
+        }
         return res;
     }
 
     public int existe (String nome)  {
         int existe = 0;
-        for (Ativo a : ativos.values()){
-            if (a.getDescricao().equals(nome)) existe = 0;}
+        ativoLock.lock();
+        try {
+            for (Ativo a : ativos.values())
+                if (a.getDescricao().equals(nome)) existe = 0;
+        }
+        finally {
+            ativoLock.unlock();
+        }
         return existe;
     }
 
-    public void criarAtivo(String entidade) {
+    public synchronized void criarAtivo(String entidade) {
         int i = this.ativos.size() + 1;
         Ativo aux = new Ativo();
         Stock s = null;

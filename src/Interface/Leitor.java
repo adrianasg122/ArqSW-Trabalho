@@ -47,6 +47,8 @@ public class Leitor {
                         }
             }
         } catch (IOException e) {
+            // TODO tirar isto
+            System.out.println("Não fiz nada no leitor");
             e.getMessage();
         }
         return conteudo;
@@ -61,7 +63,11 @@ public class Leitor {
             if(linha.isEmpty())
                 break;
             sb.append(linha).append("\n");
+            sb.append(lerLinha()).append("\n\n");
         }
+
+        if(sb.length() == 0) return "Não existe nada para mostrar";
+
         return sb.toString();
     }
 
