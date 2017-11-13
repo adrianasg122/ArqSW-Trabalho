@@ -1,9 +1,7 @@
-package Interface;
+package Cliente;
 
-import Business.*;
+import Servidor.*;
 
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.util.NoSuchElementException;
 
 

@@ -1,6 +1,6 @@
-package Interface;
+package Cliente;
 
-import Business.PedidoFalhadoException;
+import Servidor.PedidoFalhadoException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
