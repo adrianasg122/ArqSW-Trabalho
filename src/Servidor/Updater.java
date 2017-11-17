@@ -1,4 +1,4 @@
-package Business;
+package Servidor;
 
 import yahoofinance.Stock;
 import yahoofinance.YahooFinance;
@@ -55,7 +55,7 @@ public class Updater extends Thread{
     }
 
     public void povoacao() {
-        ess.criarAtivo("NVDA");
+        ess.criarAtivo("GE");
     }
 
     public void run() {
@@ -69,25 +69,19 @@ public class Updater extends Thread{
 
                 float pc = getValorCompra(a.getDescricao());
                 float pv = getValorVenda(a.getDescricao());
-                Set<Contrato> contVenda = ess.listarContratosVendaAtivo(a.getId());
-                Set<Contrato> contCompra = ess.listarContratosCompraAtivo(a.getId());
 
                 if (a.getPrecoCompra() != pc) {
-                    for (Contrato c : contCompra)
-                        try {
-                            ess.comprar(c);
-                        } catch (SaldoInsuficienteException e) {
-                        }
+                    a.notifyObserversCompra();
 
-                    if (a.getPrecoVenda() != pv) {
-                        for (Contrato c : contVenda)
-                            ess.vender(c);
-
-                    }
-                    a.setPrecoCompra(pc);
-                    a.setPrecoVenda(pv);
-                    ess.getAtivos().put(a.getId(), a);
                 }
+                if (a.getPrecoVenda() != pv) {
+                    a.notifyObserversVenda();
+
+                }
+
+                a.setPrecoCompra(pc);
+                a.setPrecoVenda(pv);
+                ess.getAtivos().put(a.getId(), a);
             }
             try {
                 sleep(300000);
@@ -95,6 +89,5 @@ public class Updater extends Thread{
             }
         }
     }
-
-
 }
+

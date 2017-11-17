@@ -1,4 +1,4 @@
-package Business;
+package Servidor;
 
 import java.net.Socket;
 import java.io.InputStreamReader;

@@ -1,7 +1,10 @@
-package Business;
+package Servidor;
 
 
-public class Ativo implements Comparable<Ativo>{
+import java.util.ArrayList;
+
+public class Ativo implements Comparable<Ativo>, Subject{
+
 
     private int id;
     // ask
@@ -10,6 +13,10 @@ public class Ativo implements Comparable<Ativo>{
     private float precoVenda;
     //qual a entidade responsável
     private String descricao;
+    //Contratos a observar este ativo
+    public ArrayList<Observer> observersCompra;
+    public ArrayList<Observer> observersVenda;
+
 
 
     public Ativo() {//
@@ -51,10 +58,17 @@ public class Ativo implements Comparable<Ativo>{
 
     public void setPrecoVenda(float precoVenda) { this.precoVenda = precoVenda; }
 
-
     public String getDescricao() { return descricao; }
 
     public void setDescricao(String descricao) { this.descricao = descricao; }
+
+    public ArrayList<Observer> getObserversCompra() { return observersCompra; }
+
+    public void setObserversCompra(ArrayList<Observer> observersCompra) { this.observersCompra = observersCompra; }
+
+    public ArrayList<Observer> getObserversVenda() { return observersVenda; }
+
+    public void setObserversVenda(ArrayList<Observer> observersVenda) { this.observersVenda = observersVenda; }
 
     public Ativo clone () {
         return new Ativo(this);
@@ -71,10 +85,36 @@ public class Ativo implements Comparable<Ativo>{
         return sb.toString();
     }
 
-
     @Override
     public int compareTo(Ativo o) {
         return this.id - o.id;
+    }
+
+    public void notifyObserversCompra() {
+        // Chama o método update de todos os observers disponíveis
+        for (Observer o : observersCompra) {
+            o.update(this);
+        }
+    }
+
+    public void notifyObserversVenda() {
+        // Chama o método update de todos os observers disponíveis
+        for (Observer o : observersVenda) {
+            o.update(this);
+        }
+    }
+
+    public void registerObserverCompra(Observer o){
+        observersCompra.add(o);
+    }
+
+    public void registerObserverVenda(Observer o){
+        observersVenda.add(o);
+    }
+
+    public void removeObserver(Observer o){
+        if(observersCompra.contains(o)) observersCompra.remove(o);
+        else if (observersVenda.contains(o)) observersVenda.remove(o);
     }
 }
 

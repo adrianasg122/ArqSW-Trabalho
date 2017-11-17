@@ -6,11 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="ArqSw" />
+        <module name="ArqSW-Trabalho" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="ArqSw" target="1.8" />
+      <module name="ArqSW-Trabalho" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

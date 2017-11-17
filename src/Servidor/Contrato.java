@@ -1,7 +1,11 @@
-package Business;
+package Servidor;
 
-public class Contrato{
+import java.util.HashSet;
+import java.util.Set;
 
+public class Contrato implements Observer{
+
+    private ESSLda ess;
     private int idContrato;
     private int idAtivo;
     private int idUtil;
@@ -14,6 +18,10 @@ public class Contrato{
     // 1 se tiver concluido, 0 caso contrário
     private int concluido;
 
+
+    public Contrato (ESSLda e) {
+        this.ess = e;
+    }
 
     public Contrato(Contrato p) {
         this.idContrato = p.getIdContrato();
@@ -138,5 +146,23 @@ public class Contrato{
         if (Float.compare(contrato.getTakeprofit(), getTakeprofit()) != 0) return false;
         return getConcluido() == contrato.getConcluido();
     }
+
+
+    public void update (Ativo a) {
+        Set<Contrato> contVenda = ess.listarContratosVendaAtivo(a.getId());
+        Set<Contrato> contCompra = ess.listarContratosCompraAtivo(a.getId());
+
+        for (Contrato c : contCompra)
+            try {
+                ess.comprar(c);
+            } catch (SaldoInsuficienteException e) {
+            }
+
+        for (Contrato c : contVenda)
+            ess.vender(c);
+    }
+
+
+
 
 }

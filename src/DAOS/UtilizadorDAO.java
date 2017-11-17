@@ -1,6 +1,6 @@
 package DAOS;
 
-import Business.Utilizador;
+import Servidor.Utilizador;
 
 import java.sql.*;
 import java.util.*;

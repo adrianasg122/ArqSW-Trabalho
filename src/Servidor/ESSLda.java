@@ -1,4 +1,4 @@
-package Business;
+package Servidor;
 
 
 import DAOS.AtivosDAO;
@@ -166,7 +166,7 @@ public class ESSLda {
 
 
     public synchronized int criarContratoCompra(int idAtivo, float sl, float tp, int quant) {
-        Contrato c = new Contrato(null);
+        Contrato c = new Contrato(this);
         int id = contratos.size() + 1;
         c.setIdContrato(id);
         c.setIdAtivo(idAtivo);
@@ -176,12 +176,14 @@ public class ESSLda {
         c.setQuantidade(quant);
         c.setVenda(0);
         c.setConcluido(0);
+
         contratos.put(id, c);
+        ativos.get(idAtivo).registerObserverCompra(c);
         return id;
     }
 
     public synchronized int criarContratoVenda(int idAtivo, float sl, float tp, int quant) {
-        Contrato c = new Contrato(null);
+        Contrato c = new Contrato(this);
         int id = contratos.size() + 1;
         c.setIdContrato(id);
         c.setIdAtivo(idAtivo);
@@ -191,7 +193,9 @@ public class ESSLda {
         c.setQuantidade(quant);
         c.setVenda(1);
         c.setConcluido(0);
+
         contratos.put(id, c);
+        ativos.get(idAtivo).registerObserverVenda(c);
         return id;
     }
 
@@ -234,6 +238,7 @@ public class ESSLda {
             criarRegisto(c);
             c.setConcluido(1);
             utilizador.setSaldo(utilizador.getSaldo() - preco);
+            ativos.get(c.getIdAtivo()).getObserversCompra().remove(c);
         }
         else {
             synchronized (ativos) {
@@ -241,6 +246,7 @@ public class ESSLda {
                     criarRegisto(c);
                     c.setConcluido(1);
                     utilizador.setSaldo(utilizador.getSaldo() - preco);
+                    ativos.get(c.getIdAtivo()).getObserversCompra().remove(c);
                 }
             }
         }
@@ -251,6 +257,7 @@ public class ESSLda {
      *
      * @param c Contrato
      */
+
     public void vender(Contrato c) {
         float preco = c.getPreco() * c.getQuantidade();
         float sl = c.getStoploss();
@@ -261,6 +268,7 @@ public class ESSLda {
                 criarRegisto(c);
                 c.setConcluido(1);
                 utilizador.setSaldo(utilizador.getSaldo() + preco);
+                ativos.get(c.getIdAtivo()).getObserversVenda().remove(c);
             }
         }
     }
@@ -276,6 +284,7 @@ public class ESSLda {
         }
         return res;
     }
+
 
     public Set<Contrato> listarContratosVendaAtivo(int id) {
         Set<Contrato> res = new HashSet<>();
@@ -335,8 +344,9 @@ public class ESSLda {
             }
     }
 
+}
 
-    }
+
 
 
 

@@ -1,7 +1,7 @@
 package DAOS;
 
 
-import Business.Contrato;
+import Servidor.Contrato;
 
 import java.sql.*;
 import java.util.*;

@@ -1,7 +1,7 @@
 package DAOS;
 
 
-import Business.Registo;
+import Servidor.Registo;
 
 import java.sql.*;
 import java.util.*;
