@@ -20,6 +20,7 @@ public class Ativo implements Comparable<Ativo>, Subject{
 
 
     public Ativo() {//
+
     }
 
     public Ativo(int id, float precoCompra, float precoVenda, String descricao) {

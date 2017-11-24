@@ -41,6 +41,7 @@ public class Leitor {
                             break;
                        case 5 :
                        case 6 : conteudo = lerListar();
+                            break;
                        default :
                            break;
                    }
@@ -48,8 +49,7 @@ public class Leitor {
         } catch (IOException e) {
             e.getMessage();
         }
-        //TODO meti aqui um bem vindo
-        //if (conteudo == null) return cabecalho;
+
         return conteudo;
     }
 
@@ -59,8 +59,8 @@ public class Leitor {
         String linha;
 
         while ((linha = lerLinha()) != null){
-            if(linha.isEmpty() || linha.equals("§"))
-                break;
+            if(linha.isEmpty() || linha.equals("§")){
+                break;}
             sb.append(linha).append("\n");
         }
 

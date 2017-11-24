@@ -1,6 +1,9 @@
 package DAOS;
 
 import Servidor.Ativo;
+import Servidor.Contrato;
+import Servidor.Observer;
+
 import java.sql.*;
 import java.util.*;
 
@@ -80,6 +83,8 @@ public class AtivosDAO implements Map<Integer, Ativo> {
     @Override
     public Ativo get(Object key){
         Ativo a = new Ativo();
+
+
         try{
             connection = Connect.connect();
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM Ativo WHERE id = ?");
@@ -91,6 +96,43 @@ public class AtivosDAO implements Map<Integer, Ativo> {
                 a.setPrecoVenda(rs.getFloat("precoVenda"));
                 a.setDescricao(rs.getString("descricao"));
             }
+            Contrato r = new Contrato();
+            ArrayList<Observer> obs1 = new ArrayList<>();
+            PreparedStatement cs = connection.prepareStatement("SELECT * FROM Contrato WHERE idAtivo = ? AND venda = 0 AND concluido = 0");
+            cs.setString(1,Integer.toString((Integer) key));
+            ResultSet c = cs.executeQuery();
+            while(c.next()) {
+                r.setIdContrato(c.getInt("id"));
+                r.setIdUtil(c.getInt("idUtil"));
+                r.setIdAtivo(c.getInt("idAtivo"));
+                r.setPreco(c.getFloat("preco"));
+                r.setQuantidade(c.getInt("quantidade"));
+                r.setVenda(c.getInt("venda"));
+                r.setStoploss(c.getFloat("stoploss"));
+                r.setTakeprofit(c.getInt("takeprofit"));
+                r.setConcluido(c.getInt("concluido"));
+
+                obs1.add(r);
+            }
+            a.setObserversCompra(obs1);
+            ArrayList<Observer> obs2 = new ArrayList<>();
+            PreparedStatement ys = connection.prepareStatement("SELECT * FROM Contrato WHERE idAtivo = ? AND venda = 1 AND concluido = 0");
+            ys.setString(1,Integer.toString((Integer) key));
+            ResultSet k = ys.executeQuery();
+            while(c.next()) {
+                r.setIdContrato(k.getInt("id"));
+                r.setIdUtil(k.getInt("idUtil"));
+                r.setIdAtivo(k.getInt("idAtivo"));
+                r.setPreco(k.getFloat("preco"));
+                r.setQuantidade(k.getInt("quantidade"));
+                r.setVenda(k.getInt("venda"));
+                r.setStoploss(k.getFloat("stoploss"));
+                r.setTakeprofit(k.getInt("takeprofit"));
+                r.setConcluido(k.getInt("concluido"));
+
+                obs2.add(r);
+            }
+            a.setObserversVenda(obs1);
         }catch (SQLException e){
             System.out.println(e.getMessage());
         }finally {

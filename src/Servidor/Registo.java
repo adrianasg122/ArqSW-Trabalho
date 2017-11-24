@@ -9,6 +9,8 @@ public class Registo {
     private int venda;
 
 
+    public Registo (){ }
+
     public Registo(Registo r) {
         this.id = r.getId();
         this.idAtivo = r.getIdAtivo();

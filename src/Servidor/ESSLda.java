@@ -181,7 +181,7 @@ public class ESSLda{
         c.setConcluido(0);
 
         contratos.put(id,c);
-     //   ativos.get(idAtivo).registerObserverCompra(c);
+        ativos.get(idAtivo).registerObserverCompra(c);
         return id;
     }
 
@@ -210,7 +210,7 @@ public class ESSLda{
     }
 
     public void criarRegisto(Contrato c) {
-        Registo r = new Registo(null);
+        Registo r = new Registo();
         int regid;
         registoLock.lock();
         regid = registos.size() + 1;
@@ -289,7 +289,7 @@ public class ESSLda{
         return res;
     }
 
-
+    // TODO ver se tirar ou não
     public Set<Contrato> listarContratosVendaAtivo(int id) {
         Set<Contrato> res = new HashSet<>();
         contratoLock.lock();
@@ -303,6 +303,7 @@ public class ESSLda{
         return res;
     }
 
+    // TODO ver se tirar ou não
     public Set<Contrato> listarContratosCompraAtivo(int id) {
         Set<Contrato> res = new HashSet<>();
         contratoLock.lock();

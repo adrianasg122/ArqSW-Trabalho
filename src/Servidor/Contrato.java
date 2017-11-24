@@ -16,6 +16,9 @@ public class Contrato implements Observer{
     // 1 se tiver concluido, 0 caso contrário
     private int concluido;
 
+    public Contrato () {
+
+    }
 
     public Contrato(ESSLda e) {
         this.ess = e;
@@ -119,11 +122,12 @@ public class Contrato implements Observer{
     public synchronized String toString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("ID: ").append(idContrato).append("\n");
-        sb.append("IDAtivo: ").append(idAtivo).append("\n");
+        sb.append("IdContrato: ").append(idContrato).append("\n");
+        sb.append("IdAtivo: ").append(idAtivo).append("\n");
         sb.append("Preço Ativo: ").append(preco).append("\n");
         sb.append("Stop Loss: ").append(stoploss).append("\n");
-        sb.append("Take Profit: ").append(takeprofit);
+        sb.append("Take Profit: ").append(takeprofit).append("\n");
+        sb.append("****************");
         return sb.toString();
     }
 

@@ -29,14 +29,15 @@ public class Skeleton extends Thread {
     }
 
     public void run() {
-        String request = null;
+        String request;
 
         while((request = readLine()) != null) {
-            String response = null;
+            String response;
             response = interpreteRequest(request);
             if (!response.isEmpty()) {
-                System.out.println("!! -> " + response);
+                System.out.println("Resposta servidor: \n" + response);
                 out.println(response);
+                out.flush();
 
             }
         }
@@ -52,7 +53,7 @@ public class Skeleton extends Thread {
             return "EXCEPTION\n" + "Os argumentos não foram especificados";
         }
     }
-// TODO consultar saldo
+
     private String runCommand(String request) throws ArrayIndexOutOfBoundsException, PedidoFalhadoException {
         String[] keywords = request.split(" ", 2);
 
@@ -168,7 +169,7 @@ public class Skeleton extends Thread {
         for(Contrato auc: contratos)
             sb.append("\n").append(auc.toString());
 
-        return "OK\n" + sb.toString() + "\n§";
+        return "OK" + sb.toString() + "\n§";
     }
 
     private String listarAtivosVenda() throws PedidoFalhadoException{
