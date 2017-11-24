@@ -86,7 +86,7 @@ public class ContratoDAO implements Map<Integer, Contrato>{
 
     @Override
     public Contrato get(Object key){
-        Contrato r = new Contrato(null);
+        Contrato r = new Contrato((Contrato) null);
 
         try {
             connection = Connect.connect();
@@ -133,7 +133,7 @@ public class ContratoDAO implements Map<Integer, Contrato>{
             ps.setString(1,Integer.toString((Integer) key));
             ps.executeUpdate();
 
-            ps = connection.prepareStatement("INSERT INTO Contrato (id,idUtil,idAtivo,preco,quantidade,venda,stoploss,takeprofit,concluido) VALUES (?,?,?,?)");
+            ps = connection.prepareStatement("INSERT INTO Contrato (id,idUtil,idAtivo,preco,quantidade,venda,stoploss,takeprofit,concluido) VALUES (?,?,?,?,?,?,?,?,?)");
             ps.setString(1,Integer.toString(key));
             ps.setString(2,Integer.toString(value.getIdUtil()));
             ps.setString(3,Integer.toString(value.getIdAtivo()));
@@ -225,7 +225,7 @@ public class ContratoDAO implements Map<Integer, Contrato>{
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM Contrato");
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
-                Contrato r = new Contrato(null);
+                Contrato r = new Contrato((Contrato)null);
                 r.setIdContrato(rs.getInt("id"));
                 r.setIdUtil(rs.getInt("idUtil"));
                 r.setIdAtivo(rs.getInt("idAtivo"));

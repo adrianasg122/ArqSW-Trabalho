@@ -1,7 +1,5 @@
 package Servidor;
 
-import java.util.HashSet;
-import java.util.Set;
 
 public class Contrato implements Observer{
 
@@ -19,7 +17,7 @@ public class Contrato implements Observer{
     private int concluido;
 
 
-    public Contrato (ESSLda e) {
+    public Contrato(ESSLda e) {
         this.ess = e;
     }
 
@@ -148,21 +146,21 @@ public class Contrato implements Observer{
     }
 
 
+
+
+    //TODO alterei para não precisar do ess
     public void update (Ativo a) {
-        Set<Contrato> contVenda = ess.listarContratosVendaAtivo(a.getId());
-        Set<Contrato> contCompra = ess.listarContratosCompraAtivo(a.getId());
-
-        for (Contrato c : contCompra)
+        //
+        if(this.getVenda() == 0) {
             try {
-                ess.comprar(c);
+                ess.comprar(this);
             } catch (SaldoInsuficienteException e) {
+                e.printStackTrace();
             }
-
-        for (Contrato c : contVenda)
-            ess.vender(c);
+        }
+        else if (this.getVenda() ==1) {
+            ess.vender(this);
+        }
     }
-
-
-
 
 }

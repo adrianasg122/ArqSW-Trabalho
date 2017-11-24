@@ -153,7 +153,7 @@ public class RegistoDAO implements Map<Integer, Registo>{
 
     @Override
     public Registo remove(Object key){
-        Registo r = this.get((Integer) key);
+        Registo r = this.get(key);
         try{
             connection = Connect.connect();
             PreparedStatement ps = connection.prepareStatement("DELETE FROM Registo WHERE idUtil = ?");

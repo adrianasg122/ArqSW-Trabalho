@@ -35,8 +35,9 @@ public class Skeleton extends Thread {
             String response = null;
             response = interpreteRequest(request);
             if (!response.isEmpty()) {
-                System.out.println(response + "\n");
-                out.println(response + "\n");
+                System.out.println("!! -> " + response);
+                out.println(response);
+
             }
         }
         terminarConexao();
@@ -68,7 +69,7 @@ public class Skeleton extends Thread {
             case "SALDO":
                 utilizadorLogado(true);
                 return getSaldo();
-            case "COMPRA":
+            case "COMPRAR":
                 utilizadorLogado(true);
                 return startContratoCompra(keywords[1]);
             case "VENDA":
@@ -91,17 +92,16 @@ public class Skeleton extends Thread {
         }
     }
 
+    //TODO ele não entra no registar
     private String registar(String argumentos) throws PedidoFalhadoException {
         String[] parametros = argumentos.split(" ");
 
-
         try {
-            //TODO tirar isto
-            System.out.println("Tam:" + parametros.length);
-            if (parametros.length > 3) throw new PedidoFalhadoException("O username/password não podem ter espaços");
             ess.registar(parametros[0], parametros[1], Float.parseFloat(parametros[2]));
-        } catch (ArrayIndexOutOfBoundsException | UtilizadorInvalidoException e) {
-            throw new PedidoFalhadoException("Os argumentos dados não são válidos");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new PedidoFalhadoException("O username/password não podem ter espaços");
+        } catch (UtilizadorInvalidoException e) {
+            throw new PedidoFalhadoException(e.getMessage());
         }
         return "OK";
     }
@@ -112,7 +112,7 @@ public class Skeleton extends Thread {
         try {
             utilizador = ess.iniciarSessao(parameters[0], parameters[1]);
         } catch (ArrayIndexOutOfBoundsException | UtilizadorInvalidoException e) {
-            throw new PedidoFalhadoException("Os argumentos dados não são válidos");
+            throw new PedidoFalhadoException(e.getMessage());
         }
         return "OK";
     }
@@ -168,7 +168,7 @@ public class Skeleton extends Thread {
         for(Contrato auc: contratos)
             sb.append("\n").append(auc.toString());
 
-        return "OK\n" + sb.toString();
+        return "OK\n" + sb.toString() + "\n§";
     }
 
     private String listarAtivosVenda() throws PedidoFalhadoException{
@@ -178,7 +178,7 @@ public class Skeleton extends Thread {
         for(Ativo auc: ativos)
             sb.append("\n").append(auc.toString());
 
-        return "OK\n" + sb.toString();
+        return "OK\n" + sb.toString() + "\n§";
     }
 
 
@@ -190,7 +190,7 @@ public class Skeleton extends Thread {
         for(Ativo auc: ativos)
             sb.append("\n").append(auc.toString());
 
-        return "OK" + sb.toString();
+        return "OK" + sb.toString() + "\n§";
     }
 
     private String terminarSessao() {

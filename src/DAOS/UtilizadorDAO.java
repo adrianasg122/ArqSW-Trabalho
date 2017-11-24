@@ -89,9 +89,10 @@ public class UtilizadorDAO implements Map<Integer, Utilizador>{
 
         try{
             connection = Connect.connect();
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Utilizador WHERE username = ?");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Utilizador WHERE id = ?");
             ps.setString(1, Integer.toString((Integer)key));
             ResultSet rs = ps.executeQuery();
+            System.out.println("sql => " );
             if(rs.next()) {
                 u.setId(rs.getInt("id"));
                 u.setUsername(rs.getString("username"));

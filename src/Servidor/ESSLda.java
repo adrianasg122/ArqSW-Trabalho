@@ -15,7 +15,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 
-public class ESSLda {
+public class ESSLda{
 
     private Lock userLock;
     private Lock ativoLock;
@@ -86,8 +86,9 @@ public class ESSLda {
             }
         }finally{
             userLock.unlock();
+            if (u == null) throw new UtilizadorInvalidoException("O utilizador não existe");
         }
-           return u;
+        return u;
     }
 
     /**
@@ -98,11 +99,12 @@ public class ESSLda {
     }
 
     public int getUserId(String username) {
-        int id = -1;
+
         for (Utilizador u : utilizadores.values()) {
-            if (u.getUsername().equals(username)) id = u.getId();
+            if (u.getUsername().equals(username))
+                return u.getId();
         }
-        return id;
+        return -1;
     }
     /**
      * Regitar novo utilizador na plataforma.
@@ -115,7 +117,7 @@ public class ESSLda {
         int id = utilizadores.size() + 1;
         Utilizador u = u = new Utilizador(id, username, password, saldo);
 
-        if (utilizadores.get(getUserId(username)) == null ){
+        if (getUserId(username) == -1 ){
             utilizadores.put(id,u);
             System.out.println("Estou registadissimo ");}
         else throw new UtilizadorInvalidoException("Username já existe");
@@ -161,7 +163,7 @@ public class ESSLda {
      * Consultar o saldo de um utilizador
      */
     public float getSaldoUtilizador() {
-        return utilizador.getSaldo();
+        return utilizadores.get(utilizador.getId()).getSaldo();
     }
 
 
@@ -173,12 +175,13 @@ public class ESSLda {
         c.setIdUtil(utilizador.getId());
         c.setStoploss(sl);
         c.setTakeprofit(tp);
+        c.setPreco(0);
         c.setQuantidade(quant);
         c.setVenda(0);
         c.setConcluido(0);
 
-        contratos.put(id, c);
-        ativos.get(idAtivo).registerObserverCompra(c);
+        contratos.put(id,c);
+     //   ativos.get(idAtivo).registerObserverCompra(c);
         return id;
     }
 
@@ -278,7 +281,8 @@ public class ESSLda {
         Set<Ativo> res = new HashSet<>();
         ativoLock.lock();
         try {
-            ativos.forEach((i,a) -> res.add(a.clone()));
+            for (Ativo a : ativos.values()){
+                res.add(a.clone());}
         } finally {
             ativoLock.unlock();
         }
@@ -313,7 +317,7 @@ public class ESSLda {
     }
 
     public int existe (String nome)  {
-        int existe = 0;
+        int existe = 1;
         ativoLock.lock();
         try {
             for (Ativo a : ativos.values())
@@ -335,7 +339,7 @@ public class ESSLda {
             e.printStackTrace();
         }
 
-        if (this.existe(entidade) == 0 && s!= null) {
+        if (this.existe(entidade) == 1 && s!= null) {
             aux.setId(i);
             aux.setDescricao(entidade);
             aux.setPrecoVenda(s.getQuote().getBid().floatValue());
@@ -343,6 +347,7 @@ public class ESSLda {
             this.ativos.put(i, aux);
             }
     }
+
 
 }
 

@@ -27,7 +27,8 @@ public class Ativo implements Comparable<Ativo>, Subject{
         this.precoCompra = precoCompra;
         this.precoVenda = precoVenda;
         this.descricao = descricao;
-
+        this.observersCompra = new ArrayList<>();
+        this.observersVenda = new ArrayList<>();
     }
 
     public Ativo(Ativo a) {
@@ -35,6 +36,8 @@ public class Ativo implements Comparable<Ativo>, Subject{
         this.precoCompra = a.getPrecoCompra();
         this.precoVenda = a.getPrecoVenda();
         this.descricao = a.getDescricao();
+        this.observersCompra = a.getObserversCompra();
+        this.observersVenda = a.getObserversVenda();
     }
 
 
@@ -80,7 +83,8 @@ public class Ativo implements Comparable<Ativo>, Subject{
         sb.append("ID: ").append(id).append("\n");
         sb.append("Preço Compra: ").append(precoCompra).append("\n");
         sb.append("Preço Venda: ").append(precoVenda).append("\n");
-        sb.append("Entidade: ").append(descricao);
+        sb.append("Entidade: ").append(descricao).append("\n");
+        sb.append("**************");
 
         return sb.toString();
     }
@@ -92,15 +96,19 @@ public class Ativo implements Comparable<Ativo>, Subject{
 
     public void notifyObserversCompra() {
         // Chama o método update de todos os observers disponíveis
-        for (Observer o : observersCompra) {
-            o.update(this);
+        if (observersCompra != null) {
+            for (Observer o : observersCompra) {
+                o.update(this);
+            }
         }
     }
 
     public void notifyObserversVenda() {
         // Chama o método update de todos os observers disponíveis
-        for (Observer o : observersVenda) {
-            o.update(this);
+        if (observersCompra != null) {
+            for (Observer o : observersVenda) {
+                o.update(this);
+            }
         }
     }
 

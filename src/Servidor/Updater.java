@@ -55,7 +55,13 @@ public class Updater extends Thread{
     }
 
     public void povoacao() {
-        ess.criarAtivo("GE");
+
+        ess.criarAtivo("SQ");
+        ess.criarAtivo("HPE");
+        ess.criarAtivo("BRCD");
+        ess.criarAtivo("BAC");
+        ess.criarAtivo("VALE");
+
     }
 
     public void run() {
@@ -69,6 +75,7 @@ public class Updater extends Thread{
 
                 float pc = getValorCompra(a.getDescricao());
                 float pv = getValorVenda(a.getDescricao());
+
 
                 if (a.getPrecoCompra() != pc) {
                     a.notifyObserversCompra();

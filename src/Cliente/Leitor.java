@@ -22,21 +22,25 @@ public class Leitor {
 
 
     public String ler(int comando) throws PedidoFalhadoException {
-        String cabecalho, conteudo = null;
+        String cabecalho = null, conteudo = null;
         try {
             cabecalho = in.readLine();
-            System.out.println(cabecalho);
+            System.out.println(">>" + cabecalho);
             if (cabecalho.equals("EXCEPTION")) {
                 conteudo = in.readLine();
                 throw new PedidoFalhadoException(conteudo);
             }  else {
-                   switch (comando){
-                       case 3 :
-                       case 4 :
+                   switch (comando - 2){
+                       case 1 : conteudo = lerListar();
+                            break;
+                       case 2 : conteudo = lerLinha();
+                            break;
+                       case 3 : conteudo = lerListar();
+                            break;
+                       case 4 : conteudo = lerLinha();
+                            break;
                        case 5 :
-                       case 6 :
-                       case 7 :
-                       case 8 : conteudo = lerListar();
+                       case 6 : conteudo = lerListar();
                        default :
                            break;
                    }
@@ -44,7 +48,8 @@ public class Leitor {
         } catch (IOException e) {
             e.getMessage();
         }
-        if (conteudo == null) return "Os dados não são válidos";
+        //TODO meti aqui um bem vindo
+        //if (conteudo == null) return cabecalho;
         return conteudo;
     }
 
@@ -54,7 +59,7 @@ public class Leitor {
         String linha;
 
         while ((linha = lerLinha()) != null){
-            if(linha.isEmpty())
+            if(linha.isEmpty() || linha.equals("§"))
                 break;
             sb.append(linha).append("\n");
         }
@@ -63,13 +68,11 @@ public class Leitor {
     }
 
     private String lerLinha() {
-        String linha = null;
-
         try{
-            linha = in.readLine();
+            return in.readLine();
         }catch (IOException e){
             System.out.println("Não foi possivel ler novas mensagens!");
         }
-        return linha;
+        return null;
     }
 }

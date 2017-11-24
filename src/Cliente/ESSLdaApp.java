@@ -108,12 +108,14 @@ public class ESSLdaApp {
         escritor.escrever(query);
         try {
             resposta = leitor.ler(op);
-            System.out.println("entrei!");
-            if (op == 1) this.cliente = true;
-            if (op == 10) this.cliente = false;
+            if (op == 1) {
+                this.cliente = true;
+                //System.out.println("Bem-Vindo!");
+            } else if (op == 10) this.cliente = false;
         } catch (PedidoFalhadoException e) {
-            System.out.println("Falhei!");
-            e.getMessage();}
+            //System.out.println(e.getMessage());
+            resposta = e.getMessage();
+        }
 
         return resposta;
 
