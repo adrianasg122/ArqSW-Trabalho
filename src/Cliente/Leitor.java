@@ -25,7 +25,7 @@ public class Leitor {
         String cabecalho = null, conteudo = null;
         try {
             cabecalho = in.readLine();
-            System.out.println(">>" + cabecalho);
+            System.out.println("\n>> " + cabecalho + " <<");
             if (cabecalho.equals("EXCEPTION")) {
                 conteudo = in.readLine();
                 throw new PedidoFalhadoException(conteudo);
@@ -39,9 +39,14 @@ public class Leitor {
                             break;
                        case 4 : conteudo = lerLinha();
                             break;
-                       case 5 :
+                       case 5 :conteudo = lerLinha();
+                            break;
                        case 6 : conteudo = lerListar();
                             break;
+                       case 7 : conteudo = lerLinha();
+                           break;
+                       case 8 : conteudo = lerLinha();
+                           break;
                        default :
                            break;
                    }

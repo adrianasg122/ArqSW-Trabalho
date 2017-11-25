@@ -35,7 +35,7 @@ public class Skeleton extends Thread {
             String response;
             response = interpreteRequest(request);
             if (!response.isEmpty()) {
-                System.out.println("Resposta servidor: \n" + response);
+                System.out.println("Resposta servidor: " + response);
                 out.println(response);
                 out.flush();
 
@@ -73,7 +73,7 @@ public class Skeleton extends Thread {
             case "COMPRAR":
                 utilizadorLogado(true);
                 return startContratoCompra(keywords[1]);
-            case "VENDA":
+            case "VENDER":
                 utilizadorLogado(true);
                 return startContratoVenda(keywords[1]);
             case "LISTARCONTRATOS":
@@ -93,7 +93,6 @@ public class Skeleton extends Thread {
         }
     }
 
-    //TODO ele não entra no registar
     private String registar(String argumentos) throws PedidoFalhadoException {
         String[] parametros = argumentos.split(" ");
 
@@ -115,7 +114,7 @@ public class Skeleton extends Thread {
         } catch (ArrayIndexOutOfBoundsException | UtilizadorInvalidoException e) {
             throw new PedidoFalhadoException(e.getMessage());
         }
-        return "OK";
+        return "OK\n";
     }
 
     private String startContratoCompra(String descricao) throws PedidoFalhadoException {
@@ -152,7 +151,7 @@ public class Skeleton extends Thread {
             throw new PedidoFalhadoException("Os argumentos dados não são válidos");
         }
 
-        return "OK";
+        return "OK\n";
     }
 
     private String getSaldo() {
@@ -179,7 +178,7 @@ public class Skeleton extends Thread {
         for(Ativo auc: ativos)
             sb.append("\n").append(auc.toString());
 
-        return "OK\n" + sb.toString() + "\n§";
+        return "OK" + sb.toString() + "\n§";
     }
 
 

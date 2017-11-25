@@ -127,7 +127,7 @@ public class Contrato implements Observer{
         sb.append("Preço Ativo: ").append(preco).append("\n");
         sb.append("Stop Loss: ").append(stoploss).append("\n");
         sb.append("Take Profit: ").append(takeprofit).append("\n");
-        sb.append("****************");
+        sb.append("-----------------");
         return sb.toString();
     }
 

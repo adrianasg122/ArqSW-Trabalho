@@ -50,7 +50,7 @@ public class RegistoDAO implements Map<Integer, Registo>{
 
         try{
             connection = Connect.connect();
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Registo WHERE idUtil = ?");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Registo WHERE idRegisto = ?");
             ps.setString(1,Integer.toString((Integer) key));
             ResultSet rs = ps.executeQuery();
             res = rs.next();
@@ -90,11 +90,11 @@ public class RegistoDAO implements Map<Integer, Registo>{
 
         try {
             connection = Connect.connect();
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Registo WHERE idUtil = ?");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Registo WHERE idRegisto = ?");
             ps.setString(1,Integer.toString((Integer) key));
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                r.setId(rs.getInt("id"));
+                r.setId(rs.getInt("idRegisto"));
                 r.setIdUtil(rs.getInt("idUtil"));
                 r.setIdAtivo(rs.getInt("idAtivo"));
                 r.setPreco(rs.getFloat("preco"));
@@ -126,11 +126,11 @@ public class RegistoDAO implements Map<Integer, Registo>{
 
         try {
             connection = Connect.connect();
-            PreparedStatement ps = connection.prepareStatement("DELETE FROM Registo WHERE idUtil = ?");
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM Registo WHERE idRegisto = ?");
             ps.setString(1,Integer.toString((Integer) key));
             ps.executeUpdate();
 
-            ps = connection.prepareStatement("INSERT INTO Registo (id,idAtivo,idUtil,preco,quantidade,venda) VALUES (?,?,?,?)");
+            ps = connection.prepareStatement("INSERT INTO Registo (idRegisto,idAtivo,idUtil,preco,quantidade,venda) VALUES (?,?,?,?,?,?)");
             ps.setString(1,Integer.toString(key));
             ps.setString(2,Integer.toString(value.getIdAtivo()));
             ps.setString(3,Integer.toString(value.getIdUtil()));
@@ -156,7 +156,7 @@ public class RegistoDAO implements Map<Integer, Registo>{
         Registo r = this.get(key);
         try{
             connection = Connect.connect();
-            PreparedStatement ps = connection.prepareStatement("DELETE FROM Registo WHERE idUtil = ?");
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM Registo WHERE idRegisto = ?");
             ps.setString(1,Integer.toString((Integer) key));
             ps.executeUpdate();
         }catch (Exception e){
@@ -196,7 +196,7 @@ public class RegistoDAO implements Map<Integer, Registo>{
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM Registo");
             ResultSet rs = ps.executeQuery();
             while (rs.next()){
-                set.add(rs.getInt("id"));
+                set.add(rs.getInt("idRegisto"));
             }
         }catch (SQLException e){
             System.out.println(e.getMessage());
@@ -220,8 +220,9 @@ public class RegistoDAO implements Map<Integer, Registo>{
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
                 Registo u = new Registo(null);
-                u.setId(rs.getInt("id"));
+                u.setId(rs.getInt("idRegisto"));
                 u.setIdAtivo(rs.getInt("idAtivo"));
+                u.setIdUtil(rs.getInt("idUtil"));
                 u.setPreco(rs.getFloat("precoCompra"));
                 u.setQuantidade(rs.getInt("quantidade"));
                 u.setVenda(rs.getInt("venda"));

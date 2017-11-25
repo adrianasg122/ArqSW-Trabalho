@@ -25,7 +25,7 @@ public class ESSLdaApp {
         int op;
         while((op = showMenu()) != -1) {
             resposta = correComando(op);
-           //TODO  System.out.println(resposta);
+            System.out.println(resposta);
         }
 
         System.out.println("\nLigação terminada!");
@@ -108,7 +108,6 @@ public class ESSLdaApp {
         escritor.escrever(query);
         try {
             resposta = leitor.ler(op);
-            System.out.println(resposta);
             if (op == 1) {
                 this.cliente = true;
             } else if (op == 10) this.cliente = false;
@@ -144,8 +143,6 @@ public class ESSLdaApp {
 
         query = String.join(" ","REGISTAR",nome,password,saldo);
 
-        //TODO tirar isto
-        System.out.println(query);
         return query;
     }
 

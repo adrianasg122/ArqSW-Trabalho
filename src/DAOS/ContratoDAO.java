@@ -50,7 +50,7 @@ public class ContratoDAO implements Map<Integer, Contrato>{
 
         try{
             connection = Connect.connect();
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Contrato WHERE idUtil = ?");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Contrato WHERE id = ?");
             ps.setString(1,Integer.toString((Integer) key));
             ResultSet rs = ps.executeQuery();
             res = rs.next();
@@ -90,7 +90,7 @@ public class ContratoDAO implements Map<Integer, Contrato>{
 
         try {
             connection = Connect.connect();
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Contrato WHERE idUtil = ?");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Contrato WHERE id = ?");
             ps.setString(1,Integer.toString((Integer) key));
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -129,16 +129,16 @@ public class ContratoDAO implements Map<Integer, Contrato>{
 
         try {
             connection = Connect.connect();
-            PreparedStatement ps = connection.prepareStatement("DELETE FROM Contrato WHERE idUtil = ?");
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM Contrato WHERE id = ?");
             ps.setString(1,Integer.toString((Integer) key));
             ps.executeUpdate();
 
-            ps = connection.prepareStatement("INSERT INTO Contrato (id,idUtil,idAtivo,preco,quantidade,venda,stoploss,takeprofit,concluido) VALUES (?,?,?,?,?,?,?,?,?)");
+            ps = connection.prepareStatement("INSERT INTO Contrato (id,idUtil,idAtivo,quantidade, preco,venda,stoploss,takeprofit,concluido) VALUES (?,?,?,?,?,?,?,?,?)");
             ps.setString(1,Integer.toString(key));
             ps.setString(2,Integer.toString(value.getIdUtil()));
             ps.setString(3,Integer.toString(value.getIdAtivo()));
-            ps.setString(4,Float.toString(value.getPreco()));
-            ps.setString(5,Integer.toString(value.getQuantidade()));
+            ps.setString(4,Integer.toString(value.getQuantidade()));
+            ps.setString(5,Float.toString(value.getPreco()));
             ps.setString(6,Integer.toString(value.getVenda()));
             ps.setString(7,Float.toString(value.getStoploss()));
             ps.setString(8,Float.toString(value.getTakeprofit()));

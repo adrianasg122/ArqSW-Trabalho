@@ -61,6 +61,9 @@ public class Updater extends Thread{
         ess.criarAtivo("BRCD");
         ess.criarAtivo("BAC");
         ess.criarAtivo("VALE");
+        ess.criarAtivo("VALE");
+        ess.criarAtivo("GC=F");
+        ess.criarAtivo("ZI=F");
 
     }
 
