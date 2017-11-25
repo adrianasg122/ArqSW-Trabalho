@@ -1,12 +1,18 @@
 package Servidor;
 
 
+import DAOS.RegistoDAO;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class Utilizador implements Comparable<Utilizador> {
 
     private int id;
     private String username;
     private String password;
     private float saldo;
+    private RegistoDAO quant;
 
 
 
@@ -15,6 +21,7 @@ public class Utilizador implements Comparable<Utilizador> {
         this.username = null;
         this.password = null;
         this.saldo = 0;
+        this.quant = new RegistoDAO();
     }
 
 
@@ -23,6 +30,7 @@ public class Utilizador implements Comparable<Utilizador> {
         this.username = username;
         this.password = password;
         this.saldo = saldo;
+        this.quant = new RegistoDAO();
     }
 
     public Utilizador (Utilizador u) {
@@ -30,6 +38,7 @@ public class Utilizador implements Comparable<Utilizador> {
         this.username = u.getUsername();
         this.password = u.getPassword();
         this.saldo = u.getSaldo();
+        this.quant = u.getQuant();
     }
 
     public int getId() { return id; }
@@ -58,6 +67,10 @@ public class Utilizador implements Comparable<Utilizador> {
         this.saldo = saldo;
     }
 
+    public RegistoDAO getQuant() { return quant; }
+
+    public void setQuant(RegistoDAO quant) { this.quant = quant; }
+
     public Utilizador clone () {
         return new Utilizador(this);
     }
@@ -67,21 +80,26 @@ public class Utilizador implements Comparable<Utilizador> {
         return username;
     }
 
+
+    @Override
     public boolean equals(Object o) {
-        if (o == this)
-            return true;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        if (o == null || (this.getClass() != o.getClass()))
-            return false;
+        Utilizador that = (Utilizador) o;
 
-        Utilizador usr = (Utilizador) o;
-        return username.equals(usr.username);
+        if (getId() != that.getId()) return false;
+        if (Float.compare(that.getSaldo(), getSaldo()) != 0) return false;
+        if (!getUsername().equals(that.getUsername())) return false;
+        if (!getPassword().equals(that.getPassword())) return false;
+        return getQuant().equals(that.getQuant());
     }
 
 
     public int compareTo(Utilizador c) {
         return this.id - c.getId();
     }
+
 }
 
 

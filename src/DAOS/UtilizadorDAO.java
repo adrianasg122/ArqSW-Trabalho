@@ -1,12 +1,12 @@
 package DAOS;
 
+import Servidor.Registo;
 import Servidor.Utilizador;
 
 import java.sql.*;
 import java.util.*;
 
 
-// TODO adicionar ao utilizador a lista dos seus ativos sempre que se for buscar algum
 public class UtilizadorDAO implements Map<Integer, Utilizador>{
 
     private Connection connection;
@@ -98,7 +98,19 @@ public class UtilizadorDAO implements Map<Integer, Utilizador>{
                 u.setPassword(rs.getString("password"));
                 u.setSaldo(rs.getFloat("saldo"));
                 }
+            PreparedStatement qs = connection.prepareStatement("SELECT * FROM Registo WHERE idAtivo = ?");
+            qs.setString(1, Integer.toString((Integer)key));
+            ResultSet ws = qs.executeQuery();
+            RegistoDAO res = new RegistoDAO();
+            Registo r = new Registo();
+            while(ws.next()){
+                r.setIdAtivo(ws.getInt("idAtivo"));
+                r.setIdUtil((ws.getInt("idUtil")));
+                r.setQuantidade((ws.getInt("quant")));
             }
+            u.setQuant(res);
+        }
+
         catch (SQLException e){
             System.out.println(e.getMessage());
         }
@@ -132,6 +144,7 @@ public class UtilizadorDAO implements Map<Integer, Utilizador>{
             ps.setString(3,value.getPassword());
             ps.setString(4,Float.toString(value.getSaldo()));
             ps.executeUpdate();
+
         }catch (SQLException e){
             System.out.println(e.getMessage());
         }finally {
@@ -150,7 +163,7 @@ public class UtilizadorDAO implements Map<Integer, Utilizador>{
         Utilizador u = this.get(key);
         try{
             connection = Connect.connect();
-            PreparedStatement ps = connection.prepareStatement("DELETE FROM Utilizador WHERE username = ?");
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM Utilizador WHERE id = ?");
             ps.setString(1, Integer.toString((Integer)key));
             ps.executeUpdate();
         }catch (Exception e){

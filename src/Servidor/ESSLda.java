@@ -192,6 +192,11 @@ public class ESSLda{
     public synchronized int criarContratoVenda(int idAtivo, float sl, float tp, int quant) {
         Contrato c = new Contrato(this);
         int id = contratos.size() + 1;
+
+        if (utilizador.getQuant().get(idAtivo).getQuantidade() < quant) {
+            System.out.println("Não tem quantidade suficiente para vender");
+            return -1;
+        }
         c.setIdContrato(id);
         c.setIdAtivo(idAtivo);
         c.setIdUtil(utilizador.getId());
@@ -219,19 +224,12 @@ public class ESSLda{
     public void criarRegisto(Contrato c) {
         Registo r = new Registo();
         int regid;
-        registoLock.lock();
-        regid = registos.size() + 1;
-        registoLock.unlock();
-        r.setId(regid);
         r.setIdAtivo(c.getIdAtivo());
         r.setIdUtil(c.getIdUtil());
-        ativoLock.lock();
-        r.setPreco(ativos.get(c.getIdAtivo()).getPrecoVenda());
-        ativoLock.unlock();
         r.setQuantidade(c.getQuantidade());
-        r.setVenda(c.getVenda());
-        registos.put(regid, r);
+        utilizador.getQuant().put(c.getIdAtivo(),r);
     }
+
 
     /**
      * Comprar ações
@@ -245,7 +243,16 @@ public class ESSLda{
         float preco = ativos.get(idAtivo).getPrecoCompra() * c.getQuantidade();
         if (utilizador.getSaldo() < preco) throw new SaldoInsuficienteException("Não possui saldo suficiente");
             if ((sl == 0 && tp == 0) || (ativos.get(idAtivo).getPrecoCompra() >= tp || ativos.get(idAtivo).getPrecoCompra() <= sl)) {
-                criarRegisto(c);
+
+                if (!utilizador.getQuant().containsKey(idAtivo))
+                    criarRegisto(c);
+                else {
+                    Registo r = utilizador.getQuant().get(idAtivo);
+                    int q = r.getQuantidade();
+                    r.setQuantidade(q + c.getQuantidade());
+                    utilizador.getQuant().put(idAtivo,r);
+                }
+
                 c.setPreco(ativos.get(idAtivo).getPrecoCompra());
                 c.setConcluido(1);
                 contratos.put(c.getIdContrato(),c);
@@ -254,7 +261,6 @@ public class ESSLda{
                 ativos.get(c.getIdAtivo()).getObserversCompra().remove(c);
                 }
     }
-
 
 
     /**
@@ -268,8 +274,14 @@ public class ESSLda{
         float tp = c.getTakeprofit();
         int idAtivo = c.getIdAtivo();
         float preco = ativos.get(idAtivo).getPrecoVenda() * c.getQuantidade();
+            if (!utilizador.getQuant().containsKey(idAtivo) || c.getQuantidade() > utilizador.getQuant().get(idAtivo).getQuantidade() ) return;
             if (ativos.get(idAtivo).getPrecoVenda() >= tp || ativos.get(idAtivo).getPrecoVenda() <= sl) {
-                criarRegisto(c);
+
+                Registo r = utilizador.getQuant().get(idAtivo);
+                int q = r.getQuantidade();
+                r.setQuantidade(q - c.getQuantidade());
+                utilizador.getQuant().put(idAtivo,r);
+
                 c.setPreco(ativos.get(idAtivo).getPrecoVenda());
                 c.setConcluido(1);
                 contratos.put(c.getIdContrato(),c);
@@ -279,8 +291,6 @@ public class ESSLda{
 
             }
         }
-
-
 
     public Set<Ativo> listarAtivos() {
         Set<Ativo> res = new HashSet<>();
@@ -294,33 +304,6 @@ public class ESSLda{
         return res;
     }
 
-    // TODO ver se tirar ou não
-    public Set<Contrato> listarContratosVendaAtivo(int id) {
-        Set<Contrato> res = new HashSet<>();
-        contratoLock.lock();
-        try {
-            for (Contrato c : contratos.values())
-                if (c.getIdAtivo() == id && c.getVenda() == 1) res.add(c);
-        }
-        finally {
-            contratoLock.unlock();
-        }
-        return res;
-    }
-
-    // TODO ver se tirar ou não
-    public Set<Contrato> listarContratosCompraAtivo(int id) {
-        Set<Contrato> res = new HashSet<>();
-        contratoLock.lock();
-        try {
-            for (Contrato c : contratos.values())
-                if (c.getIdAtivo() == id && c.getVenda() == 0) res.add(c);
-        }
-        finally {
-            contratoLock.unlock();
-        }
-        return res;
-    }
 
     public int existe (String nome)  {
         int existe = 1;

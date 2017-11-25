@@ -23,7 +23,6 @@ public class Menu {
             System.out.print(" - ");
             System.out.println(options[i]);
         }
-        System.out.println("0 - Sair");
 
         while(option <= 0 || option > options.length) {
             option = readInt("Escolha uma das opções: ");

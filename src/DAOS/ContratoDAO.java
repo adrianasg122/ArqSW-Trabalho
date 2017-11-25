@@ -7,7 +7,7 @@ import java.sql.*;
 import java.util.*;
 
 
-// TODO adicionar ao Contrato a lista dos seus ativos sempre que se for buscar algum
+
 public class ContratoDAO implements Map<Integer, Contrato>{
 
     private Connection connection;

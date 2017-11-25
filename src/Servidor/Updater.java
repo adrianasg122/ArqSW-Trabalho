@@ -56,14 +56,16 @@ public class Updater extends Thread{
 
     public void povoacao() {
 
-        ess.criarAtivo("SQ");
-        ess.criarAtivo("HPE");
-        ess.criarAtivo("BRCD");
+        ess.criarAtivo("FB");
+        ess.criarAtivo("TWTR");
+        ess.criarAtivo("ORCL");
         ess.criarAtivo("BAC");
         ess.criarAtivo("VALE");
-        ess.criarAtivo("VALE");
+        ess.criarAtivo("MSFT");
         ess.criarAtivo("GC=F");
-        ess.criarAtivo("ZI=F");
+        ess.criarAtivo("HG=F");
+        ess.criarAtivo("PL=F");
+
 
     }
 

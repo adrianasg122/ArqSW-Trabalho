@@ -194,7 +194,7 @@ public class Skeleton extends Thread {
     }
 
     private String terminarSessao() {
-        terminarSessao();
+        ess.terminarSessao();
         return "OK";
     }
 

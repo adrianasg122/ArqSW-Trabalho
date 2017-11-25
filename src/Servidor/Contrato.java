@@ -151,8 +151,6 @@ public class Contrato implements Observer{
 
 
 
-
-    //TODO alterei para não precisar do ess
     public void update (Ativo a) {
         //
         if(this.getVenda() == 0) {
