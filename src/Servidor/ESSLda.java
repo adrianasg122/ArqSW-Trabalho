@@ -276,6 +276,7 @@ public class ESSLda{
                 utilizador.setSaldo(utilizador.getSaldo() + preco);
                 utilizadores.put(utilizador.getId(), utilizador);
                 ativos.get(c.getIdAtivo()).getObserversVenda().remove(c);
+
             }
         }
 
