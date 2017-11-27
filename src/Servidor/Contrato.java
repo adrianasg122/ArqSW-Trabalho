@@ -118,8 +118,6 @@ public class Contrato implements Observer{
 
     public ESSLda getEss() { return ess; }
 
-    public void setEss(ESSLda ess) { this.ess = ess; }
-
     public Contrato clone () {
         return new Contrato(this);
     }
