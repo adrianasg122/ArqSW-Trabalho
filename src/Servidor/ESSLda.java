@@ -261,7 +261,7 @@ public class ESSLda extends Object{
                 contratos.put(c.getIdContrato(),c);
                 utilizador.setSaldo(utilizador.getSaldo() - preco);
                 utilizadores.put(utilizador.getId(), utilizador);
-                ativos.get(c.getIdAtivo(), this).getObserversCompra().remove(c);
+                ativos.get(c.getIdAtivo(), this).removeObserver(c);
                 }
     }
 
@@ -290,7 +290,7 @@ public class ESSLda extends Object{
                 contratos.put(c.getIdContrato(),c);
                 utilizador.setSaldo(utilizador.getSaldo() + preco);
                 utilizadores.put(utilizador.getId(), utilizador);
-                ativos.get(c.getIdAtivo()).getObserversVenda().remove(c);
+                ativos.get(c.getIdAtivo()).removeObserver(c);
 
             }
         }

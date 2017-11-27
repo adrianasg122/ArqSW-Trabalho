@@ -16,6 +16,8 @@ public class Ativo implements Comparable<Ativo>, Subject{
     //Contratos a observar este ativo
     public ArrayList<Observer> observersCompra;
     public ArrayList<Observer> observersVenda;
+    //Utilizadores a seguir o ativo
+    public ArrayList<Observer> seguidores;
 
 
 
@@ -120,6 +122,19 @@ public class Ativo implements Comparable<Ativo>, Subject{
     public void removeObserver(Observer o){
         if(observersCompra.contains(o)) observersCompra.remove(o);
         else if (observersVenda.contains(o)) observersVenda.remove(o);
+    }
+
+    public void notifySeguidores(){
+        for (Observer o : seguidores) {
+            o.update(this);
+        }
+    }
+
+    public void registarSeguidor(Observer o) {
+        seguidores.add(o);
+    }
+    public void removeSeguidor(Observer o) {
+        seguidores.remove(o);
     }
 }
 

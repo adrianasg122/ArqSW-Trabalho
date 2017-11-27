@@ -6,7 +6,7 @@ import DAOS.RegistoDAO;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Utilizador implements Comparable<Utilizador> {
+public class Utilizador implements Comparable<Utilizador>, Observer{
 
     private int id;
     private String username;
@@ -98,6 +98,10 @@ public class Utilizador implements Comparable<Utilizador> {
 
     public int compareTo(Utilizador c) {
         return this.id - c.getId();
+    }
+
+    public void update (Ativo a) {
+
     }
 
 }

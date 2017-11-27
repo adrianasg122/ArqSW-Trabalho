@@ -124,8 +124,6 @@ public class ESSLdaApp {
     }
 
 
-
-
     private String sessao() {
         String email,password,query;
 
