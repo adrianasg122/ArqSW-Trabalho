@@ -245,7 +245,7 @@ public class AtivosDAO implements Map<Integer, Ativo> {
 
     @Override
     public Ativo remove (Object key){
-        Ativo u = this.get((Integer) key);
+        Ativo u = this.get(key);
         try {
             connection = Connect.connect();
             PreparedStatement ps = connection.prepareStatement("DELETE FROM Ativo WHERE id = ?");

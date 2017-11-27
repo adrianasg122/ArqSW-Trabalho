@@ -28,7 +28,7 @@ public class Updater extends Thread{
         return res;
     }
 
-    public static float getValorVenda(String entidade) {
+    public float getValorVenda(String entidade) {
         float res = 0;
 
         try {
@@ -51,8 +51,6 @@ public class Updater extends Thread{
         ess.criarAtivo("GC=F");
         ess.criarAtivo("HG=F");
         ess.criarAtivo("PL=F");
-
-
     }
 
     public void run() {

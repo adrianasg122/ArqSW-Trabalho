@@ -17,7 +17,6 @@ public class Skeleton extends Thread {
     private PrintWriter out;
     private BufferedReader in;
     private ESSLda ess;
-    private Thread notificacao;
 
     Skeleton(ESSLda ess, Socket cliSocket) throws IOException {
         this.ess = ess;
@@ -25,7 +24,6 @@ public class Skeleton extends Thread {
         in = new BufferedReader(new InputStreamReader(cliSocket.getInputStream()));
         out = new PrintWriter(cliSocket.getOutputStream(), true);
         utilizador = null;
-        notificacao = null;
     }
 
     public void run() {
@@ -220,9 +218,6 @@ public class Skeleton extends Thread {
     }
 
     private void terminarConexao() {
-        if (notificacao != null)
-            notificacao.interrupt();
-
         try {
             cliSocket.close();
         } catch (IOException e) {
