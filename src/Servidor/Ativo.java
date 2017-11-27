@@ -66,7 +66,9 @@ public class Ativo implements Comparable<Ativo>, Subject{
 
     public void setDescricao(String descricao) { this.descricao = descricao; }
 
-    public ArrayList<Observer> getObserversCompra() { return observersCompra; }
+    public ArrayList<Observer> getObserversCompra() {
+        return observersCompra;
+    }
 
     public void setObserversCompra(ArrayList<Observer> observersCompra) { this.observersCompra = observersCompra; }
 
@@ -96,21 +98,15 @@ public class Ativo implements Comparable<Ativo>, Subject{
     }
 
     public void notifyObserversCompra() {
-        // Chama o método update de todos os observers disponíveis
-        if (observersCompra != null) {
             for (Observer o : observersCompra) {
                 o.update(this);
             }
-        }
     }
 
     public void notifyObserversVenda() {
-        // Chama o método update de todos os observers disponíveis
-        if (observersCompra != null) {
             for (Observer o : observersVenda) {
                 o.update(this);
             }
-        }
     }
 
     public void registerObserverCompra(Observer o){

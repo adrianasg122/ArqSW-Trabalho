@@ -22,7 +22,7 @@ public class Leitor {
 
 
     public String ler(int comando) throws PedidoFalhadoException {
-        String cabecalho = null, conteudo = null;
+        String cabecalho, conteudo = null;
         try {
             cabecalho = in.readLine();
             System.out.println("-------------------\n>> " + cabecalho + " <<");
@@ -37,14 +37,14 @@ public class Leitor {
                             break;
                        case 3 : conteudo = lerListar();
                             break;
-                       case 4 : conteudo = lerLinha();
-                            break;
-                       case 5 :conteudo = lerLinha();
-                            break;
-                       case 6 : conteudo = lerListar();
-                            break;
-                       case 7 : conteudo = lerLinha();
+                       case 4 : conteudo = lerListar();
                            break;
+                       case 5 : conteudo = lerLinha();
+                            break;
+                       case 6 :conteudo = lerLinha();
+                            break;
+                       case 7 : conteudo = lerListar();
+                            break;
                        case 8 : conteudo = lerLinha();
                            break;
                        default :

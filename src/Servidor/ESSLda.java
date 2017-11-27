@@ -15,27 +15,23 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 
-public class ESSLda{
+public class ESSLda extends Object{
 
     private Lock userLock;
     private Lock ativoLock;
     private Lock contratoLock;
-    private Lock registoLock;
     private UtilizadorDAO utilizadores;
     private AtivosDAO ativos;
     private ContratoDAO contratos;
-    private RegistoDAO registos;
     private Utilizador utilizador;
 
-    public ESSLda() {
+    public ESSLda()  {
         this.userLock = new ReentrantLock();
         this.ativoLock = new ReentrantLock();
         this.contratoLock = new ReentrantLock();
-        this.registoLock = new ReentrantLock();
         this.utilizadores = new UtilizadorDAO();
         this.ativos = new AtivosDAO();
         this.contratos = new ContratoDAO();
-        this.registos = new RegistoDAO();
     }
 
     public AtivosDAO getAtivos() {
@@ -179,8 +175,9 @@ public class ESSLda{
         c.setQuantidade(quant);
         c.setVenda(0);
         c.setConcluido(0);
+
         contratos.put(id,c);
-        ativos.get(idAtivo).registerObserverCompra(c);
+        ativos.get(idAtivo, this).registerObserverCompra(c);
         try {
             comprar(c);
         } catch (SaldoInsuficienteException e) {
@@ -206,8 +203,9 @@ public class ESSLda{
         c.setVenda(1);
         c.setConcluido(0);
 
+
         contratos.put(id, c);
-        ativos.get(idAtivo).registerObserverVenda(c);
+        ativos.get(idAtivo, this).registerObserverVenda(c);
 
         vender(c);
         return id;
@@ -240,9 +238,14 @@ public class ESSLda{
         float sl = c.getStoploss();
         float tp = c.getTakeprofit();
         int idAtivo = c.getIdAtivo();
-        float preco = ativos.get(idAtivo).getPrecoCompra() * c.getQuantidade();
-        if (utilizador.getSaldo() < preco) throw new SaldoInsuficienteException("Não possui saldo suficiente");
-            if ((sl == 0 && tp == 0) || (ativos.get(idAtivo).getPrecoCompra() >= tp || ativos.get(idAtivo).getPrecoCompra() <= sl)) {
+        float preco = ativos.get(idAtivo, this).getPrecoCompra() * c.getQuantidade();
+        if (utilizador == null) {
+            utilizador = utilizadores.get(c.getIdUtil());
+            if (utilizador.getSaldo() < preco) throw new SaldoInsuficienteException("Não possui saldo suficiente");
+        }
+        else if (utilizador.getSaldo() < preco) throw new SaldoInsuficienteException("Não possui saldo suficiente");
+
+        if ((sl == 0 && tp == 0) || (ativos.get(idAtivo).getPrecoCompra() >= tp || ativos.get(idAtivo).getPrecoCompra() <= sl)) {
 
                 if (!utilizador.getQuant().containsKey(idAtivo))
                     criarRegisto(c);
@@ -258,7 +261,7 @@ public class ESSLda{
                 contratos.put(c.getIdContrato(),c);
                 utilizador.setSaldo(utilizador.getSaldo() - preco);
                 utilizadores.put(utilizador.getId(), utilizador);
-                ativos.get(c.getIdAtivo()).getObserversCompra().remove(c);
+                ativos.get(c.getIdAtivo(), this).getObserversCompra().remove(c);
                 }
     }
 
@@ -296,7 +299,7 @@ public class ESSLda{
         Set<Ativo> res = new HashSet<>();
         ativoLock.lock();
         try {
-            for (Ativo a : ativos.values()){
+            for (Ativo a : ativos.values(this)){
                 res.add(a.clone());}
         } finally {
             ativoLock.unlock();
@@ -306,16 +309,15 @@ public class ESSLda{
 
 
     public int existe (String nome)  {
-        int existe = 1;
         ativoLock.lock();
         try {
             for (Ativo a : ativos.values())
-                if (a.getDescricao().equals(nome)) existe = 0;
+                if (a.getDescricao().equals(nome)) return 0;
         }
         finally {
             ativoLock.unlock();
         }
-        return existe;
+        return 1;
     }
 
     public synchronized void criarAtivo(String entidade) {
@@ -338,6 +340,19 @@ public class ESSLda{
     }
 
 
+    public String porNome(String nome) throws PedidoFalhadoException {
+       Ativo res = null;
+
+       for (Ativo a : ativos.values())
+           if (a.getDescricao().equals(nome)) {
+                res = a;
+                return res.toString();
+           }
+
+       if (res == null) throw new PedidoFalhadoException("O ativo não está disponível para consulta");
+       return null;
+
+    }
 }
 
 

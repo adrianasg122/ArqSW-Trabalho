@@ -16,20 +16,6 @@ public class Updater extends Thread{
     }
 
 
-    public static String getNomeEmpresa (String entidade) {
-        String res = null;
-        Stock a;
-        try {
-            a = YahooFinance.get(entidade);
-            res = a.getName();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return res;
-    }
-
     public float getValorCompra(String entidade){
         float res = 0;
 
@@ -83,20 +69,20 @@ public class Updater extends Thread{
 
 
                 if (a.getPrecoCompra() != pc) {
+                    a.setPrecoCompra(pc);
+                    ess.getAtivos().put(a.getId(), a);
                     a.notifyObserversCompra();
 
                 }
                 if (a.getPrecoVenda() != pv) {
+                    a.setPrecoVenda(pv);
+                    ess.getAtivos().put(a.getId(), a);
                     a.notifyObserversVenda();
 
                 }
-
-                a.setPrecoCompra(pc);
-                a.setPrecoVenda(pv);
-                ess.getAtivos().put(a.getId(), a);
             }
             try {
-                sleep(300000);
+                sleep(30000);
             } catch (InterruptedException e) {
             }
         }

@@ -61,6 +61,7 @@ public class ESSLdaApp {
                 "Listar ativos",
                 "Consultar saldo",
                 "Listar ativos a vender",
+                "Procurar ativo",
                 "Comprar ativo",
                 "Vender ativo",
                 "Consultar portfólio",
@@ -90,18 +91,21 @@ public class ESSLdaApp {
                     query = listVendas();
                     break;
                 case 6:
-                    query = comprarA();
+                    query = porNome();
                     break;
                 case 7:
-                    query = venderA();
+                    query = comprarA();
                     break;
                 case 8:
-                    query = port();
+                    query = venderA();
                     break;
                 case 9:
-                    query = fecharC();
+                    query = port();
                     break;
                 case 10:
+                    query = fecharC();
+                    break;
+                case 11:
                     query = terminarSessao();
                     break;
             }
@@ -118,6 +122,8 @@ public class ESSLdaApp {
         return resposta;
 
     }
+
+
 
 
     private String sessao() {
@@ -201,6 +207,16 @@ public class ESSLdaApp {
         quant = menuprincipal.readString("Insira a quantidade:");
 
         query = String.join(" ","VENDER", idA, sl, tp, quant);
+
+        return query;
+    }
+
+    private String porNome() {
+        String nome, query;
+
+        nome =  menuprincipal.readString("Insira a sigla do ativo: ");
+
+        query = String.join(" ", "NOME", nome);
 
         return query;
     }

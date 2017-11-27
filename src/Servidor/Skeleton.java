@@ -70,6 +70,9 @@ public class Skeleton extends Thread {
             case "SALDO":
                 utilizadorLogado(true);
                 return getSaldo();
+            case "NOME":
+                utilizadorLogado(true);
+                return porNome(keywords[1]);
             case "COMPRAR":
                 utilizadorLogado(true);
                 return startContratoCompra(keywords[1]);
@@ -93,6 +96,7 @@ public class Skeleton extends Thread {
         }
     }
 
+
     private String registar(String argumentos) throws PedidoFalhadoException {
         String[] parametros = argumentos.split(" ");
 
@@ -115,6 +119,15 @@ public class Skeleton extends Thread {
             throw new PedidoFalhadoException(e.getMessage());
         }
         return "OK\n";
+    }
+
+    private String porNome(String nome) throws PedidoFalhadoException {
+        String [] a = nome.split(" ");
+        String res = ess.porNome(a[0]);
+
+
+        return "OK\n" + res + "\n§";
+
     }
 
     private String startContratoCompra(String descricao) throws PedidoFalhadoException {

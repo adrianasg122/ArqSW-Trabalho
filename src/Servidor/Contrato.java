@@ -25,6 +25,7 @@ public class Contrato implements Observer{
     }
 
     public Contrato(Contrato p) {
+        this.ess = p.getEss();
         this.idContrato = p.getIdContrato();
         this.idAtivo = p.getIdAtivo();
         this.quantidade = p.getQuantidade();
@@ -115,6 +116,10 @@ public class Contrato implements Observer{
 
     public void setPreco(float preco) { this.preco = preco; }
 
+    public ESSLda getEss() { return ess; }
+
+    public void setEss(ESSLda ess) { this.ess = ess; }
+
     public Contrato clone () {
         return new Contrato(this);
     }
@@ -152,7 +157,6 @@ public class Contrato implements Observer{
 
 
     public void update (Ativo a) {
-        //
         if(this.getVenda() == 0) {
             try {
                 ess.comprar(this);
@@ -164,5 +168,4 @@ public class Contrato implements Observer{
             ess.vender(this);
         }
     }
-
 }
