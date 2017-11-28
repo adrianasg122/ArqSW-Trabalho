@@ -15,6 +15,7 @@ public class Contrato implements Observer{
     private float takeprofit;
     // 1 se tiver concluido, 0 caso contrário
     private int concluido;
+    private float price;
 
     public Contrato () {
 
@@ -35,9 +36,10 @@ public class Contrato implements Observer{
         this.takeprofit = p.getTakeprofit();
         this.concluido = p.getConcluido();
         this.preco = p.getPreco();
+        this.price = p.getPrice();
     }
 
-    public Contrato(int idContrato, int idAtivo, int quantidade,float preco, int idUtil, int venda, float stoploss, float takeprofit, int concluido) {
+    public Contrato(int idContrato, int idAtivo, int quantidade,float preco, int idUtil, int venda, float stoploss, float takeprofit, int concluido, float price) {
         this.idContrato = idContrato;
         this.idAtivo = idAtivo;
         this.quantidade = quantidade;
@@ -46,6 +48,7 @@ public class Contrato implements Observer{
         this.stoploss = stoploss;
         this.takeprofit = takeprofit;
         this.concluido = concluido;
+        this.price = price;
     }
 
     public int getIdContrato() {
@@ -116,6 +119,14 @@ public class Contrato implements Observer{
 
     public void setPreco(float preco) { this.preco = preco; }
 
+    public void setEss(ESSLda ess) { this.ess = ess; }
+
+    public float getPrice() { return price; }
+
+    public void setPrice(float price) {
+        this.price = price;
+    }
+
     public ESSLda getEss() { return ess; }
 
     public Contrato clone () {
@@ -127,7 +138,7 @@ public class Contrato implements Observer{
 
         sb.append("IdContrato: ").append(idContrato).append("\n");
         sb.append("IdAtivo: ").append(idAtivo).append("\n");
-        sb.append("Preço Ativo: ").append(preco).append("\n");
+        sb.append("Price: ").append(preco).append("\n");
         sb.append("Stop Loss: ").append(stoploss).append("\n");
         sb.append("Take Profit: ").append(takeprofit).append("\n");
         sb.append("-----------------");

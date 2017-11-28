@@ -133,7 +133,7 @@ public class Skeleton extends Thread {
         int contratoID;
 
         try {
-            contratoID = ess.criarContratoCompra(Integer.parseInt(parametros[0]),Float.parseFloat(parametros[1]), Integer.parseInt(parametros[2]), Integer.parseInt(parametros[3]));
+            contratoID = ess.criarContratoCompra(Integer.parseInt(parametros[0]),Float.parseFloat(parametros[1]), Float.parseFloat(parametros[2]), Integer.parseInt(parametros[3]), Float.parseFloat(parametros[4]));
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new PedidoFalhadoException("Os argumentos dados não são válidos");
         }
@@ -146,7 +146,7 @@ public class Skeleton extends Thread {
         int contratoID;
 
         try {
-            contratoID = ess.criarContratoVenda(Integer.parseInt(parametros[0]),Float.parseFloat(parametros[1]), Float.parseFloat(parametros[2]), Integer.parseInt(parametros[3]));
+            contratoID = ess.criarContratoVenda(Integer.parseInt(parametros[0]),Float.parseFloat(parametros[1]), Float.parseFloat(parametros[2]), Integer.parseInt(parametros[3]), Float.parseFloat(parametros[4]));
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new PedidoFalhadoException("Os argumentos dados não são válidos");
         }

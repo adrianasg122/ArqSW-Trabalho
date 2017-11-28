@@ -101,7 +101,7 @@ public class Utilizador implements Comparable<Utilizador>, Observer{
     }
 
     public void update (Ativo a) {
-
+        System.out.println("O valor do price chegou ao valor desejado: " + a.getPrice());
     }
 
 }

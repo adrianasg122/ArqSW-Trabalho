@@ -1,8 +1,6 @@
 package DAOS;
 
-import Servidor.Ativo;
-import Servidor.Contrato;
-import Servidor.ESSLda;
+import Servidor.*;
 import Servidor.Observer;
 
 import java.sql.*;
@@ -96,6 +94,7 @@ public class AtivosDAO implements Map<Integer, Ativo> {
                 a.setPrecoCompra(rs.getFloat("precoCompra"));
                 a.setPrecoVenda(rs.getFloat("precoVenda"));
                 a.setDescricao(rs.getString("descricao"));
+                a.setPrice(rs.getFloat("price"));
             }
             Contrato r = new Contrato();
             ArrayList<Observer> obs1 = new ArrayList<>();
@@ -120,7 +119,7 @@ public class AtivosDAO implements Map<Integer, Ativo> {
             PreparedStatement ys = connection.prepareStatement("SELECT * FROM Contrato WHERE idAtivo = ? AND venda = 1 AND concluido = 0");
             ys.setString(1,Integer.toString((Integer) key));
             ResultSet k = ys.executeQuery();
-            while(c.next()) {
+            while(k.next()) {
                 r.setIdContrato(k.getInt("id"));
                 r.setIdUtil(k.getInt("idUtil"));
                 r.setIdAtivo(k.getInt("idAtivo"));
@@ -134,6 +133,19 @@ public class AtivosDAO implements Map<Integer, Ativo> {
                 obs2.add(r);
             }
             a.setObserversVenda(obs2);
+            ArrayList<Observer> seg = new ArrayList<>();
+            Utilizador u = new Utilizador();
+            ys = connection.prepareStatement("SELECT Utilizador.id, Utilizador.username, Utilizador.password, Utilizador.saldo FROM Utilizador INNER JOIN Contrato ON Contrato.idUtil = Utilizador.id WHERE Contrato.price != 0");
+            ys.setString(1,Integer.toString((Integer) key));
+            k = ys.executeQuery();
+            while(k.next()) {
+                u.setId(k.getInt("id"));
+                u.setUsername(k.getString("username"));
+                u.setPassword(k.getString("password"));
+                u.setSaldo(k.getFloat("saldo"));
+                seg.add(u);
+            }
+            a.setSeguidores(seg);
         }catch (SQLException e){
             System.out.println(e.getMessage());
         }finally {
@@ -157,6 +169,7 @@ public class AtivosDAO implements Map<Integer, Ativo> {
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
                 a.setId(rs.getInt("id"));
+                a.setPrice(rs.getFloat("price"));
                 a.setPrecoCompra(rs.getFloat("precoCompra"));
                 a.setPrecoVenda(rs.getFloat("precoVenda"));
                 a.setDescricao(rs.getString("descricao"));
@@ -198,6 +211,19 @@ public class AtivosDAO implements Map<Integer, Ativo> {
                 obs2.add(r);
             }
             a.setObserversVenda(obs2);
+            ArrayList<Observer> seg = new ArrayList<>();
+            Utilizador u = new Utilizador();
+            ys = connection.prepareStatement("SELECT Utilizador.id, Utilizador.username, Utilizador.password, Utilizador.saldo FROM Utilizador INNER JOIN Contrato ON Contrato.idUtil = Utilizador.id WHERE Contrato.price != 0");
+            ys.setString(1,Integer.toString((Integer) key));
+            k = ys.executeQuery();
+            while(k.next()) {
+                u.setId(k.getInt("id"));
+                u.setUsername(k.getString("username"));
+                u.setPassword(k.getString("password"));
+                u.setSaldo(k.getFloat("saldo"));
+                seg.add(u);
+            }
+            a.setSeguidores(seg);
         }catch (SQLException e){
             System.out.println(e.getMessage());
         }finally {
@@ -223,11 +249,12 @@ public class AtivosDAO implements Map<Integer, Ativo> {
             ps.setString(1,Integer.toString(key));
             ps.executeUpdate();
 
-            ps = connection.prepareStatement("INSERT INTO Ativo(id,precoCompra,precoVenda,descricao) VALUES (?,?,?,?)");
+            ps = connection.prepareStatement("INSERT INTO Ativo(id,precoCompra,precoVenda,descricao, price) VALUES (?,?,?,?,?)");
             ps.setString(1,Integer.toString(value.getId()));
             ps.setString(2,Float.toString(value.getPrecoCompra()));
             ps.setString(3,Float.toString(value.getPrecoVenda()));
             ps.setString(4,value.getDescricao());
+            ps.setString(5,Float.toString(value.getPrice()));
             ps.executeUpdate();
         }catch (SQLException e){
             System.out.println(e.getMessage());

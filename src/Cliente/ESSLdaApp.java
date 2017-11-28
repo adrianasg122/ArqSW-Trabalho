@@ -178,7 +178,7 @@ public class ESSLdaApp {
     }
 
     private String comprarA() {
-        String idA, quant, sl, tp, query;
+        String idA, quant, sl, tp, query, seg;
 
         idA = menuprincipal.readString("Insira o id do Ativo: ");
 
@@ -188,7 +188,9 @@ public class ESSLdaApp {
 
         quant = menuprincipal.readString("Insira a quantidade:");
 
-        query = String.join(" ","COMPRAR",idA,sl,tp, quant);
+        seg = menuprincipal.readString("Se pretende seguir o ativo indique um valor para o price e será notificado quando for atingido: ");
+
+        query = String.join(" ","COMPRAR",idA,sl,tp, quant, seg);
 
         return query;
     }

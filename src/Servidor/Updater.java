@@ -15,6 +15,18 @@ public class Updater extends Thread{
         this.ess = ess;
     }
 
+    public float getPrice(String entidade){
+        float res = 0;
+
+        try {
+            Stock s = YahooFinance.get(entidade);
+            res = s.getQuote().getPrice().floatValue();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
 
     public float getValorCompra(String entidade){
         float res = 0;
@@ -59,12 +71,14 @@ public class Updater extends Thread{
 
         while (true) {
             Set<Ativo> ativos = ess.listarAtivos();
+            Set<Contrato> contratos = ess.listarContratos();
+
 
             for (Ativo a : ativos) {
 
                 float pc = getValorCompra(a.getDescricao());
                 float pv = getValorVenda(a.getDescricao());
-
+                float p = getPrice(a.getDescricao());
 
                 if (a.getPrecoCompra() != pc) {
                     a.setPrecoCompra(pc);
@@ -77,6 +91,16 @@ public class Updater extends Thread{
                     ess.getAtivos().put(a.getId(), a);
                     a.notifyObserversVenda();
 
+                }
+
+                if (a.getPrice() != p) {
+                    for (Contrato c : contratos){
+                        if (p == c.getPrice() && c.getConcluido() == 0){
+                            a.setPrice(p);
+                            ess.getAtivos().put(a.getId(), a);
+                            a.notifySeguidores();
+                        }
+                    }
                 }
             }
             try {

@@ -7,6 +7,7 @@ public class Ativo implements Comparable<Ativo>, Subject{
 
 
     private int id;
+    private float price;
     // ask
     private float precoCompra;
     // bid
@@ -20,29 +21,40 @@ public class Ativo implements Comparable<Ativo>, Subject{
     public ArrayList<Observer> seguidores;
 
 
-
     public Ativo() {//
 
     }
 
-    public Ativo(int id, float precoCompra, float precoVenda, String descricao) {
+    public Ativo(int id, float price,  float precoCompra, float precoVenda, String descricao) {
         this.id = id;
+        this.price = price;
         this.precoCompra = precoCompra;
         this.precoVenda = precoVenda;
         this.descricao = descricao;
         this.observersCompra = new ArrayList<>();
         this.observersVenda = new ArrayList<>();
+        this.seguidores = new ArrayList<>();
     }
 
     public Ativo(Ativo a) {
         this.id = a.getId();
+        this.price = getPrice();
         this.precoCompra = a.getPrecoCompra();
         this.precoVenda = a.getPrecoVenda();
         this.descricao = a.getDescricao();
         this.observersCompra = a.getObserversCompra();
         this.observersVenda = a.getObserversVenda();
+        this.seguidores = a.getSeguidores();
     }
 
+
+    public float getPrice() {
+        return price;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
+    }
 
     public int getId() {
         return id;
@@ -78,6 +90,10 @@ public class Ativo implements Comparable<Ativo>, Subject{
 
     public void setObserversVenda(ArrayList<Observer> observersVenda) { this.observersVenda = observersVenda; }
 
+    public ArrayList<Observer> getSeguidores() { return seguidores; }
+
+    public void setSeguidores(ArrayList<Observer> seguidores) { this.seguidores = seguidores; }
+
     public Ativo clone () {
         return new Ativo(this);
     }
@@ -86,6 +102,7 @@ public class Ativo implements Comparable<Ativo>, Subject{
         StringBuilder sb = new StringBuilder();
 
         sb.append("ID: ").append(id).append("\n");
+        sb.append("Price: ").append(price).append("\n");
         sb.append("Preço Compra: ").append(precoCompra).append("\n");
         sb.append("Preço Venda: ").append(precoVenda).append("\n");
         sb.append("Entidade: ").append(descricao).append("\n");

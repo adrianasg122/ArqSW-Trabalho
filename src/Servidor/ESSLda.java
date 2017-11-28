@@ -163,7 +163,7 @@ public class ESSLda extends Object{
     }
 
 
-    public synchronized int criarContratoCompra(int idAtivo, float sl, float tp, int quant) {
+    public synchronized int criarContratoCompra(int idAtivo, float sl, float tp, int quant, float price) {
         Contrato c = new Contrato(this);
         int id = contratos.size() + 1;
         c.setIdContrato(id);
@@ -175,6 +175,7 @@ public class ESSLda extends Object{
         c.setQuantidade(quant);
         c.setVenda(0);
         c.setConcluido(0);
+        c.setPrice(price);
 
         contratos.put(id,c);
         ativos.get(idAtivo, this).registerObserverCompra(c);
@@ -186,7 +187,7 @@ public class ESSLda extends Object{
         return id;
     }
 
-    public synchronized int criarContratoVenda(int idAtivo, float sl, float tp, int quant) {
+    public synchronized int criarContratoVenda(int idAtivo, float sl, float tp, int quant, float price) {
         Contrato c = new Contrato(this);
         int id = contratos.size() + 1;
 
@@ -202,7 +203,7 @@ public class ESSLda extends Object{
         c.setQuantidade(quant);
         c.setVenda(1);
         c.setConcluido(0);
-
+        c.setPrice(price);
 
         contratos.put(id, c);
         ativos.get(idAtivo, this).registerObserverVenda(c);
@@ -307,6 +308,18 @@ public class ESSLda extends Object{
         return res;
     }
 
+    public Set<Contrato> listarContratos() {
+        Set<Contrato> res = new HashSet<>();
+        contratoLock.lock();
+        try {
+            for (Contrato a : contratos.values()){
+                res.add(a.clone());}
+        } finally {
+            contratoLock.unlock();
+        }
+        return res;
+    }
+
 
     public int existe (String nome)  {
         ativoLock.lock();
@@ -332,6 +345,7 @@ public class ESSLda extends Object{
 
         if (this.existe(entidade) == 1 && s!= null) {
             aux.setId(i);
+            aux.setPrice(s.getQuote().getPrice().floatValue());
             aux.setDescricao(entidade);
             aux.setPrecoVenda(s.getQuote().getBid().floatValue());
             aux.setPrecoCompra(s.getQuote().getAsk().floatValue());
