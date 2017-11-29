@@ -91,10 +91,10 @@ public class AtivosDAO implements Map<Integer, Ativo> {
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
                 a.setId(rs.getInt("id"));
+                a.setPrice(rs.getFloat("price"));
                 a.setPrecoCompra(rs.getFloat("precoCompra"));
                 a.setPrecoVenda(rs.getFloat("precoVenda"));
                 a.setDescricao(rs.getString("descricao"));
-                a.setPrice(rs.getFloat("price"));
             }
             Contrato r = new Contrato();
             ArrayList<Observer> obs1 = new ArrayList<>();
@@ -133,17 +133,47 @@ public class AtivosDAO implements Map<Integer, Ativo> {
                 obs2.add(r);
             }
             a.setObserversVenda(obs2);
+
+            PreparedStatement t = connection.prepareStatement("SELECT * FROM Seguidores WHERE idAtivo = ?");
+            t.setString(1, Integer.toString((Integer)key));
+            k = t.executeQuery();
             ArrayList<Observer> seg = new ArrayList<>();
-            Utilizador u = new Utilizador();
-            ys = connection.prepareStatement("SELECT Utilizador.id, Utilizador.username, Utilizador.password, Utilizador.saldo FROM Utilizador INNER JOIN Contrato ON Contrato.idUtil = Utilizador.id WHERE Contrato.price != 0");
-            ys.setString(1,Integer.toString((Integer) key));
-            k = ys.executeQuery();
-            while(k.next()) {
-                u.setId(k.getInt("id"));
-                u.setUsername(k.getString("username"));
-                u.setPassword(k.getString("password"));
-                u.setSaldo(k.getFloat("saldo"));
-                seg.add(u);
+            while(k.next()){
+                PreparedStatement d = connection.prepareStatement("SELECT * FROM Utilizador INNER JOIN Seguidores ON Seguidores.idUtil = id WHERE Seguidores.idAtivo = ?");
+                d.setString(1,Integer.toString(k.getInt("idUtil")));
+                ResultSet w = d.executeQuery();
+                while (w.next()) {
+                    Utilizador u = new Utilizador();
+                    u.setId(w.getInt("id"));
+                    u.setUsername(w.getString("username"));
+                    u.setPassword(w.getString("password"));
+                    u.setSaldo(w.getFloat("saldo"));
+                    u.setNot(new NotificationBuffer());
+
+                    ys = connection.prepareStatement("SELECT * FROM Registo WHERE idAtivo = ?");
+                    ys.setString(1, Integer.toString((Integer) key));
+                    ResultSet ws = ys.executeQuery();
+                    RegistoDAO res = new RegistoDAO();
+                    Registo r2 = new Registo();
+                    while (ws.next()) {
+                        r2.setIdAtivo(ws.getInt("idAtivo"));
+                        r2.setIdUtil((ws.getInt("idUtil")));
+                        r2.setQuantidade((ws.getInt("quant")));
+                    }
+                    u.setQuant(res);
+
+                    ys = connection.prepareStatement("SELECT * FROM Seguidores WHERE idAtivo = ?");
+                    ys.setString(1, Integer.toString((Integer) key));
+                    ResultSet h = ys.executeQuery();
+
+                    Map<Integer, Float> seg2 = new HashMap<>();
+
+                    while (h.next()) {
+                        seg2.put(h.getInt("idAtivo"), h.getFloat("price"));
+                    }
+                    u.setaSeguir(seg2);
+                    seg.add(u);
+                }
             }
             a.setSeguidores(seg);
         }catch (SQLException e){
@@ -174,7 +204,7 @@ public class AtivosDAO implements Map<Integer, Ativo> {
                 a.setPrecoVenda(rs.getFloat("precoVenda"));
                 a.setDescricao(rs.getString("descricao"));
             }
-            Contrato r = new Contrato((ESSLda) ess);
+            Contrato r = new Contrato();
             ArrayList<Observer> obs1 = new ArrayList<>();
             PreparedStatement cs = connection.prepareStatement("SELECT * FROM Contrato WHERE idAtivo = ? AND venda = 0 AND concluido = 0");
             cs.setString(1,Integer.toString((Integer) key));
@@ -197,7 +227,7 @@ public class AtivosDAO implements Map<Integer, Ativo> {
             PreparedStatement ys = connection.prepareStatement("SELECT * FROM Contrato WHERE idAtivo = ? AND venda = 1 AND concluido = 0");
             ys.setString(1,Integer.toString((Integer) key));
             ResultSet k = ys.executeQuery();
-            while(c.next()) {
+            while(k.next()) {
                 r.setIdContrato(k.getInt("id"));
                 r.setIdUtil(k.getInt("idUtil"));
                 r.setIdAtivo(k.getInt("idAtivo"));
@@ -211,19 +241,46 @@ public class AtivosDAO implements Map<Integer, Ativo> {
                 obs2.add(r);
             }
             a.setObserversVenda(obs2);
-            ArrayList<Observer> seg = new ArrayList<>();
-            Utilizador u = new Utilizador();
-            ys = connection.prepareStatement("SELECT Utilizador.id, Utilizador.username, Utilizador.password, Utilizador.saldo FROM Utilizador INNER JOIN Contrato ON Contrato.idUtil = Utilizador.id WHERE Contrato.price != 0");
-            ys.setString(1,Integer.toString((Integer) key));
-            k = ys.executeQuery();
-            while(k.next()) {
-                u.setId(k.getInt("id"));
-                u.setUsername(k.getString("username"));
-                u.setPassword(k.getString("password"));
-                u.setSaldo(k.getFloat("saldo"));
+
+                ys = connection.prepareStatement("SELECT * FROM Utilizador INNER JOIN Seguidores ON Seguidores.idUtil = id WHERE Seguidores.idAtivo = ?");
+                ys.setString(1,Integer.toString((Integer)key));
+                ResultSet w = ys.executeQuery();
+                ArrayList<Observer> seg = new ArrayList<>();
+
+            while(w.next()){
+                Utilizador u = new Utilizador();
+                u.setId(w.getInt("id"));
+                u.setUsername(w.getString("username"));
+                u.setPassword(w.getString("password"));
+                u.setSaldo(w.getFloat("saldo"));
+                u.setNot(new NotificationBuffer());
+
+                PreparedStatement q = connection.prepareStatement("SELECT * FROM Registo WHERE idAtivo = ?");
+                q.setString(1, Integer.toString((Integer)key));
+                ResultSet ws = q.executeQuery();
+                RegistoDAO res = new RegistoDAO();
+                Registo r2 = new Registo();
+                while(ws.next()){
+                    r2.setIdAtivo(ws.getInt("idAtivo"));
+                    r2.setIdUtil((ws.getInt("idUtil")));
+                    r2.setQuantidade((ws.getInt("quant")));
+                }
+                u.setQuant(res);
+
+                PreparedStatement m = connection.prepareStatement("SELECT * FROM Seguidores WHERE idAtivo = ?");
+                m.setString(1, Integer.toString((Integer)key));
+                ResultSet h = m.executeQuery();
+
+                Map<Integer,Float> seg2 = new HashMap<>();
+
+                while(h.next()){
+                    seg2.put(h.getInt("idAtivo"), h.getFloat("price"));
+                }
+                u.setaSeguir(seg2);
                 seg.add(u);
             }
             a.setSeguidores(seg);
+
         }catch (SQLException e){
             System.out.println(e.getMessage());
         }finally {

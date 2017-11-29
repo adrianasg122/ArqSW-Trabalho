@@ -66,6 +66,8 @@ public class ESSLdaApp {
                 "Vender ativo",
                 "Consultar portfólio",
                 "Fechar contrato",
+                "Seguir ativo",
+                "Notificações",
                 "Terminar Sessão"
         };
         menuprincipal = new Menu(principal);
@@ -106,7 +108,10 @@ public class ESSLdaApp {
                     query = fecharC();
                     break;
                 case 11:
-                    query = terminarSessao();
+                    query = seguir();
+                    break;
+                case 12:
+                    query = notificar();
                     break;
             }
         escritor.escrever(query);
@@ -122,6 +127,7 @@ public class ESSLdaApp {
         return resposta;
 
     }
+
 
 
     private String sessao() {
@@ -188,9 +194,7 @@ public class ESSLdaApp {
 
         quant = menuprincipal.readString("Insira a quantidade:");
 
-        seg = menuprincipal.readString("Se pretende seguir o ativo indique um valor para o price e será notificado quando for atingido: ");
-
-        query = String.join(" ","COMPRAR",idA,sl,tp, quant, seg);
+        query = String.join(" ","COMPRAR",idA,sl,tp, quant);
 
         return query;
     }
@@ -219,6 +223,23 @@ public class ESSLdaApp {
         query = String.join(" ", "NOME", nome);
 
         return query;
+    }
+
+    private String notificar() {
+        return "NOTIFICAR";
+    }
+
+    private String seguir() {
+        String idA, quant, query;
+
+        idA = menuprincipal.readString("Insira o id do Ativo que pretende seguir: ");
+
+        quant = menuprincipal.readString("Qual o valor do ativo ao qual pertende ser notificado? ");
+
+        query = String.join(" ","SEGUIR", idA, quant);
+
+        return query;
+
     }
 
     private String terminarSessao() {

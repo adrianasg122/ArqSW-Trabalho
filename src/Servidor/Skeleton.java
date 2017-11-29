@@ -17,6 +17,7 @@ public class Skeleton extends Thread {
     private PrintWriter out;
     private BufferedReader in;
     private ESSLda ess;
+    private Updater updater;
 
     Skeleton(ESSLda ess, Socket cliSocket) throws IOException {
         this.ess = ess;
@@ -86,6 +87,12 @@ public class Skeleton extends Thread {
             case "ENCERRAR":
                 utilizadorLogado(true);
                 return fecharContrato(keywords[1]);
+            case "SEGUIR":
+                utilizadorLogado(true);
+                return seguir(keywords[1]);
+            case "NOTIFICAR":
+                utilizadorLogado(true);
+                return notificar();
             case "TERMINAR":
                 utilizadorLogado(true);
                 return terminarSessao();
@@ -93,7 +100,6 @@ public class Skeleton extends Thread {
                 throw new PedidoFalhadoException(keywords[0] + " não é um comando válido");
         }
     }
-
 
     private String registar(String argumentos) throws PedidoFalhadoException {
         String[] parametros = argumentos.split(" ");
@@ -133,7 +139,7 @@ public class Skeleton extends Thread {
         int contratoID;
 
         try {
-            contratoID = ess.criarContratoCompra(Integer.parseInt(parametros[0]),Float.parseFloat(parametros[1]), Float.parseFloat(parametros[2]), Integer.parseInt(parametros[3]), Float.parseFloat(parametros[4]));
+            contratoID = ess.criarContratoCompra(Integer.parseInt(parametros[0]),Float.parseFloat(parametros[1]), Float.parseFloat(parametros[2]), Integer.parseInt(parametros[3]));
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new PedidoFalhadoException("Os argumentos dados não são válidos");
         }
@@ -146,7 +152,7 @@ public class Skeleton extends Thread {
         int contratoID;
 
         try {
-            contratoID = ess.criarContratoVenda(Integer.parseInt(parametros[0]),Float.parseFloat(parametros[1]), Float.parseFloat(parametros[2]), Integer.parseInt(parametros[3]), Float.parseFloat(parametros[4]));
+            contratoID = ess.criarContratoVenda(Integer.parseInt(parametros[0]),Float.parseFloat(parametros[1]), Float.parseFloat(parametros[2]), Integer.parseInt(parametros[3]));
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new PedidoFalhadoException("Os argumentos dados não são válidos");
         }
@@ -202,6 +208,17 @@ public class Skeleton extends Thread {
             sb.append("\n").append(auc.toString());
 
         return "OK" + sb.toString() + "\n§";
+    }
+
+    private String seguir(String str) {
+            String[] parametros = str.split(" ");
+            float price = ess.seguir(Integer.parseInt(parametros[0]), Float.parseFloat(parametros[1]));
+        return "OK\n" + price;
+    }
+
+    private String notificar() {
+        ess.notificar();
+        return "OK";
     }
 
     private String terminarSessao() {

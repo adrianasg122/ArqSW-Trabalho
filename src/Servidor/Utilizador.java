@@ -3,8 +3,7 @@ package Servidor;
 
 import DAOS.RegistoDAO;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Utilizador implements Comparable<Utilizador>, Observer{
 
@@ -13,8 +12,8 @@ public class Utilizador implements Comparable<Utilizador>, Observer{
     private String password;
     private float saldo;
     private RegistoDAO quant;
-
-
+    private NotificationBuffer notificacoes;
+    private Map<Integer,Float> aSeguir;
 
     public Utilizador () {
         this.id = 0;
@@ -22,6 +21,8 @@ public class Utilizador implements Comparable<Utilizador>, Observer{
         this.password = null;
         this.saldo = 0;
         this.quant = new RegistoDAO();
+        this.notificacoes = new NotificationBuffer();
+        this.aSeguir = new HashMap<>();
     }
 
 
@@ -31,6 +32,8 @@ public class Utilizador implements Comparable<Utilizador>, Observer{
         this.password = password;
         this.saldo = saldo;
         this.quant = new RegistoDAO();
+        this.notificacoes = new NotificationBuffer();
+        this.aSeguir = new HashMap<>();
     }
 
     public Utilizador (Utilizador u) {
@@ -39,6 +42,8 @@ public class Utilizador implements Comparable<Utilizador>, Observer{
         this.password = u.getPassword();
         this.saldo = u.getSaldo();
         this.quant = u.getQuant();
+        this.notificacoes = new NotificationBuffer();
+        this.aSeguir = new HashMap<>();
     }
 
     public int getId() { return id; }
@@ -71,10 +76,23 @@ public class Utilizador implements Comparable<Utilizador>, Observer{
 
     public void setQuant(RegistoDAO quant) { this.quant = quant; }
 
+    public NotificationBuffer getNot () { return notificacoes; }
+
+    public void setNot(NotificationBuffer not) {
+        this.notificacoes = not;
+    }
+
+    public Map<Integer, Float> getaSeguir() {
+        return aSeguir;
+    }
+
+    public void setaSeguir(Map<Integer, Float> aSeguir) {
+        this.aSeguir = aSeguir;
+    }
+
     public Utilizador clone () {
         return new Utilizador(this);
     }
-
 
     public String toString() {
         return username;
@@ -95,15 +113,17 @@ public class Utilizador implements Comparable<Utilizador>, Observer{
         return getQuant().equals(that.getQuant());
     }
 
-
     public int compareTo(Utilizador c) {
         return this.id - c.getId();
     }
 
     public void update (Ativo a) {
-        System.out.println("O valor do price chegou ao valor desejado: " + a.getPrice());
+       Float f = aSeguir.get(a.getId());
+       if (f != null && f.equals(a.getPrice())) {
+           aSeguir.remove(a.getId());
+           notificacoes.add("O ativo " + a.getDescricao() + " atingiu o valor desejado: " + a.getPrice());
+       }
     }
-
 }
 
 

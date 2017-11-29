@@ -47,6 +47,12 @@ public class Leitor {
                             break;
                        case 8 : conteudo = lerLinha();
                            break;
+                       case 9 : conteudo = lerLinha();
+                           break;
+                       case 10 : conteudo = lerLinha();
+                           break;
+                       case 11 : conteudo = lerListar();
+                            break;
                        default :
                            break;
                    }

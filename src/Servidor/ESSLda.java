@@ -3,7 +3,6 @@ package Servidor;
 
 import DAOS.AtivosDAO;
 import DAOS.ContratoDAO;
-import DAOS.RegistoDAO;
 import DAOS.UtilizadorDAO;
 import yahoofinance.Stock;
 import yahoofinance.YahooFinance;
@@ -163,7 +162,7 @@ public class ESSLda extends Object{
     }
 
 
-    public synchronized int criarContratoCompra(int idAtivo, float sl, float tp, int quant, float price) {
+    public synchronized int criarContratoCompra(int idAtivo, float sl, float tp, int quant) {
         Contrato c = new Contrato(this);
         int id = contratos.size() + 1;
         c.setIdContrato(id);
@@ -175,7 +174,6 @@ public class ESSLda extends Object{
         c.setQuantidade(quant);
         c.setVenda(0);
         c.setConcluido(0);
-        c.setPrice(price);
 
         contratos.put(id,c);
         ativos.get(idAtivo, this).registerObserverCompra(c);
@@ -187,7 +185,7 @@ public class ESSLda extends Object{
         return id;
     }
 
-    public synchronized int criarContratoVenda(int idAtivo, float sl, float tp, int quant, float price) {
+    public synchronized int criarContratoVenda(int idAtivo, float sl, float tp, int quant) {
         Contrato c = new Contrato(this);
         int id = contratos.size() + 1;
 
@@ -203,8 +201,6 @@ public class ESSLda extends Object{
         c.setQuantidade(quant);
         c.setVenda(1);
         c.setConcluido(0);
-        c.setPrice(price);
-
         contratos.put(id, c);
         ativos.get(idAtivo, this).registerObserverVenda(c);
 
@@ -301,7 +297,7 @@ public class ESSLda extends Object{
         ativoLock.lock();
         try {
             for (Ativo a : ativos.values(this)){
-                res.add(a.clone());}
+                res.add(a);}
         } finally {
             ativoLock.unlock();
         }
@@ -367,6 +363,22 @@ public class ESSLda extends Object{
        return null;
 
     }
+
+    public float seguir(int idAtivo, float price) {
+        utilizador.getaSeguir().put(idAtivo,price);
+        utilizadores.put(utilizador.getId(),utilizador);
+        Ativo aux = ativos.get(idAtivo);
+        aux.registarSeguidor(utilizador);
+        ativos.put(idAtivo,aux);
+        aux.toString();
+        return price;
+    }
+
+    public String notificar() {
+
+        return utilizador.getNot().ler();
+    }
+
 }
 
 

@@ -15,7 +15,6 @@ public class Contrato implements Observer{
     private float takeprofit;
     // 1 se tiver concluido, 0 caso contrário
     private int concluido;
-    private float price;
 
     public Contrato () {
 
@@ -36,19 +35,18 @@ public class Contrato implements Observer{
         this.takeprofit = p.getTakeprofit();
         this.concluido = p.getConcluido();
         this.preco = p.getPreco();
-        this.price = p.getPrice();
     }
 
-    public Contrato(int idContrato, int idAtivo, int quantidade,float preco, int idUtil, int venda, float stoploss, float takeprofit, int concluido, float price) {
+    public Contrato(int idContrato, int idAtivo, int quantidade,float preco, int idUtil, int venda, float stoploss, float takeprofit, int concluido) {
         this.idContrato = idContrato;
         this.idAtivo = idAtivo;
         this.quantidade = quantidade;
+        this.preco = preco;
         this.idUtil = idUtil;
         this.venda = venda;
         this.stoploss = stoploss;
         this.takeprofit = takeprofit;
         this.concluido = concluido;
-        this.price = price;
     }
 
     public int getIdContrato() {
@@ -121,11 +119,6 @@ public class Contrato implements Observer{
 
     public void setEss(ESSLda ess) { this.ess = ess; }
 
-    public float getPrice() { return price; }
-
-    public void setPrice(float price) {
-        this.price = price;
-    }
 
     public ESSLda getEss() { return ess; }
 

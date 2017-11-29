@@ -1,5 +1,7 @@
 package DAOS;
 
+
+import Servidor.NotificationBuffer;
 import Servidor.Registo;
 import Servidor.Utilizador;
 
@@ -97,6 +99,7 @@ public class UtilizadorDAO implements Map<Integer, Utilizador>{
                 u.setUsername(rs.getString("username"));
                 u.setPassword(rs.getString("password"));
                 u.setSaldo(rs.getFloat("saldo"));
+                u.setNot(new NotificationBuffer());
                 }
             PreparedStatement qs = connection.prepareStatement("SELECT * FROM Registo WHERE idAtivo = ?");
             qs.setString(1, Integer.toString((Integer)key));
@@ -109,6 +112,15 @@ public class UtilizadorDAO implements Map<Integer, Utilizador>{
                 r.setQuantidade((ws.getInt("quant")));
             }
             u.setQuant(res);
+
+            qs = connection.prepareStatement("SELECT * FROM Seguidores WHERE idUtil = ?");
+            qs.setString(1, Integer.toString((Integer)key));
+            ws = qs.executeQuery();
+            Map<Integer,Float> seg = new HashMap<>();
+            while(ws.next()){
+                seg.put(ws.getInt("idAtivo"), ws.getFloat("price"));
+            }
+            u.setaSeguir(seg);
         }
 
         catch (SQLException e){
@@ -145,6 +157,19 @@ public class UtilizadorDAO implements Map<Integer, Utilizador>{
             ps.setString(4,Float.toString(value.getSaldo()));
             ps.executeUpdate();
 
+            ps = connection.prepareStatement("DELETE FROM Seguidores WHERE idUtil = ?");
+            ps.setString(1, Integer.toString(key));
+            ps.executeUpdate();
+
+            ps = connection.prepareStatement("INSERT INTO Seguidores (idUtil,idAtivo,price) VALUES (?,?,?)");
+            Map<Integer,Float> seg = value.getaSeguir();
+
+            for (Integer f : seg.keySet()) {
+                ps.setString(1,Integer.toString(key));
+                ps.setString(2,Integer.toString(f));
+                ps.setString(3,Float.toString(seg.get(f)));
+                ps.executeUpdate();
+            }
         }catch (SQLException e){
             System.out.println(e.getMessage());
         }finally {
@@ -157,6 +182,7 @@ public class UtilizadorDAO implements Map<Integer, Utilizador>{
 
         return u;
     }
+
 
     @Override
     public Utilizador remove(Object key){

@@ -102,7 +102,6 @@ public class ContratoDAO implements Map<Integer, Contrato>{
                 r.setStoploss(rs.getFloat("stoploss"));
                 r.setTakeprofit(rs.getInt("takeprofit"));
                 r.setConcluido(rs.getInt("concluido"));
-                r.setPrice(rs.getFloat("price"));
             }
         }
         catch (SQLException e){
@@ -133,7 +132,7 @@ public class ContratoDAO implements Map<Integer, Contrato>{
             ps.setString(1,Integer.toString((Integer) key));
             ps.executeUpdate();
 
-            ps = connection.prepareStatement("INSERT INTO Contrato (id,idUtil,idAtivo,quantidade, preco,venda,stoploss,takeprofit,concluido,price) VALUES (?,?,?,?,?,?,?,?,?,?)");
+            ps = connection.prepareStatement("INSERT INTO Contrato (id,idUtil,idAtivo,quantidade, preco,venda,stoploss,takeprofit,concluido) VALUES (?,?,?,?,?,?,?,?,?)");
             ps.setString(1,Integer.toString(key));
             ps.setString(2,Integer.toString(value.getIdUtil()));
             ps.setString(3,Integer.toString(value.getIdAtivo()));
@@ -143,7 +142,6 @@ public class ContratoDAO implements Map<Integer, Contrato>{
             ps.setString(7,Float.toString(value.getStoploss()));
             ps.setString(8,Float.toString(value.getTakeprofit()));
             ps.setString(9,Integer.toString(value.getConcluido()));
-            ps.setString(10,Float.toString(value.getPrice()));
             ps.executeUpdate();
         }catch (SQLException e){
             System.out.println(e.getMessage());

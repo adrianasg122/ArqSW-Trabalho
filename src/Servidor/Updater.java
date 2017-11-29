@@ -6,7 +6,7 @@ import yahoofinance.YahooFinance;
 import java.io.IOException;
 import java.util.Set;
 
-public class Updater extends Thread{
+public class Updater extends Thread {
 
     private ESSLda ess;
 
@@ -15,7 +15,8 @@ public class Updater extends Thread{
         this.ess = ess;
     }
 
-    public float getPrice(String entidade){
+
+    public float getPrice(String entidade) {
         float res = 0;
 
         try {
@@ -28,7 +29,7 @@ public class Updater extends Thread{
     }
 
 
-    public float getValorCompra(String entidade){
+    public float getValorCompra(String entidade) {
         float res = 0;
 
         try {
@@ -71,14 +72,11 @@ public class Updater extends Thread{
 
         while (true) {
             Set<Ativo> ativos = ess.listarAtivos();
-            Set<Contrato> contratos = ess.listarContratos();
-
 
             for (Ativo a : ativos) {
 
                 float pc = getValorCompra(a.getDescricao());
                 float pv = getValorVenda(a.getDescricao());
-                float p = getPrice(a.getDescricao());
 
                 if (a.getPrecoCompra() != pc) {
                     a.setPrecoCompra(pc);
@@ -90,19 +88,16 @@ public class Updater extends Thread{
                     a.setPrecoVenda(pv);
                     ess.getAtivos().put(a.getId(), a);
                     a.notifyObserversVenda();
-
                 }
 
-                if (a.getPrice() != p) {
-                    for (Contrato c : contratos){
-                        if (p == c.getPrice() && c.getConcluido() == 0){
-                            a.setPrice(p);
-                            ess.getAtivos().put(a.getId(), a);
-                            a.notifySeguidores();
-                        }
-                    }
-                }
+                float p = getPrice(a.getDescricao());
+                //if (a.getPrice() != p) {
+                    a.setPrice(p);
+                    ess.getAtivos().put(a.getId(), a);
+                    a.notifySeguidores();
+               // }
             }
+
             try {
                 sleep(30000);
             } catch (InterruptedException e) {
@@ -110,4 +105,6 @@ public class Updater extends Thread{
         }
     }
 }
+
+
 
