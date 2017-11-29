@@ -143,7 +143,6 @@ public class Ativo implements Comparable<Ativo>, Subject{
     }
 
     public void notifySeguidores(){
-        //if (seguidores.size() != 0)
             for (Observer o : seguidores)
                 o.update(this);
     }
