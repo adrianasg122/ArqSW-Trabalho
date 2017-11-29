@@ -106,7 +106,8 @@ public class Ativo implements Comparable<Ativo>, Subject{
         sb.append("Preço Compra: ").append(precoCompra).append("\n");
         sb.append("Preço Venda: ").append(precoVenda).append("\n");
         sb.append("Entidade: ").append(descricao).append("\n");
-        sb.append("A seguir ").append(seguidores.toString()).append("\n");
+        if(seguidores != null)
+            sb.append("A seguir ").append(seguidores.toString()).append("\n");
         sb.append("**************");
 
         return sb.toString();

@@ -133,6 +133,7 @@ public class AtivosDAO implements Map<Integer, Ativo> {
                 obs2.add(r);
             }
             a.setObserversVenda(obs2);
+
             PreparedStatement t = connection.prepareStatement("SELECT * FROM Seguidores WHERE idAtivo = ?");
             t.setString(1, Integer.toString((Integer)key));
             k = t.executeQuery();
@@ -241,45 +242,48 @@ public class AtivosDAO implements Map<Integer, Ativo> {
             }
             a.setObserversVenda(obs2);
 
-                ys = connection.prepareStatement("SELECT * FROM Utilizador INNER JOIN Seguidores ON Seguidores.idUtil = id WHERE Seguidores.idAtivo = ?");
-                ys.setString(1,Integer.toString((Integer)key));
-                ResultSet w = ys.executeQuery();
-                ArrayList<Observer> seg = new ArrayList<>();
+            PreparedStatement t = connection.prepareStatement("SELECT * FROM Seguidores WHERE idAtivo = ?");
+            t.setString(1, Integer.toString((Integer)key));
+            k = t.executeQuery();
+            ArrayList<Observer> seg = new ArrayList<>();
+            while(k.next()){
+                PreparedStatement d = connection.prepareStatement("SELECT * FROM Utilizador INNER JOIN Seguidores ON Seguidores.idUtil = id WHERE Seguidores.idAtivo = ?");
+                d.setString(1,Integer.toString(k.getInt("idUtil")));
+                ResultSet w = d.executeQuery();
+                while (w.next()) {
+                    Utilizador u = new Utilizador();
+                    u.setId(w.getInt("id"));
+                    u.setUsername(w.getString("username"));
+                    u.setPassword(w.getString("password"));
+                    u.setSaldo(w.getFloat("saldo"));
+                    u.setNot(new NotificationBuffer());
 
-            while(w.next()){
-                Utilizador u = new Utilizador();
-                u.setId(w.getInt("id"));
-                u.setUsername(w.getString("username"));
-                u.setPassword(w.getString("password"));
-                u.setSaldo(w.getFloat("saldo"));
-                u.setNot(new NotificationBuffer());
+                    ys = connection.prepareStatement("SELECT * FROM Registo WHERE idAtivo = ?");
+                    ys.setString(1, Integer.toString((Integer) key));
+                    ResultSet ws = ys.executeQuery();
+                    RegistoDAO res = new RegistoDAO();
+                    Registo r2 = new Registo();
+                    while (ws.next()) {
+                        r2.setIdAtivo(ws.getInt("idAtivo"));
+                        r2.setIdUtil((ws.getInt("idUtil")));
+                        r2.setQuantidade((ws.getInt("quant")));
+                    }
+                    u.setQuant(res);
 
-                PreparedStatement q = connection.prepareStatement("SELECT * FROM Registo WHERE idAtivo = ?");
-                q.setString(1, Integer.toString((Integer)key));
-                ResultSet ws = q.executeQuery();
-                RegistoDAO res = new RegistoDAO();
-                Registo r2 = new Registo();
-                while(ws.next()){
-                    r2.setIdAtivo(ws.getInt("idAtivo"));
-                    r2.setIdUtil((ws.getInt("idUtil")));
-                    r2.setQuantidade((ws.getInt("quant")));
+                    ys = connection.prepareStatement("SELECT * FROM Seguidores WHERE idAtivo = ?");
+                    ys.setString(1, Integer.toString((Integer) key));
+                    ResultSet h = ys.executeQuery();
+
+                    Map<Integer, Float> seg2 = new HashMap<>();
+
+                    while (h.next()) {
+                        seg2.put(h.getInt("idAtivo"), h.getFloat("price"));
+                    }
+                    u.setaSeguir(seg2);
+                    seg.add(u);
                 }
-                u.setQuant(res);
-
-                PreparedStatement m = connection.prepareStatement("SELECT * FROM Seguidores WHERE idAtivo = ?");
-                m.setString(1, Integer.toString((Integer)key));
-                ResultSet h = m.executeQuery();
-
-                Map<Integer,Float> seg2 = new HashMap<>();
-
-                while(h.next()){
-                    seg2.put(h.getInt("idAtivo"), h.getFloat("price"));
-                }
-                u.setaSeguir(seg2);
-                seg.add(u);
             }
             a.setSeguidores(seg);
-
         }catch (SQLException e){
             System.out.println(e.getMessage());
         }finally {
