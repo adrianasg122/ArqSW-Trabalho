@@ -242,25 +242,21 @@ public class AtivosDAO implements Map<Integer, Ativo> {
             }
             a.setObserversVenda(obs2);
 
-            PreparedStatement t = connection.prepareStatement("SELECT * FROM Seguidores WHERE idAtivo = ?");
+            PreparedStatement t = connection.prepareStatement("SELECT * FROM Seguidores INNER JOIN Utilizador ON Seguidores.idUtil = Utilizador.id WHERE Seguidores.idAtivo = ? ");
             t.setString(1, Integer.toString((Integer)key));
-            k = t.executeQuery();
+            ResultSet utils = t.executeQuery();
             ArrayList<Observer> seg = new ArrayList<>();
-            while(k.next()){
-                PreparedStatement d = connection.prepareStatement("SELECT * FROM Utilizador INNER JOIN Seguidores ON Seguidores.idUtil = id WHERE Seguidores.idAtivo = ?");
-                d.setString(1,Integer.toString(k.getInt("idUtil")));
-                ResultSet w = d.executeQuery();
-                while (w.next()) {
+            while(utils.next()){
                     Utilizador u = new Utilizador();
-                    u.setId(w.getInt("id"));
-                    u.setUsername(w.getString("username"));
-                    u.setPassword(w.getString("password"));
-                    u.setSaldo(w.getFloat("saldo"));
+                    u.setId(utils.getInt("id"));
+                    u.setUsername(utils.getString("username"));
+                    u.setPassword(utils.getString("password"));
+                    u.setSaldo(utils.getFloat("saldo"));
                     u.setNot(new NotificationBuffer());
 
-                    ys = connection.prepareStatement("SELECT * FROM Registo WHERE idAtivo = ?");
-                    ys.setString(1, Integer.toString((Integer) key));
-                    ResultSet ws = ys.executeQuery();
+                    PreparedStatement por = connection.prepareStatement("SELECT * FROM Registo WHERE idAtivo = ? AND " + utils.getInt("id"));
+                    por.setString(1, Integer.toString((Integer) key));
+                    ResultSet ws = por.executeQuery();
                     RegistoDAO res = new RegistoDAO();
                     Registo r2 = new Registo();
                     while (ws.next()) {
@@ -270,9 +266,9 @@ public class AtivosDAO implements Map<Integer, Ativo> {
                     }
                     u.setQuant(res);
 
-                    ys = connection.prepareStatement("SELECT * FROM Seguidores WHERE idAtivo = ?");
-                    ys.setString(1, Integer.toString((Integer) key));
-                    ResultSet h = ys.executeQuery();
+                    PreparedStatement por2 = connection.prepareStatement("SELECT * FROM Seguidores WHERE idAtivo = ? AND " + utils.getInt("id"));
+                    por2.setString(1, Integer.toString((Integer) key));
+                    ResultSet h = por2.executeQuery();
 
                     Map<Integer, Float> seg2 = new HashMap<>();
 
@@ -282,9 +278,9 @@ public class AtivosDAO implements Map<Integer, Ativo> {
                     u.setaSeguir(seg2);
                     seg.add(u);
                 }
-            }
             a.setSeguidores(seg);
-        }catch (SQLException e){
+        }
+        catch (SQLException e){
             System.out.println(e.getMessage());
         }finally {
             try {

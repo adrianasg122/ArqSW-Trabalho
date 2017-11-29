@@ -106,8 +106,7 @@ public class Ativo implements Comparable<Ativo>, Subject{
         sb.append("Preço Compra: ").append(precoCompra).append("\n");
         sb.append("Preço Venda: ").append(precoVenda).append("\n");
         sb.append("Entidade: ").append(descricao).append("\n");
-        if(seguidores != null)
-            sb.append("A seguir ").append(seguidores.toString()).append("\n");
+        sb.append("A seguir ").append(seguidores.toString()).append("\n");
         sb.append("**************");
 
         return sb.toString();
@@ -144,19 +143,14 @@ public class Ativo implements Comparable<Ativo>, Subject{
     }
 
     public void notifySeguidores(){
-        if(seguidores != null)
-            if (seguidores.size() != 0)
-                for (Observer o : seguidores)
-                    o.update(this);
+        //if (seguidores.size() != 0)
+            for (Observer o : seguidores)
+                o.update(this);
     }
 
     public void registarSeguidor(Observer o) {
-        if(seguidores != null)
+
             seguidores.add(o);
-        else {
-            seguidores = new ArrayList<>();
-            seguidores.add(o);
-        }
     }
 
     public void removeSeguidor(Observer o) {
