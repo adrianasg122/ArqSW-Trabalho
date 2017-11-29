@@ -133,7 +133,6 @@ public class AtivosDAO implements Map<Integer, Ativo> {
                 obs2.add(r);
             }
             a.setObserversVenda(obs2);
-
             PreparedStatement t = connection.prepareStatement("SELECT * FROM Seguidores WHERE idAtivo = ?");
             t.setString(1, Integer.toString((Integer)key));
             k = t.executeQuery();
