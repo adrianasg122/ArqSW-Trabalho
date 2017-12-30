@@ -1,4 +1,4 @@
-package Business;
+package Servidor;
 
 public class Registo {
     private int id;

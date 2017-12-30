@@ -15,7 +15,6 @@ public class Connect {
         } catch(SQLException | ClassNotFoundException e){
             System.out.println(e.getMessage());
         }
-
         return connect;
     }
 

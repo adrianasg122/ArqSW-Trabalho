@@ -1,9 +1,7 @@
-package Interface;
+package Cliente;
 
-import Business.*;
+import Servidor.*;
 
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.util.NoSuchElementException;
 
 
@@ -110,11 +108,9 @@ public class ESSLdaApp {
         escritor.escrever(query);
         try {
             resposta = leitor.ler(op);
-            System.out.println("entrei!");
             if (op == 1) this.cliente = true;
             if (op == 10) this.cliente = false;
         } catch (PedidoFalhadoException e) {
-            System.out.println("Falhei!");
             e.getMessage();}
 
         return resposta;
@@ -145,8 +141,6 @@ public class ESSLdaApp {
 
         query = String.join(" ","REGISTAR",nome,password,saldo);
 
-        //TODO tirar isto
-        System.out.println(query);
         return query;
     }
 
@@ -188,7 +182,7 @@ public class ESSLdaApp {
 
         quant = menuprincipal.readString("Insira a quantidade:");
 
-        query = String.join(" ","COMPRAR",idA,sl,tp, quant);
+        query = String.join(" ","COMPRA",idA,sl,tp, quant);
 
         return query;
     }
@@ -204,7 +198,7 @@ public class ESSLdaApp {
 
         quant = menuprincipal.readString("Insira a quantidade:");
 
-        query = String.join(" ","VENDER", idA, sl, tp, quant);
+        query = String.join(" ","VENDA", idA, sl, tp, quant);
 
         return query;
     }

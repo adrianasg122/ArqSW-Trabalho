@@ -1,6 +1,6 @@
-package Interface;
+package Cliente;
 
-import Business.PedidoFalhadoException;
+import Servidor.PedidoFalhadoException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -44,7 +44,6 @@ public class Leitor {
         } catch (IOException e) {
             e.getMessage();
         }
-        if (conteudo == null) return "Os dados não são válidos";
         return conteudo;
     }
 

@@ -1,4 +1,4 @@
-package Business;
+package Servidor;
 
 
 import DAOS.AtivosDAO;
@@ -9,6 +9,7 @@ import yahoofinance.Stock;
 import yahoofinance.YahooFinance;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -40,10 +41,6 @@ public class ESSLda {
 
     public AtivosDAO getAtivos() {
         return ativos;
-    }
-
-    public void setAtivos(AtivosDAO ativos) {
-        this.ativos = ativos;
     }
 
     public String toString() {
@@ -91,19 +88,18 @@ public class ESSLda {
     }
 
     /**
-     * Terminar sessão do utilizador na plataforma.
+     * Verifica que o utilizador existe
+     * @param utilizador
      */
-    public void terminarSessao() {
-        this.utilizador = null;
+    public boolean existeUtilizador(Utilizador utilizador) {
+        for (Utilizador u : utilizadores.values()) {
+            if (u.equals(utilizador))
+                return true;
+        }
+
+        return false;
     }
 
-    public int getUserId(String username) {
-        int id = -1;
-        for (Utilizador u : utilizadores.values()) {
-            if (u.getUsername().equals(username)) id = u.getId();
-        }
-        return id;
-    }
     /**
      * Regitar novo utilizador na plataforma.
      *
@@ -113,26 +109,27 @@ public class ESSLda {
      */
     public synchronized void registar(String username, String password, float saldo) throws UtilizadorInvalidoException {
         int id = utilizadores.size() + 1;
-        Utilizador u = u = new Utilizador(id, username, password, saldo);
+        Utilizador u = new Utilizador(id, username, password, saldo);
 
-        if (utilizadores.get(getUserId(username)) == null ){
+        if (!existeUtilizador(u))
             utilizadores.put(id,u);
-            System.out.println("Estou registadissimo ");}
         else throw new UtilizadorInvalidoException("Username já existe");
     }
 
+
+    public synchronized Set<Contrato> getContratos (int id){
+        Set<Contrato> res = new HashSet<>();
+            for (Contrato c : contratos.values())
+                if (c.getIdUtil() == id && c.getConcluido() == 0)
+                    res.add(c);
+        return res;
+    }
 
     /**
      * Consultar a lista de acções adquiridas por um utilizador
      */
     public Set<Contrato> consultaPortCFD() {
-        Set<Contrato> res = new HashSet<>();
-        synchronized (contratos) {
-            for (Contrato c : contratos.values()) {
-                if (c.getIdUtil() == utilizador.getId() && c.getConcluido() == 0)
-                    res.add(c);
-            }
-        }
+        Set<Contrato> res = this.getContratos(utilizador.getId());
         return res;
     }
 
@@ -198,8 +195,8 @@ public class ESSLda {
     public synchronized void fecharContrato(int id) throws SaldoInsuficienteException {
         Contrato aux = contratos.get(id);
         aux.setConcluido(1);
-        if (aux.getVenda() == 1) vender(aux);
-        else comprar(aux);
+        if (aux.getVenda() == 1) verificarContrato(aux);
+        else verificarContrato(aux);
     }
 
     public void criarRegisto(Contrato c) {
@@ -219,52 +216,34 @@ public class ESSLda {
         registos.put(regid, r);
     }
 
-    /**
-     * Comprar ações
-     *
-     * @param c Contrato
-     */
-    public void comprar(Contrato c) throws SaldoInsuficienteException {
+
+    public void verificarContrato(Contrato c) throws SaldoInsuficienteException {
         float sl = c.getStoploss();
         float tp = c.getTakeprofit();
         int idAtivo = c.getIdAtivo();
+        Ativo a = ativos.get(idAtivo);
         float preco = c.getPreco() * c.getQuantidade();
-        if (utilizador.getSaldo() < preco) throw new SaldoInsuficienteException("Não possui saldo suficiente");
-        if (sl == 0 && tp == 0) {
-            criarRegisto(c);
-            c.setConcluido(1);
+        if (c.getVenda() == 0) {
+            if (utilizador.getSaldo() < preco)
+                throw new SaldoInsuficienteException("Não possui saldo suficiente");
+            if ((sl == 0 && tp == 0) ||
+                    a.getPrecoCompra() >= tp || a.getPrecoCompra() <= sl) {
+                transacao(c,preco);
+            }
+        }
+        else if ((sl == 0 && tp == 0 ) ||
+                a.getPrecoVenda() >= tp || a.getPrecoVenda() <= sl)
+            transacao(c,preco);
+    }
+
+    public void transacao(Contrato c , float preco) {
+        criarRegisto(c);
+        c.setConcluido(1);
+        if (c.getVenda() == 1)
+            utilizador.setSaldo(utilizador.getSaldo() + preco);
+        else
             utilizador.setSaldo(utilizador.getSaldo() - preco);
-        }
-        else {
-            synchronized (ativos) {
-                if (ativos.get(idAtivo).getPrecoCompra() >= tp || ativos.get(idAtivo).getPrecoCompra() <= sl) {
-                    criarRegisto(c);
-                    c.setConcluido(1);
-                    utilizador.setSaldo(utilizador.getSaldo() - preco);
-                }
-            }
-        }
     }
-
-    /**
-     * Colocar ativos à venda
-     *
-     * @param c Contrato
-     */
-    public void vender(Contrato c) {
-        float preco = c.getPreco() * c.getQuantidade();
-        float sl = c.getStoploss();
-        float tp = c.getTakeprofit();
-        int idAtivo = c.getIdAtivo();
-        synchronized (ativos) {
-            if (ativos.get(idAtivo).getPrecoVenda() >= tp || ativos.get(idAtivo).getPrecoVenda() <= sl) {
-                criarRegisto(c);
-                c.setConcluido(1);
-                utilizador.setSaldo(utilizador.getSaldo() + preco);
-            }
-        }
-    }
-
 
     public Set<Ativo> listarAtivos() {
         Set<Ativo> res = new HashSet<>();
@@ -318,21 +297,29 @@ public class ESSLda {
 
     public synchronized void criarAtivo(String entidade) {
         int i = this.ativos.size() + 1;
+        BigDecimal value;
+        float fvalue;
         Ativo aux = new Ativo();
-        Stock s = null;
+        Stock s;
         try {
             s = YahooFinance.get(entidade);
+
+            if (this.existe(entidade) == 0 && s!= null) {
+                aux.setId(i);
+                aux.setDescricao(entidade);
+                value = s.getQuote().getBid();
+                fvalue = (value == null) ? 0 : value.floatValue();
+                aux.setPrecoVenda(fvalue);
+                value = s.getQuote().getAsk();
+                fvalue = (value == null) ? 0 : value.floatValue();
+                aux.setPrecoCompra(fvalue);
+                this.ativos.put(i, aux);
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        if (this.existe(entidade) == 0 && s!= null) {
-            aux.setId(i);
-            aux.setDescricao(entidade);
-            aux.setPrecoVenda(s.getQuote().getBid().floatValue());
-            aux.setPrecoCompra(s.getQuote().getAsk().floatValue());
-            this.ativos.put(i, aux);
-            }
     }
 
 

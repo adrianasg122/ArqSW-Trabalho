@@ -1,4 +1,4 @@
-package Interface;
+package Cliente;
 
 import java.util.Scanner;
 

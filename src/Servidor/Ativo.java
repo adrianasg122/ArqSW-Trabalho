@@ -1,4 +1,4 @@
-package Business;
+package Servidor;
 
 
 public class Ativo implements Comparable<Ativo>{
@@ -12,7 +12,7 @@ public class Ativo implements Comparable<Ativo>{
     private String descricao;
 
 
-    public Ativo() {//
+    public Ativo() {
     }
 
     public Ativo(int id, float precoCompra, float precoVenda, String descricao) {
@@ -51,7 +51,6 @@ public class Ativo implements Comparable<Ativo>{
 
     public void setPrecoVenda(float precoVenda) { this.precoVenda = precoVenda; }
 
-
     public String getDescricao() { return descricao; }
 
     public void setDescricao(String descricao) { this.descricao = descricao; }
@@ -70,7 +69,6 @@ public class Ativo implements Comparable<Ativo>{
 
         return sb.toString();
     }
-
 
     @Override
     public int compareTo(Ativo o) {

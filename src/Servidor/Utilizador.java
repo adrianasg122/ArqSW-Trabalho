@@ -1,8 +1,4 @@
-package Business;
-
-
-import java.io.IOException;
-import java.net.Socket;
+package Servidor;
 
 
 public class Utilizador implements Comparable<Utilizador> {

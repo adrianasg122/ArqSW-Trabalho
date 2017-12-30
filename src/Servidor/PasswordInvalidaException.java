@@ -1,4 +1,4 @@
-package Business;
+package Servidor;
 
 public class PasswordInvalidaException extends Exception {
 

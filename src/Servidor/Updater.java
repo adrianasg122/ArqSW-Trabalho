@@ -1,9 +1,10 @@
-package Business;
+package Servidor;
 
 import yahoofinance.Stock;
 import yahoofinance.YahooFinance;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Set;
 
 public class Updater extends Thread{
@@ -32,10 +33,12 @@ public class Updater extends Thread{
 
     public float getValorCompra(String entidade){
         float res = 0;
+        BigDecimal value;
 
         try {
             Stock s = YahooFinance.get(entidade);
-            res = s.getQuote().getAsk().floatValue();
+            value = s.getQuote().getAsk();
+            res = (value == null) ? 0 : value.floatValue();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -47,7 +50,8 @@ public class Updater extends Thread{
 
         try {
             Stock s = YahooFinance.get(entidade);
-            res = s.getQuote().getBid().floatValue();
+            BigDecimal value = s.getQuote().getBid();
+            res = (value == null) ? 0 : value.floatValue();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -55,7 +59,11 @@ public class Updater extends Thread{
     }
 
     public void povoacao() {
+
         ess.criarAtivo("NVDA");
+        ess.criarAtivo("APPL");
+        ess.criarAtivo("GOOG");
+        ess.criarAtivo("INTC");
     }
 
     public void run() {
@@ -75,20 +83,22 @@ public class Updater extends Thread{
                 if (a.getPrecoCompra() != pc) {
                     for (Contrato c : contCompra)
                         try {
-                            ess.comprar(c);
+                            ess.verificarContrato(c);
+                            a.setPrecoCompra(pc);
                         } catch (SaldoInsuficienteException e) {
                         }
+                }
 
-                    if (a.getPrecoVenda() != pv) {
-                        for (Contrato c : contVenda)
-                            ess.vender(c);
-
-                    }
-                    a.setPrecoCompra(pc);
-                    a.setPrecoVenda(pv);
+                if (a.getPrecoVenda() != pv) {
+                    for (Contrato c : contVenda)
+                        try {
+                            ess.verificarContrato(c);
+                            a.setPrecoVenda(pv);
+                        } catch (SaldoInsuficienteException e) {
+                        }
+                }
                     ess.getAtivos().put(a.getId(), a);
                 }
-            }
             try {
                 sleep(300000);
             } catch (InterruptedException e) {

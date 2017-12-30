@@ -1,4 +1,4 @@
-package Business;
+package Servidor;
 
 import java.net.Socket;
 import java.io.InputStreamReader;
@@ -29,10 +29,10 @@ public class Skeleton extends Thread {
     }
 
     public void run() {
-        String request = null;
+        String request;
 
         while((request = readLine()) != null) {
-            String response = null;
+            String response;
             response = interpreteRequest(request);
             if (!response.isEmpty()) {
                 System.out.println(response + "\n");
@@ -51,7 +51,7 @@ public class Skeleton extends Thread {
             return "EXCEPTION\n" + "Os argumentos não foram especificados";
         }
     }
-// TODO consultar saldo
+
     private String runCommand(String request) throws ArrayIndexOutOfBoundsException, PedidoFalhadoException {
         String[] keywords = request.split(" ", 2);
 
@@ -96,8 +96,6 @@ public class Skeleton extends Thread {
 
 
         try {
-            //TODO tirar isto
-            System.out.println("Tam:" + parametros.length);
             if (parametros.length > 3) throw new PedidoFalhadoException("O username/password não podem ter espaços");
             ess.registar(parametros[0], parametros[1], Float.parseFloat(parametros[2]));
         } catch (ArrayIndexOutOfBoundsException | UtilizadorInvalidoException e) {
@@ -122,7 +120,7 @@ public class Skeleton extends Thread {
         int contratoID;
 
         try {
-            contratoID = ess.criarContratoCompra(Integer.parseInt(parametros[0]),Float.parseFloat(parametros[1]), Integer.parseInt(parametros[2]), Integer.parseInt(parametros[3]));
+            contratoID = ess.criarContratoCompra(Integer.parseInt(parametros[0]),Float.parseFloat(parametros[1]), Float.parseFloat(parametros[2]), Integer.parseInt(parametros[3]));
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new PedidoFalhadoException("Os argumentos dados não são válidos");
         }

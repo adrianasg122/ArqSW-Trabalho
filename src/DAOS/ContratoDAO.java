@@ -1,13 +1,12 @@
 package DAOS;
 
 
-import Business.Contrato;
+import Servidor.Contrato;
 
 import java.sql.*;
 import java.util.*;
 
 
-// TODO adicionar ao Contrato a lista dos seus ativos sempre que se for buscar algum
 public class ContratoDAO implements Map<Integer, Contrato>{
 
     private Connection connection;
@@ -130,7 +129,7 @@ public class ContratoDAO implements Map<Integer, Contrato>{
         try {
             connection = Connect.connect();
             PreparedStatement ps = connection.prepareStatement("DELETE FROM Contrato WHERE idUtil = ?");
-            ps.setString(1,Integer.toString((Integer) key));
+            ps.setString(1,Integer.toString(key));
             ps.executeUpdate();
 
             ps = connection.prepareStatement("INSERT INTO Contrato (id,idUtil,idAtivo,preco,quantidade,venda,stoploss,takeprofit,concluido) VALUES (?,?,?,?)");

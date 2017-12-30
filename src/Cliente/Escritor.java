@@ -1,6 +1,5 @@
-package Interface;
+package Cliente;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
