@@ -121,6 +121,7 @@ public class Utilizador implements Comparable<Utilizador>, Observer{
        Float f = aSeguir.get(a.getId());
        if (f != null && f.equals(a.getPrice())) {
            aSeguir.remove(a.getId());
+           a.removeSeguidor(this);
            notificacoes.add("O ativo " + a.getDescricao() + " atingiu o valor desejado: " + a.getPrice());
        }
     }

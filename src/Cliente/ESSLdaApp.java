@@ -241,8 +241,4 @@ public class ESSLdaApp {
         return query;
 
     }
-
-    private String terminarSessao() {
-        return "TERMINAR";
-    }
 }

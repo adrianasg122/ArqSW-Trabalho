@@ -55,18 +55,4 @@ public class Menu {
 
         return num;
     }
-
-    public float readFloat(String msg) {
-        float num;
-
-        try {
-            System.out.print(msg);
-            num = Float.parseFloat(in.next());
-        } catch (NumberFormatException e) {
-            System.out.println("\n> O valor introduzido não é válido\n");
-            num = readFloat(msg);
-        }
-
-        return num;
-    }
 }

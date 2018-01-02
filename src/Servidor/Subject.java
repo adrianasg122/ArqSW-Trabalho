@@ -12,5 +12,5 @@ public interface Subject {
     void registarSeguidor(Observer observer);
     void removeSeguidor(Observer observer);
 
-
 }
+

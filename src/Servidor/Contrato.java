@@ -117,9 +117,6 @@ public class Contrato implements Observer{
 
     public void setPreco(float preco) { this.preco = preco; }
 
-    public void setEss(ESSLda ess) { this.ess = ess; }
-
-
     public ESSLda getEss() { return ess; }
 
     public Contrato clone () {
@@ -138,7 +135,6 @@ public class Contrato implements Observer{
         return sb.toString();
     }
 
-
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -156,18 +152,12 @@ public class Contrato implements Observer{
         return getConcluido() == contrato.getConcluido();
     }
 
-
-
     public void update (Ativo a) {
-        if(this.getVenda() == 0) {
-            try {
-                ess.comprar(this);
-            } catch (SaldoInsuficienteException e) {
+        try {
+            ess.transacao(this);
+        }catch (SaldoInsuficienteException e) {
                 e.printStackTrace();
-            }
-        }
-        else if (this.getVenda() ==1) {
-            ess.vender(this);
         }
     }
 }
+

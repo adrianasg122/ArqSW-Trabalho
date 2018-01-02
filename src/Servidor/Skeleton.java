@@ -153,7 +153,7 @@ public class Skeleton extends Thread {
 
         try {
             contratoID = ess.criarContratoVenda(Integer.parseInt(parametros[0]),Float.parseFloat(parametros[1]), Float.parseFloat(parametros[2]), Integer.parseInt(parametros[3]));
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } catch (SaldoInsuficienteException |ArrayIndexOutOfBoundsException e) {
             throw new PedidoFalhadoException("Os argumentos dados não são válidos");
         }
 

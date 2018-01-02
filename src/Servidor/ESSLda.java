@@ -37,10 +37,6 @@ public class ESSLda extends Object{
         return ativos;
     }
 
-    public void setAtivos(AtivosDAO ativos) {
-        this.ativos = ativos;
-    }
-
     public String toString() {
         return "ESSLda{" +
                 "utilizadores=" + utilizadores +
@@ -178,14 +174,14 @@ public class ESSLda extends Object{
         contratos.put(id,c);
         ativos.get(idAtivo, this).registerObserverCompra(c);
         try {
-            comprar(c);
+            transacao(c);
         } catch (SaldoInsuficienteException e) {
             e.getMessage();
         }
         return id;
     }
 
-    public synchronized int criarContratoVenda(int idAtivo, float sl, float tp, int quant) {
+    public synchronized int criarContratoVenda(int idAtivo, float sl, float tp, int quant) throws SaldoInsuficienteException {
         Contrato c = new Contrato(this);
         int id = contratos.size() + 1;
 
@@ -204,7 +200,7 @@ public class ESSLda extends Object{
         contratos.put(id, c);
         ativos.get(idAtivo, this).registerObserverVenda(c);
 
-        vender(c);
+        transacao(c);
         return id;
     }
 
@@ -212,13 +208,12 @@ public class ESSLda extends Object{
         Contrato aux = contratos.get(id).clone();
         aux.setTakeprofit(0);
         aux.setStoploss(0);
-        if (aux.getVenda() == 1) vender(aux);
-        else comprar(aux);
+        if (aux.getVenda() == 1) transacao(aux);
+        else transacao(aux);
     }
 
     public void criarRegisto(Contrato c) {
         Registo r = new Registo();
-        int regid;
         r.setIdAtivo(c.getIdAtivo());
         r.setIdUtil(c.getIdUtil());
         r.setQuantidade(c.getQuantidade());
@@ -231,66 +226,62 @@ public class ESSLda extends Object{
      *
      * @param c Contrato
      */
-    public void comprar(Contrato c) throws SaldoInsuficienteException {
+    public void transacao(Contrato c) throws SaldoInsuficienteException {
         float sl = c.getStoploss();
         float tp = c.getTakeprofit();
         int idAtivo = c.getIdAtivo();
-        float preco = ativos.get(idAtivo, this).getPrecoCompra() * c.getQuantidade();
-        if (utilizador == null) {
-            utilizador = utilizadores.get(c.getIdUtil());
-            if (utilizador.getSaldo() < preco) throw new SaldoInsuficienteException("Não possui saldo suficiente");
-        }
-        else if (utilizador.getSaldo() < preco) throw new SaldoInsuficienteException("Não possui saldo suficiente");
+        Ativo ativo = ativos.get(idAtivo, this);
+        float preco = ativo.getPrecoCompra() * c.getQuantidade();
+        Utilizador u = utilizadores.get(c.getIdUtil());
 
-        if ((sl == 0 && tp == 0) || (ativos.get(idAtivo).getPrecoCompra() >= tp || ativos.get(idAtivo).getPrecoCompra() <= sl)) {
+        if (u.getSaldo() < preco) throw new SaldoInsuficienteException("Não possui saldo suficiente");
 
-                if (!utilizador.getQuant().containsKey(idAtivo))
+        if (c.getVenda() == 0 && ((sl == 0 && tp == 0) || ativo.getPrecoCompra() >= tp || ativo.getPrecoCompra() <= sl)) {
+                if (!u.getQuant().containsKey(idAtivo))
                     criarRegisto(c);
                 else {
-                    Registo r = utilizador.getQuant().get(idAtivo);
-                    int q = r.getQuantidade();
-                    r.setQuantidade(q + c.getQuantidade());
-                    utilizador.getQuant().put(idAtivo,r);
+                    atualizarRegisto(c);
                 }
-
-                c.setPreco(ativos.get(idAtivo).getPrecoCompra());
-                c.setConcluido(1);
-                contratos.put(c.getIdContrato(),c);
-                utilizador.setSaldo(utilizador.getSaldo() - preco);
-                utilizadores.put(utilizador.getId(), utilizador);
-                ativos.get(c.getIdAtivo(), this).removeObserver(c);
-                }
-    }
-
-
-    /**
-     * Colocar ativos à venda
-     *
-     * @param c Contrato
-     */
-
-    public void vender(Contrato c) {
-        float sl = c.getStoploss();
-        float tp = c.getTakeprofit();
-        int idAtivo = c.getIdAtivo();
-        float preco = ativos.get(idAtivo).getPrecoVenda() * c.getQuantidade();
-            if (!utilizador.getQuant().containsKey(idAtivo) || c.getQuantidade() > utilizador.getQuant().get(idAtivo).getQuantidade() ) return;
-            if (ativos.get(idAtivo).getPrecoVenda() >= tp || ativos.get(idAtivo).getPrecoVenda() <= sl) {
-
-                Registo r = utilizador.getQuant().get(idAtivo);
-                int q = r.getQuantidade();
-                r.setQuantidade(q - c.getQuantidade());
-                utilizador.getQuant().put(idAtivo,r);
-
-                c.setPreco(ativos.get(idAtivo).getPrecoVenda());
-                c.setConcluido(1);
-                contratos.put(c.getIdContrato(),c);
-                utilizador.setSaldo(utilizador.getSaldo() + preco);
-                utilizadores.put(utilizador.getId(), utilizador);
-                ativos.get(c.getIdAtivo()).removeObserver(c);
+                atualizarContrato(c,preco);
+            }
+        else if (c.getVenda() == 1) {
+            if (!u.getQuant().containsKey(idAtivo) || c.getQuantidade() > u.getQuant().get(idAtivo).getQuantidade())
+                return;
+            if (ativo.getPrecoVenda() >= tp || ativo.getPrecoVenda() <= sl) {
+                atualizarRegisto(c);
+                atualizarContrato(c,preco);
 
             }
         }
+    }
+
+    public void atualizarRegisto(Contrato c) {
+        int idAtivo = c.getIdAtivo();
+        Utilizador u = utilizadores.get(c.getIdUtil());
+        Registo r = u.getQuant().get(idAtivo);
+        int q = r.getQuantidade();
+
+        if (c.getVenda() == 0)
+            r.setQuantidade(q + c.getQuantidade());
+        else
+            r.setQuantidade(q - c.getQuantidade());
+
+        u.getQuant().put(idAtivo, r);
+    }
+
+    public void atualizarContrato(Contrato c, float preco) {
+        int idAtivo = c.getIdAtivo();
+        Utilizador u = utilizadores.get(c.getIdUtil());
+        Ativo a = ativos.get(idAtivo, this);
+
+        c.setPreco(a.getPrecoCompra());
+        c.setConcluido(1);
+        contratos.put(c.getIdContrato(), c);
+        u.setSaldo(utilizador.getSaldo() - preco);
+        utilizadores.put(u.getId(), u);
+        a.removeObserver(c);
+
+    }
 
     public Set<Ativo> listarAtivos() {
         Set<Ativo> res = new HashSet<>();
@@ -303,19 +294,6 @@ public class ESSLda extends Object{
         }
         return res;
     }
-
-    public Set<Contrato> listarContratos() {
-        Set<Contrato> res = new HashSet<>();
-        contratoLock.lock();
-        try {
-            for (Contrato a : contratos.values()){
-                res.add(a.clone());}
-        } finally {
-            contratoLock.unlock();
-        }
-        return res;
-    }
-
 
     public int existe (String nome)  {
         ativoLock.lock();
@@ -375,7 +353,6 @@ public class ESSLda extends Object{
     }
 
     public String notificar() {
-
         return utilizador.getNot().ler();
     }
 

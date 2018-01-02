@@ -73,29 +73,30 @@ public class Updater extends Thread {
         while (true) {
             Set<Ativo> ativos = ess.listarAtivos();
 
+
             for (Ativo a : ativos) {
 
                 float pc = getValorCompra(a.getDescricao());
                 float pv = getValorVenda(a.getDescricao());
+                float p = getPrice(a.getDescricao());
 
                 if (a.getPrecoCompra() != pc) {
                     a.setPrecoCompra(pc);
                     ess.getAtivos().put(a.getId(), a);
                     a.notifyObserversCompra();
-
                 }
+
                 if (a.getPrecoVenda() != pv) {
                     a.setPrecoVenda(pv);
                     ess.getAtivos().put(a.getId(), a);
                     a.notifyObserversVenda();
                 }
 
-                float p = getPrice(a.getDescricao());
-                //if (a.getPrice() != p) {
+                if (a.getPrice() != p) {
                     a.setPrice(p);
                     ess.getAtivos().put(a.getId(), a);
                     a.notifySeguidores();
-               // }
+                }
             }
 
             try {

@@ -279,7 +279,4 @@ public class UtilizadorDAO implements Map<Integer, Utilizador>{
         keys.stream().forEach(e->map.put(e,this.get(e)));
         return map.entrySet();
     }
-
-
-
 }
