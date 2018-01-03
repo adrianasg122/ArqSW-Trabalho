@@ -98,7 +98,6 @@ public class Utilizador implements Comparable<Utilizador>, Observer{
         return username;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

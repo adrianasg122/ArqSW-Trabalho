@@ -28,7 +28,6 @@ public class Updater extends Thread {
         return res;
     }
 
-
     public float getValorCompra(String entidade) {
         float res = 0;
 
@@ -73,7 +72,6 @@ public class Updater extends Thread {
         while (true) {
             Set<Ativo> ativos = ess.listarAtivos();
 
-
             for (Ativo a : ativos) {
 
                 float pc = getValorCompra(a.getDescricao());
@@ -98,7 +96,6 @@ public class Updater extends Thread {
                     a.notifySeguidores();
                 }
             }
-
             try {
                 sleep(30000);
             } catch (InterruptedException e) {

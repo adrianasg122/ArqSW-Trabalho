@@ -45,12 +45,6 @@ public class ESSLda extends Object{
                 '}';
     }
 
-    /**
-     * Login do utilizador na plataforma.
-     *
-     * @param username Username do novo registo.
-     * @param password Password do novo registo.
-     */
     public synchronized Utilizador iniciarSessao(String username, String password) throws UtilizadorInvalidoException {
         try {
                 this.utilizador = this.validaUtilizador(username, password);
@@ -60,12 +54,7 @@ public class ESSLda extends Object{
         return utilizador;
     }
 
-    /**
-     * Verifica se os dados do utilizador estão corretos
-     *
-     * @param username Username do utilizador
-     * @param password password do utilizador
-     */
+
     public Utilizador validaUtilizador(String username, String password) throws UtilizadorInvalidoException {
         Utilizador u = null;
 
@@ -82,9 +71,7 @@ public class ESSLda extends Object{
         return u;
     }
 
-    /**
-     * Terminar sessão do utilizador na plataforma.
-     */
+
     public void terminarSessao() {
         this.utilizador = null;
     }
@@ -97,13 +84,8 @@ public class ESSLda extends Object{
         }
         return -1;
     }
-    /**
-     * Regitar novo utilizador na plataforma.
-     *
-     * @param username Username do novo registo.
-     * @param password Password do novo registo.
-     * @param saldo    Saldo inicial da conta.
-     */
+
+
     public synchronized void registar(String username, String password, float saldo) throws UtilizadorInvalidoException {
         int id = utilizadores.size() + 1;
         Utilizador u = u = new Utilizador(id, username, password, saldo);
@@ -115,9 +97,7 @@ public class ESSLda extends Object{
     }
 
 
-    /**
-     * Consultar a lista de acções adquiridas por um utilizador
-     */
+
     public Set<Contrato> consultaPortCFD() {
         Set<Contrato> res = new HashSet<>();
         synchronized (contratos) {
@@ -129,9 +109,7 @@ public class ESSLda extends Object{
         return res;
     }
 
-    /**
-     * Consultar o valor dos ativos adquiridos
-     */
+
     public Set<Ativo> getAtivosVenda() {
         Set<Ativo> res = new HashSet<>() ;
 
@@ -150,9 +128,7 @@ public class ESSLda extends Object{
         return res;
     }
 
-    /**
-     * Consultar o saldo de um utilizador
-     */
+
     public float getSaldoUtilizador() {
         return utilizadores.get(utilizador.getId()).getSaldo();
     }
@@ -222,8 +198,9 @@ public class ESSLda extends Object{
 
 
     /**
-     * Comprar ações
-     *
+     * Método que verifica se é possível realizar a transação de ativos ou não.
+     * Para isso utiliza os valores guardados no contrato a fim de ver se é possível, dentro dos requisitos,
+     * realizar a ação
      * @param c Contrato
      */
     public void transacao(Contrato c) throws SaldoInsuficienteException {
@@ -330,13 +307,11 @@ public class ESSLda extends Object{
 
     public String porNome(String nome) throws PedidoFalhadoException {
        Ativo res = null;
-
        for (Ativo a : ativos.values())
            if (a.getDescricao().equals(nome)) {
                 res = a;
                 return res.toString();
            }
-
        if (res == null) throw new PedidoFalhadoException("O ativo não está disponível para consulta");
        return null;
 

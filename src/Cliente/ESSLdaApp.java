@@ -6,7 +6,6 @@ import java.util.NoSuchElementException;
 
 
 public class ESSLdaApp {
-    //1 logado, zero não
     private boolean cliente;
     private Leitor leitor;
     private Escritor escritor;

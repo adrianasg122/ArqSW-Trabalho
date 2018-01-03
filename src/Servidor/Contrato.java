@@ -9,11 +9,9 @@ public class Contrato implements Observer{
     private int idUtil;
     private int quantidade;
     private float preco;
-    // 1 se for uma venda , 0 se for compra
     private int venda;
     private float stoploss;
     private float takeprofit;
-    // 1 se tiver concluido, 0 caso contrário
     private int concluido;
 
     public Contrato () {

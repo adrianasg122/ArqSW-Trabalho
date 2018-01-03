@@ -90,8 +90,6 @@ public class Ativo implements Comparable<Ativo>, Subject{
 
     public void setObserversVenda(ArrayList<Observer> observersVenda) { this.observersVenda = observersVenda; }
 
-    public ArrayList<Observer> getSeguidores() { return seguidores; }
-
     public void setSeguidores(ArrayList<Observer> seguidores) { this.seguidores = seguidores; }
 
     public Ativo clone () {

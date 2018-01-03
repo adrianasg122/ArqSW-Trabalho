@@ -2,7 +2,6 @@ package Servidor;
 
 public interface Subject {
 
-
     void registerObserverCompra(Observer observer);
     void registerObserverVenda(Observer observer);
     void removeObserver(Observer observer);

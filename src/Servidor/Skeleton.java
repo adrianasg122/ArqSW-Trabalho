@@ -178,7 +178,7 @@ public class Skeleton extends Thread {
 
 
 
-    private String listarContratos() throws PedidoFalhadoException {
+    private String listarContratos(){
         Set<Contrato> contratos = ess.consultaPortCFD();
         StringBuilder sb = new StringBuilder();
 
@@ -188,7 +188,7 @@ public class Skeleton extends Thread {
         return "OK" + sb.toString() + "\n§";
     }
 
-    private String listarAtivosVenda() throws PedidoFalhadoException{
+    private String listarAtivosVenda(){
         Set<Ativo> ativos = ess.getAtivosVenda();
         StringBuilder sb = new StringBuilder();
 
@@ -200,7 +200,7 @@ public class Skeleton extends Thread {
 
 
 
-    private String listarAtivos() throws PedidoFalhadoException {
+    private String listarAtivos(){
         Set<Ativo> ativos = ess.listarAtivos();
         StringBuilder sb = new StringBuilder();
 
@@ -238,19 +238,17 @@ public class Skeleton extends Thread {
         try {
             cliSocket.close();
         } catch (IOException e) {
-            System.out.println("Couldn't close client socket... Client won't care");
+            System.out.println("Couldn't close client socket...");
         }
     }
 
     private String readLine() {
         String line = null;
-
         try {
             line = in.readLine();
         } catch(IOException e) {
             terminarConexao();
         }
-
         return line;
     }
 }

@@ -12,9 +12,6 @@ public class Menu {
         this.options = entries;
     }
 
-
-
-
     public int showMenu() {
         int option = 0;
         System.out.println("\n ***  Menu  *** ");
@@ -42,6 +39,7 @@ public class Menu {
         return in.next();
     }
 
+
     public int readInt(String msg) {
         int num;
 
@@ -52,7 +50,6 @@ public class Menu {
             System.out.println("\n> O valor introduzido não é válido\n");
             num = readInt(msg);
         }
-
         return num;
     }
 }

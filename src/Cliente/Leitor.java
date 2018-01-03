@@ -20,7 +20,6 @@ public class Leitor {
         }
     }
 
-
     public String ler(int comando) throws PedidoFalhadoException {
         String cabecalho, conteudo = null;
         try {
